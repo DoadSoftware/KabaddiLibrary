@@ -30,6 +30,15 @@ public class MatchStats {
   
   @XmlElement(name = "TeamId")
   private int TeamId;
+  
+  @XmlElement(name = "offplayerId")
+  private int offplayerId;
+  
+  @XmlElement(name = "onplayerId")
+  private int onplayerId;
+  
+  @XmlElement(name = "raiderIn")
+  private String raiderIn;
 
   @XmlTransient
   private Player player;
@@ -39,7 +48,7 @@ public MatchStats() {
 }
 
 public MatchStats(int statsId, int playerId, String matchHalves, String stats_type, int statsCount,
-		long totalMatchSeconds) {
+		long totalMatchSeconds,int TeamId,String raiderIn) {
 	super();
 	this.statsId = statsId;
 	this.playerId = playerId;
@@ -47,6 +56,19 @@ public MatchStats(int statsId, int playerId, String matchHalves, String stats_ty
 	this.stats_type = stats_type;
 	this.statsCount = statsCount;
 	this.totalMatchSeconds = totalMatchSeconds;
+	this.TeamId = TeamId;
+	this.raiderIn = raiderIn;
+}
+
+public MatchStats(int statsId,String matchHalves, String stats_type,long totalMatchSeconds,int offplayerId,int onplayerId,int TeamId) {
+	super();
+	this.statsId = statsId;
+	this.matchHalves = matchHalves;
+	this.stats_type = stats_type;
+	this.totalMatchSeconds = totalMatchSeconds;
+	this.TeamId = TeamId;
+	this.offplayerId = offplayerId;
+	this.onplayerId = onplayerId;
 }
 
 public Player getPlayer() {
@@ -111,6 +133,30 @@ public int getTeamId() {
 
 public void setTeamId(int teamId) {
 	TeamId = teamId;
+}
+
+public int getOffplayerId() {
+	return offplayerId;
+}
+
+public void setOffplayerId(int offplayerId) {
+	this.offplayerId = offplayerId;
+}
+
+public int getOnplayerId() {
+	return onplayerId;
+}
+
+public void setOnplayerId(int onplayerId) {
+	this.onplayerId = onplayerId;
+}
+
+public String getRaiderIn() {
+	return raiderIn;
+}
+
+public void setRaiderIn(String raiderIn) {
+	this.raiderIn = raiderIn;
 }
 
 }

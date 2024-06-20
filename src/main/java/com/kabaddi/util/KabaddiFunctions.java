@@ -6,8 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,38 +13,14 @@ import java.util.Date;
 import java.util.List;
 
 import com.kabaddi.model.Configurations;
-import com.kabaddi.model.Fixture;
-import com.kabaddi.model.LeaderBoard;
 import com.kabaddi.model.Match;
 import com.kabaddi.model.MatchStats;
 import com.kabaddi.model.Player;
 import com.kabaddi.model.PlayerStat;
 import com.kabaddi.model.PlayerStats;
-import com.kabaddi.model.Team;
 import com.kabaddi.service.KabaddiService;
 
 public class KabaddiFunctions {
-	
-	public static String hashString(String input) {
-	    try {
-	        // Create a MessageDigest instance for SHA-512
-	        MessageDigest digest = MessageDigest.getInstance("SHA-512");
-	
-	        // Convert the input string to a byte array
-	        byte[] hash = digest.digest(input.getBytes());
-	
-	        // Convert the byte array to a hexadecimal string
-	        StringBuilder hexString = new StringBuilder();
-	        for (byte b : hash) {
-	            // Convert each byte to a 2-digit hexadecimal representation
-	            hexString.append(String.format("%02x", b));
-	        }
-	
-	        return hexString.toString(); // Return the SHA-512 hash as a hexadecimal string
-	    } catch (NoSuchAlgorithmException e) {
-	        throw new RuntimeException("Error creating SHA-512 hash", e);
-	    }
-	}
 	
 	public static void DoadWriteCommandToSelectedViz(int SelectedViz, String SendTextIn, List<PrintWriter> print_writers) 
 	{
@@ -85,20 +59,6 @@ public class KabaddiFunctions {
 	    }
 	}
 	
-	public static List<Fixture> processAllFixtures(KabaddiService footballService) {
-		List<Fixture> fixtures = footballService.getFixtures();
-		for(Team tm : footballService.getTeams()) {
-			for(Fixture fix : fixtures) {
-				if(fix.getHometeamid() == tm.getTeamId()) {
-					fix.setHome_Team(tm);
-				}
-				if(fix.getAwayteamid() == tm.getTeamId()) {
-					fix.setAway_Team(tm);
-				}
-			}
-		}
-		return fixtures;
-	}
 	
 	public static List<PlayerStat> processAllPlayerStats(KabaddiService footballService) {
 		
@@ -115,17 +75,6 @@ public class KabaddiFunctions {
 		return playerstats;
 	}
 	
-	public static List<LeaderBoard> processAllLeaderBoards(KabaddiService footballService) {
-		List<LeaderBoard> leaderBoards = footballService.getLeaderBoard();
-		for(LeaderBoard leader : leaderBoards) {
-			leader.setPlayer1(footballService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(leader.getPlayer1Id())));
-			leader.setPlayer2(footballService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(leader.getPlayer2Id())));
-			leader.setPlayer3(footballService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(leader.getPlayer3Id())));
-			leader.setPlayer4(footballService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(leader.getPlayer4Id())));
-			leader.setPlayer5(footballService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(leader.getPlayer5Id())));
-		}
-		return leaderBoards;
-	}
 	
 	public static String twoDigitString(long number) {
 	    if (number == 0) {
@@ -221,7 +170,6 @@ public class KabaddiFunctions {
 		}
 		return "";
 	}
-	
 	public static Player populatePlayer(KabaddiService footballService, Player player, Match match)
 	{
 		Player this_plyr = new Player();

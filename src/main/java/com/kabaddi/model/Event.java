@@ -36,8 +36,29 @@ public class Event implements Comparable<Event> {
   @XmlElement(name = "eventScore")
   private int eventScore;
   
-  @XmlElement(name = "EventTeamId")
-  private int EventTeamId;
+  @XmlElement(name = "eventTeamId")
+  private int eventTeamId;
+  
+  @XmlElement(name = "BonusPoint")
+  private String BonusPoint;
+  
+  @XmlElement(name = "SuperTackelPoint")
+  private String SuperTackelPoint;
+  
+  @XmlElement(name = "SuperRaidPoint")
+  private String SuperRaidPoint;
+  
+  @XmlElement(name = "AllOutPoint")
+  private String AllOutPoint;
+  
+  @XmlElement(name = "TouchesPoint")
+  private int TouchesPoint;
+  
+  @XmlElement(name = "totalHomePoints")
+  private int totalHomePoints;
+  
+  @XmlElement(name = "totalAwayPoints")
+  private int totalAwayPoints;
   
 public Event() {
 	super();
@@ -55,6 +76,23 @@ public Event(int eventNumber, int eventPlayerId, String eventMatchHalves, int st
 	this.offPlayerId = offPlayerId;
 	this.onPlayerId = onPlayerId;
 	this.eventScore = eventScore;
+}
+
+public Event(int eventNumber, int eventTeamId, String eventMatchHalves, String BonusPoint, String SuperTackelPoint,
+		String SuperRaidPoint,String AllOutPoint,int TouchesPoint,String eventLog,String eventType, int totalHomePoints,int totalAwayPoints) {
+	super();
+	this.eventNumber = eventNumber;
+	this.eventTeamId = eventTeamId;
+	this.eventMatchHalves = eventMatchHalves;
+	this.BonusPoint = BonusPoint;
+	this.SuperTackelPoint = SuperTackelPoint;
+	this.eventLog = eventLog;
+	this.eventType = eventType;
+	this.SuperRaidPoint = SuperRaidPoint;
+	this.AllOutPoint = AllOutPoint;
+	this.TouchesPoint = TouchesPoint;
+	this.totalHomePoints = totalHomePoints;
+	this.totalAwayPoints = totalAwayPoints;
 }
 
 
@@ -132,11 +170,67 @@ public void setOnPlayerId(int onPlayerId) {
 }
 
 public int getEventTeamId() {
-	return EventTeamId;
+	return eventTeamId;
 }
 
 public void setEventTeamId(int eventTeamId) {
-	EventTeamId = eventTeamId;
+	this.eventTeamId = eventTeamId;
+}
+
+public String getBonusPoint() {
+	return BonusPoint;
+}
+
+public void setBonusPoint(String bonusPoint) {
+	BonusPoint = bonusPoint;
+}
+
+public String getSuperTackelPoint() {
+	return SuperTackelPoint;
+}
+
+public void setSuperTackelPoint(String superTackelPoint) {
+	SuperTackelPoint = superTackelPoint;
+}
+
+public String getSuperRaidPoint() {
+	return SuperRaidPoint;
+}
+
+public void setSuperRaidPoint(String superRaidPoint) {
+	SuperRaidPoint = superRaidPoint;
+}
+
+public String getAllOutPoint() {
+	return AllOutPoint;
+}
+
+public void setAllOutPoint(String allOutPoint) {
+	AllOutPoint = allOutPoint;
+}
+
+public int getTouchesPoint() {
+	return TouchesPoint;
+}
+
+public void setTouchesPoint(int touchesPoint) {
+	TouchesPoint = touchesPoint;
+}
+
+public int getTotalHomePoints() {
+	return totalHomePoints;
+}
+
+public void setTotalHomePoints(int totalHomePoints) {
+	this.totalHomePoints = totalHomePoints;
+}
+
+public int getTotalAwayPoints() {
+	return totalAwayPoints;
+}
+
+public void setTotalAwayPoints(int totalAwayPoints) {
+	this.totalAwayPoints = totalAwayPoints;
 }
 
 @Override

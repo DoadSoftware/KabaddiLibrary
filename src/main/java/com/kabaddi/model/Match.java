@@ -37,32 +37,11 @@ public class Match {
   @XmlElement(name = "matchIdent")
   private String matchIdent;
   
-  @XmlElement(name = "matchId")
-  private int matchId;
-
-  @XmlElement(name = "homeTeamFormationId")
-  private int homeTeamFormationId;
-
-  @XmlElement(name = "awayTeamFormationId")
-  private int awayTeamFormationId;
-  
   @XmlElement(name = "homeTeamId")
   private int homeTeamId;
 
   @XmlElement(name = "awayTeamId")
   private int awayTeamId;
-
-  @XmlElement(name = "homePenaltiesHits")
-  private int homePenaltiesHits;
-
-  @XmlElement(name = "awayPenaltiesHits")
-  private int awayPenaltiesHits;
-
-  @XmlElement(name = "homePenaltiesMisses")
-  private int homePenaltiesMisses;
-
-  @XmlElement(name = "awayPenaltiesMisses")
-  private int awayPenaltiesMisses;
  
   @XmlElement(name = "homeTeamJerseyColor")
   private String homeTeamJerseyColor;
@@ -136,38 +115,6 @@ public class Match {
 
   @XmlTransient
   private List<Event> events;
-  
-public int getHomePenaltiesHits() {
-	return homePenaltiesHits;
-}
-
-public void setHomePenaltiesHits(int homePenaltiesHits) {
-	this.homePenaltiesHits = homePenaltiesHits;
-}
-
-public int getAwayPenaltiesHits() {
-	return awayPenaltiesHits;
-}
-
-public void setAwayPenaltiesHits(int awayPenaltiesHits) {
-	this.awayPenaltiesHits = awayPenaltiesHits;
-}
-
-public int getHomePenaltiesMisses() {
-	return homePenaltiesMisses;
-}
-
-public void setHomePenaltiesMisses(int homePenaltiesMisses) {
-	this.homePenaltiesMisses = homePenaltiesMisses;
-}
-
-public int getAwayPenaltiesMisses() {
-	return awayPenaltiesMisses;
-}
-
-public void setAwayPenaltiesMisses(int awayPenaltiesMisses) {
-	this.awayPenaltiesMisses = awayPenaltiesMisses;
-}
 
 public Clock getClock() {
 	return clock;
@@ -265,14 +212,6 @@ public void setMatchIdent(String matchIdent) {
 	this.matchIdent = matchIdent;
 }
 
-public int getMatchId() {
-	return matchId;
-}
-
-public void setMatchId(int matchId) {
-	this.matchId = matchId;
-}
-
 public int getHomeTeamId() {
 	return homeTeamId;
 }
@@ -311,22 +250,6 @@ public Ground getGround() {
 
 public void setGround(Ground ground) {
 	this.ground = ground;
-}
-
-public int getHomeTeamFormationId() {
-	return homeTeamFormationId;
-}
-
-public void setHomeTeamFormationId(int homeTeamFormationId) {
-	this.homeTeamFormationId = homeTeamFormationId;
-}
-
-public int getAwayTeamFormationId() {
-	return awayTeamFormationId;
-}
-
-public void setAwayTeamFormationId(int awayTeamFormationId) {
-	this.awayTeamFormationId = awayTeamFormationId;
 }
 
 public Team getHomeTeam() {
@@ -454,10 +377,7 @@ public String toString() {
 	return "Match [homeSubstitutesPerTeam=" + homeSubstitutesPerTeam + ", awaySubstitutesPerTeam="
 			+ awaySubstitutesPerTeam + ", matchFileTimeStamp=" + matchFileTimeStamp + ", matchResult=" + matchResult
 			+ ", matchStatus=" + matchStatus + ", matchFileName=" + matchFileName + ", tournament=" + tournament
-			+ ", matchIdent=" + matchIdent + ", matchId=" + matchId + ", homeTeamFormationId=" + homeTeamFormationId
-			+ ", awayTeamFormationId=" + awayTeamFormationId + ", homeTeamId=" + homeTeamId + ", awayTeamId="
-			+ awayTeamId + ", homePenaltiesHits=" + homePenaltiesHits + ", awayPenaltiesHits=" + awayPenaltiesHits
-			+ ", homePenaltiesMisses=" + homePenaltiesMisses + ", awayPenaltiesMisses=" + awayPenaltiesMisses
+			+ ", matchIdent=" + matchIdent + ", homeTeamId=" + homeTeamId + ", awayTeamId=" + awayTeamId
 			+ ", homeTeamJerseyColor=" + homeTeamJerseyColor + ", awayTeamJerseyColor=" + awayTeamJerseyColor
 			+ ", homeTeamGKJerseyColor=" + homeTeamGKJerseyColor + ", awayTeamGKJerseyColor=" + awayTeamGKJerseyColor
 			+ ", groundId=" + groundId + ", venueName=" + venueName + ", homeTeamScore=" + homeTeamScore

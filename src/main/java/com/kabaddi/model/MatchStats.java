@@ -39,6 +39,12 @@ public class MatchStats {
   
   @XmlElement(name = "raiderIn")
   private String raiderIn;
+  
+  @XmlElement(name = "home_point")
+  private int home_point;
+  
+  @XmlElement(name = "away_point")
+  private int away_point;
 
   @XmlTransient
   private Player player;
@@ -47,8 +53,21 @@ public MatchStats() {
 	super();
 }
 
-public MatchStats(int statsId, int playerId, String matchHalves, String stats_type, int statsCount,
-		long totalMatchSeconds,int TeamId,String raiderIn) {
+//public MatchStats(int statsId, int playerId, String matchHalves, String stats_type, int statsCount,
+//		long totalMatchSeconds,int TeamId,String raiderIn) {
+//	super();
+//	this.statsId = statsId;
+//	this.playerId = playerId;
+//	this.matchHalves = matchHalves;
+//	this.stats_type = stats_type;
+//	this.statsCount = statsCount;
+//	this.totalMatchSeconds = totalMatchSeconds;
+//	this.TeamId = TeamId;
+//	this.raiderIn = raiderIn;
+//}
+
+public MatchStats(int statsId,int playerId,String matchHalves, String stats_type,int statsCount,long totalMatchSeconds,
+		int offplayerId,int onplayerId,int TeamId,int home_point,int away_point,String raiderIn) {
 	super();
 	this.statsId = statsId;
 	this.playerId = playerId;
@@ -57,18 +76,11 @@ public MatchStats(int statsId, int playerId, String matchHalves, String stats_ty
 	this.statsCount = statsCount;
 	this.totalMatchSeconds = totalMatchSeconds;
 	this.TeamId = TeamId;
-	this.raiderIn = raiderIn;
-}
-
-public MatchStats(int statsId,String matchHalves, String stats_type,long totalMatchSeconds,int offplayerId,int onplayerId,int TeamId) {
-	super();
-	this.statsId = statsId;
-	this.matchHalves = matchHalves;
-	this.stats_type = stats_type;
-	this.totalMatchSeconds = totalMatchSeconds;
-	this.TeamId = TeamId;
 	this.offplayerId = offplayerId;
 	this.onplayerId = onplayerId;
+	this.home_point = home_point;
+	this.away_point = away_point;
+	this.raiderIn = raiderIn;
 }
 
 public Player getPlayer() {
@@ -157,6 +169,22 @@ public String getRaiderIn() {
 
 public void setRaiderIn(String raiderIn) {
 	this.raiderIn = raiderIn;
+}
+
+public int getHome_point() {
+	return home_point;
+}
+
+public void setHome_point(int home_point) {
+	this.home_point = home_point;
+}
+
+public int getAway_point() {
+	return away_point;
+}
+
+public void setAway_point(int away_point) {
+	this.away_point = away_point;
 }
 
 }

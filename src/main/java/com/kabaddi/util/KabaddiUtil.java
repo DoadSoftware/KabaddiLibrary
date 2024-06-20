@@ -12,46 +12,20 @@ public class KabaddiUtil {
 	public final static String CONFIGURATIONS_DIRECTORY = "Configurations/";
 	public final static String OUTPUT_XML = "OUTPUT.XML";
 	public final static String CLOCK_XML = "CLOCK.XML";
+	public final static String CLOCK_JSON = "CLOCK.JSON";
 	public final static String API_XML = "API.XML";
 	public final static String XML_EXTENSION = ".xml";
-	public final static String FOOTBALL_API_PATH = "https://api.performfeeds.com/soccerdata/";
-	public final static String FOOTBALL_API_JSON = "_fmt=json";
-	public final static String FOOTBALL_API_MODE = "_rt=b";
-	public final static String FOOTBALL_API_DIRECTORY = "C:/Sports/Football/Statistic/Match_Data/";
-	public final static String FOOTBALL_TOKEN = "/26kfa29kdpyu170bzsv5cbuw0";
-	public final static String FOOTBALL_FIXTURE_ID = "asw3xqcwzxb9ogkaxnruw9tlg";
-	public final static String FOOTBALL_TOURNAMENT_CALENDER_ID = "/1vmmaetzoxkgg1qf6pkpfmku0k";
-	public final static String STATISTIC_DIRECTORY = "Statistic/";
-	public final static String MATCH_DATA_DIRECTORY = "Match_Data/";
-	public final static String SPORTVUSTATISTIC = "SportVUStatistic";
-	public final static String FTP_SERVER_LINK = "soccer-ftp.stats.com";
-	public final static String LIVE_DATA = "C:\\Sports\\Football\\Statistic\\Match_Data\\LiveData.json";
-	public final static String I_LEAGUE = "I_LEAGUE";
-	public final static String I_LEAGUE_SCORE_BUG_SCENE_PATH = 
-			"D:/DOAD_In_House_Everest/Everest_Sports/Everest_I-League_2022/Scenes/ScoreBug.sum";
 	
-	public final static String SANTOSH_TROPHY = "SANTOSH_TROPHY";
-	public final static String SANTOSH_TROPHY_SCORE_BUG_SCENE_PATH = 
-			"D:/DOAD_In_House_Everest/Everest_Sports/Everest_SantoshTrophy_2023/Scenes/ScoreBug.sum";
+	public final static String RESET_CLOCK = "RESET_CLOCK";
+	public final static String CHECK_CLOCK_OPTION = "CHECK_CLOCK_OPTION";
+	public final static String SELECT_MATCH_HALVES = "SELECT_MATCH_HALVES";
+	public final static String LOG_CLOCK_STATUS = "LOG_CLOCK_STATUS";
 	
-	public final static String VIZ_SANTOSH_TROPHY = "VIZ_SANTOSH_TROPHY";
-	public final static String VIZ_SANTOSH_TROPHY_SCORE_BUG_SCENE_PATH = "/Default/ScoreBug";
-	
-	public final static String VIZ_TRI_NATION = "VIZ_TRI_NATION";
-	public final static String VIZ_TRI_NATION_SCORE_BUG_SCENE_PATH = "/Default/ScoreBug";
-	public final static String VIZ_EURO_LEAGUE_LBAND_SCENE_PATH = "/Default/Lband";
-	
-	public final static String KHELO_INDIA = "KHELO_INDIA";
 	
 	public final static String KABADDI = "KABADDI";
-	public final static String EURO_LEAGUE = "EURO_LEAGUE";
-	public final static String SUPER_CUP_SCORE_BUG_SCENE_PATH = "/Default/ScoreBug";
-	public final static String SUPER_CUP_FF_SCENE_PATH = "/Default/FullFrames";
 	
-	public final static String API_PATH1 = 
-			"https://service.instatfootball.com/feed.php?id=1153675&key=G3Yr3PPd&tpl=207&match_id=";
+	public final static String KABADDI_SCORE_BUG_SCENE_PATH = "/Default/ScoreBug";
 	
-	public final static String API_PATH2 = "&lang_id=1&lang=en&format=json";
 	
 	public final static String LEAGUE_TABLE_DIRECTORY = "LeagueTable/";
 	public static final String LEAGUETABLE_XML = "LeagueTable.XML";

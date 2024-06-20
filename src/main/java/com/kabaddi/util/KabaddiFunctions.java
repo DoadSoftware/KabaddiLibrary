@@ -1,10 +1,6 @@
 package com.kabaddi.util;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.Socket;
@@ -18,25 +14,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kabaddi.EuroLeague.LiveMatch;
-import com.kabaddi.EuroLeague.MatchPreview;
-import com.kabaddi.EuroLeague.PassMatrix;
-import com.kabaddi.EuroLeague.SeasonalStats;
-import com.kabaddi.EuroLeague.rankings;
 import com.kabaddi.model.Configurations;
 import com.kabaddi.model.Fixture;
 import com.kabaddi.model.LeaderBoard;
@@ -46,321 +23,30 @@ import com.kabaddi.model.Player;
 import com.kabaddi.model.PlayerStat;
 import com.kabaddi.model.PlayerStats;
 import com.kabaddi.model.Team;
-import com.kabaddi.model.TeamStats;
-import com.kabaddi.model.TopStats;
 import com.kabaddi.service.KabaddiService;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 
 public class KabaddiFunctions {
-	public static LiveMatch LiveMatch;	
-	public static SeasonalStats SeasonalStats;
-	public static rankings rankings;
-	public static PassMatrix PassMatrix;
-	public static MatchPreview matchPreview;
-public static String FTPImageDownload(int port,int match_number,String user,String pass,String player_map_type,Configurations config) {
-		
-		FTPClient ftpClient = new FTPClient();
-		try {
-			 
-            ftpClient.connect(KabaddiUtil.FTP_SERVER_LINK, port);
-            ftpClient.login(user, pass);
-            ftpClient.enterLocalPassiveMode();
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
- 
-            String remoteFile1 = player_map_type + ".jpg";
-            File downloadFile1 = new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.STATISTIC_DIRECTORY + 
-            		KabaddiUtil.MATCH_DATA_DIRECTORY + remoteFile1);
-            
-            ftpClient.changeWorkingDirectory("/remote/path");
-            FTPFile[] remoteFiles = ftpClient.listFiles(player_map_type + ".jpg");
-            if (remoteFiles.length > 0)
-            {
-            	OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
-            	boolean success = ftpClient.retrieveFile(remoteFile1, outputStream1);
-            	
-            	outputStream1.close();
-            	 
-                if (success) {
-                    System.out.println("File has been downloaded successfully.");
-                    return "SUCCESS";
-                }
-            }
-            else
-            {
-//            	outputStream1.close();
-                System.out.println("File does not exists");
-                return "UNSUCCESS";
-            }
- 
-        } catch (IOException ex) {
-            System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (ftpClient.isConnected()) {
-                    ftpClient.logout();
-                    ftpClient.disconnect();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-		return "";
-	}
-public static String hashString(String input) {
-    try {
-        // Create a MessageDigest instance for SHA-512
-        MessageDigest digest = MessageDigest.getInstance("SHA-512");
-
-        // Convert the input string to a byte array
-        byte[] hash = digest.digest(input.getBytes());
-
-        // Convert the byte array to a hexadecimal string
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : hash) {
-            // Convert each byte to a 2-digit hexadecimal representation
-            hexString.append(String.format("%02x", b));
-        }
-
-        return hexString.toString(); // Return the SHA-512 hash as a hexadecimal string
-    } catch (NoSuchAlgorithmException e) {
-        throw new RuntimeException("Error creating SHA-512 hash", e);
-    }
-}
-
-public static String getAccessToken() throws IOException {
-    
-	String token_access = "";
-	String tokenEndpointUrl = "https://oauth.performgroup.com/oauth/token/26kfa29kdpyu170bzsv5cbuw0?_fmt=json&_rt=b";
-    String OutletKey = "26kfa29kdpyu170bzsv5cbuw0";//"{{OutletApiKey}}";
-    String SecretKey = "1nmlzjsbu0dxz1w4c5yg4m143q";//"{{SecretKey}}";
-    
-    String currentMillis = Long.toString(System.currentTimeMillis());
-    String sigString = OutletKey + currentMillis + SecretKey;
-    
-    String hashedOutput = null;
-	try {
-		hashedOutput = hashString(sigString);
-	} catch (Exception e1) {
-		e1.printStackTrace();
-	} 
-    HttpResponse<String> userResp;
-	try {
-		userResp = Unirest.post(tokenEndpointUrl)
-				.header("Content-Type", "application/x-www-form-urlencoded")
-				.header("Authorization", "Basic " + hashedOutput)
-				.header("Timestamp", currentMillis)
-				.field("grant_type", "client_credentials")
-				.field("scope", "b2b-feeds-auth")
-				.asString();
-		
-		String json_data = userResp.getBody().toString();
-		
-		JSONObject jsonObject = new JSONObject(json_data);
-		System.out.println(jsonObject.toString());
-        // Get the "access_token" value
-        String accessToken = jsonObject.getString("access_token");
-
-        token_access = accessToken;
-	} catch (UnirestException e) {
-		System.out.println("Error...");
-	}
 	
-    return token_access;
-	}
-
-	public static LiveMatch getFootballLiveDatafromAPI(String token) throws SAXException, IOException, ParserConfigurationException, FactoryConfigurationError
-	{
-		HttpResponse<String> userResp;
-		
-		String url = KabaddiUtil.FOOTBALL_API_PATH + "matchstats" + KabaddiUtil.FOOTBALL_TOKEN + "/?" + KabaddiUtil.FOOTBALL_API_MODE + "&" + 
-				KabaddiUtil.FOOTBALL_API_JSON + "&detailed=yes&fx=" + KabaddiUtil.FOOTBALL_FIXTURE_ID;
-		try {
-			userResp = Unirest.get(url)
-					.header("Content-Type", "application/json;charset=utf-8")
-					.header("Authorization", "Bearer " + token)
-					.asString();
-			
-
-			LiveMatch = new ObjectMapper().readValue(userResp.getBody().toString(), LiveMatch.class);
-			
-		} catch (UnirestException e) {
-			System.out.println("Error...");
-		}
-		System.out.println(LiveMatch.toString());
-		
-		return LiveMatch;
-	}
-	public static LiveMatch getExpectedGoals(String token)throws IOException  {
-		String url=KabaddiUtil.FOOTBALL_API_PATH + "matchexpectedgoals" + KabaddiUtil.FOOTBALL_TOKEN + "?fx=" + KabaddiUtil.FOOTBALL_FIXTURE_ID + "&" + 
-				   KabaddiUtil.FOOTBALL_API_JSON +"&" + KabaddiUtil.FOOTBALL_API_MODE;
-		HttpResponse<String> userResp;
-		try {
-			userResp = Unirest.get(url)
-					.header("Content-Type", "application/json;charset=utf-8")
-					.header("Authorization", "Bearer " + token)
-					.asString();
-			
-			LiveMatch = new ObjectMapper().readValue(userResp.getBody().toString(), LiveMatch.class);
-		} catch (UnirestException e) {
-			System.out.println("Error...");
-		}
-		
-	       return LiveMatch;
-		}
-	public static LiveMatch getFootballMatchEventfromAPI(String token) throws SAXException, IOException, ParserConfigurationException, FactoryConfigurationError
-	{
-		String url=KabaddiUtil.FOOTBALL_API_PATH + "matchevent" + KabaddiUtil.FOOTBALL_TOKEN +"/"+ KabaddiUtil.FOOTBALL_FIXTURE_ID + "?" + 
-				KabaddiUtil.FOOTBALL_API_JSON + "&" + KabaddiUtil.FOOTBALL_API_MODE;
-		HttpResponse<String> userResp;
-		try {
-			userResp = Unirest.get(url)
-					.header("Content-Type", "application/json;charset=utf-8")
-					.header("Authorization", "Bearer " + token)
-					.asString();
-			
-			LiveMatch = new ObjectMapper().readValue(userResp.getBody().toString(), LiveMatch.class);
-	        } catch (UnirestException e) {
-			System.out.println("Error...");
-		}
-		
-		return LiveMatch;
-	}
-	public static List<SeasonalStats> getSeasonalStatsfromAPI(String token) throws IOException, SAXException, ParserConfigurationException, FactoryConfigurationError {
-		LiveMatch = getFootballLiveDatafromAPI(token);
-		List<SeasonalStats>  SeasonalStats = new ArrayList<SeasonalStats>();
-	    
-	    for (int i = 0; i < 2; i++) {
-	        String teamId = LiveMatch.getMatchInfo().getContestant().get(i).getId();
-
-	       String url = KabaddiUtil.FOOTBALL_API_PATH + "seasonstats" + KabaddiUtil.FOOTBALL_TOKEN 
-	            + "?&tmcl=" + KabaddiUtil.FOOTBALL_TOURNAMENT_CALENDER_ID + "&ctst=" + teamId 
-	            + "&" + KabaddiUtil.FOOTBALL_API_MODE + "&" + KabaddiUtil.FOOTBALL_API_JSON;
-
-	        try {
-	            HttpResponse<String> userResp = Unirest.get(url)
-	                .header("Content-Type", "application/json;charset=utf-8")
-	                .header("Authorization", "Bearer " + token)
-	                .asString();
-
-	            SeasonalStats.add(new ObjectMapper().readValue(userResp.getBody().toString(), SeasonalStats.class));
-	        } catch (UnirestException e) {
-	            System.out.println("Error...");
+	public static String hashString(String input) {
+	    try {
+	        // Create a MessageDigest instance for SHA-512
+	        MessageDigest digest = MessageDigest.getInstance("SHA-512");
+	
+	        // Convert the input string to a byte array
+	        byte[] hash = digest.digest(input.getBytes());
+	
+	        // Convert the byte array to a hexadecimal string
+	        StringBuilder hexString = new StringBuilder();
+	        for (byte b : hash) {
+	            // Convert each byte to a 2-digit hexadecimal representation
+	            hexString.append(String.format("%02x", b));
 	        }
+	
+	        return hexString.toString(); // Return the SHA-512 hash as a hexadecimal string
+	    } catch (NoSuchAlgorithmException e) {
+	        throw new RuntimeException("Error creating SHA-512 hash", e);
 	    }
-
-	    return SeasonalStats;
 	}
-	public static  rankings getTeamRankingfromAPI(String token) throws IOException {
-		String url = KabaddiUtil.FOOTBALL_API_PATH + "rankings" + KabaddiUtil.FOOTBALL_TOKEN + "?tmcl=" + KabaddiUtil.FOOTBALL_TOURNAMENT_CALENDER_ID + "&" + 
-				   KabaddiUtil.FOOTBALL_API_MODE +"&" + KabaddiUtil.FOOTBALL_API_JSON;
-		HttpResponse<String> userResp;
-		try {
-			userResp = Unirest.get(url)
-					.header("Content-Type", "application/json;charset=utf-8")
-					.header("Authorization", "Bearer " + token)
-					.asString();
-			System.out.println(userResp.getBody().toString());
-			rankings = new ObjectMapper().readValue(userResp.getBody().toString(), rankings.class);
-	        } catch (UnirestException e) {
-			System.out.println("Error...");
-		}
-		
-       return rankings;
-	}
-	public static PassMatrix getMatchInsightsfromAPI( String token) throws IOException {
-		String url= KabaddiUtil.FOOTBALL_API_PATH + "matchinsights" + KabaddiUtil.FOOTBALL_TOKEN + "/" + KabaddiUtil.FOOTBALL_FIXTURE_ID + "?" + 
-				 "&" + KabaddiUtil.FOOTBALL_API_MODE + "&" + KabaddiUtil.FOOTBALL_API_JSON;
-		HttpResponse<String> userResp;
-		try {
-			userResp = Unirest.get(url)
-					.header("Content-Type", "application/json;charset=utf-8")
-					.header("Authorization", "Bearer " + token)
-					.asString();
-			
-			PassMatrix = new ObjectMapper().readValue(userResp.getBody().toString(), PassMatrix.class); 
-		} catch (UnirestException e) {
-			System.out.println("Error...");
-		}
-		
-	       return PassMatrix;
-	}
-	public static PassMatrix getMatchInsights2fromAPI(String token) throws IOException {
-		String url =  KabaddiUtil.FOOTBALL_API_PATH + "matchplayerratings" + KabaddiUtil.FOOTBALL_TOKEN + "?fx=" + KabaddiUtil.FOOTBALL_FIXTURE_ID + "&" + 
-				   KabaddiUtil.FOOTBALL_API_JSON +"&" + KabaddiUtil.FOOTBALL_API_MODE;
-		HttpResponse<String> userResp;
-		try {
-			userResp = Unirest.get(url)
-					.header("Content-Type", "application/json;charset=utf-8")
-					.header("Authorization", "Bearer " + token)
-					.asString();
-			
-			PassMatrix = new ObjectMapper().readValue(userResp.getBody().toString(), PassMatrix.class);
-		       
-		} catch (UnirestException e) {
-			System.out.println("Error...");
-		}
-		
-	       return PassMatrix;
-		}
-
-	public static MatchPreview getMatchPreview( String token)throws IOException  {
-		String url = KabaddiUtil.FOOTBALL_API_PATH + "matchpreview" + KabaddiUtil.FOOTBALL_TOKEN + "/?" + 
-				KabaddiUtil.FOOTBALL_API_MODE +"&" + KabaddiUtil.FOOTBALL_API_JSON + "&fx=" + KabaddiUtil.FOOTBALL_FIXTURE_ID;
-		HttpResponse<String> userResp;
-		try {
-			userResp = Unirest.get(url)
-					.header("Content-Type", "application/json;charset=utf-8")
-					.header("Authorization", "Bearer " + token)
-					.asString();
-			
-			matchPreview = new ObjectMapper().readValue(userResp.getBody().toString(), MatchPreview.class);
-		} catch (UnirestException e) {
-			System.out.println("Error...");
-		}
-		
-	       return matchPreview;
-	}
-	
-	public static PassMatrix getMatchPlayerRatingsfromAPI(String token)throws IOException  {
-		String url = KabaddiUtil.FOOTBALL_API_PATH + "matchfactsall" + KabaddiUtil.FOOTBALL_TOKEN + "?fx=" + KabaddiUtil.FOOTBALL_FIXTURE_ID + 
-				 "&" + KabaddiUtil.FOOTBALL_API_MODE + "&" + KabaddiUtil.FOOTBALL_API_JSON + "&_lcl=en-gb";   
-		HttpResponse<String> userResp;
-		try {
-			userResp = Unirest.get(url)
-					.header("Content-Type", "application/json;charset=utf-8")
-					.header("Authorization", "Bearer " + token)
-					.asString();
-			
-			PassMatrix = new ObjectMapper().readValue(userResp.getBody().toString(), PassMatrix.class);		       
-		} catch (UnirestException e) {
-			System.out.println("Error...");
-		}
-		
-       return PassMatrix;
-	}
-	public static LiveMatch getFootballWinProbabilityfromAPI(String token) throws SAXException, IOException, ParserConfigurationException, FactoryConfigurationError
-	{
-		LiveMatch = getFootballLiveDatafromAPI(token);	    
-	    String  url = KabaddiUtil.FOOTBALL_API_PATH  + "matchlivewinprobability" + KabaddiUtil.FOOTBALL_TOKEN + "/"+LiveMatch.getMatchInfo().getId()+"?" + 
-		KabaddiUtil.FOOTBALL_API_MODE + "&" + KabaddiUtil.FOOTBALL_API_JSON;
-		HttpResponse<String> userResp;
-		try {
-			userResp = Unirest.get(url)
-					.header("Content-Type", "application/json;charset=utf-8")
-					.header("Authorization", "Bearer " + token)
-					.asString();
-			
-			LiveMatch = new ObjectMapper().readValue(userResp.getBody().toString(), LiveMatch.class);
-		} catch (UnirestException e) {
-			System.out.println("Error...");
-		}
-		
-		return LiveMatch;
-	}
-	
 	
 	public static void DoadWriteCommandToSelectedViz(int SelectedViz, String SendTextIn, List<PrintWriter> print_writers) 
 	{
@@ -534,127 +220,6 @@ public static String getAccessToken() throws IOException {
 			return " ";
 		}
 		return "";
-	}
-	
-	public static List<TeamStats> getTopStatsDatafromXML(Match match) throws SAXException, IOException, ParserConfigurationException, FactoryConfigurationError {
-		
-		String team = "";
-		ArrayList<TeamStats> teamStats = new ArrayList<TeamStats>();
-		
-		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.STATISTIC_DIRECTORY + 
-				KabaddiUtil.MATCH_DATA_DIRECTORY + KabaddiUtil.SPORTVUSTATISTIC + KabaddiUtil.XML_EXTENSION));
-	        doc.getDocumentElement().normalize();
-	        
-	        NodeList childNodes = doc.getDocumentElement().getChildNodes();
-	        for(int i = 0; i < childNodes.getLength(); i++) {
-	            if(childNodes.item(i).getNodeType() == Node.ELEMENT_NODE && childNodes.item(i).getNodeName().equals("Teams")) {
-	            	for(int j = 0; j < childNodes.item(i).getChildNodes().getLength(); j++) {
-	            		if(childNodes.item(i).getChildNodes().item(j).getNodeType() == Node.ELEMENT_NODE 
-	            				&& childNodes.item(i).getChildNodes().item(j).getNodeName().equalsIgnoreCase("Team")) {
-	                    	for(int k = 0; k < childNodes.item(i).getChildNodes().item(j).getChildNodes().getLength(); k++) {
-	                    		
-	                    		if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() 
-	                    				== Node.ELEMENT_NODE && childNodes.item(i).getChildNodes().item(j)
-	                    				.getChildNodes().item(k).getNodeName().equalsIgnoreCase("TeamData")) {
-	                    			
-	                    			for(int t = 0; t < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().getLength(); t++) {
-	                    				
-	                    				if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(t).getNodeType() 
-			                    				== Node.ELEMENT_NODE && childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(t)
-	                    						.getNodeName().equalsIgnoreCase("TeamName")) {
-	                    					
-//	                    					System.out.println("TEAM : " + childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(t).getFirstChild()
-//	                    						.getNodeValue());
-	                    					team = childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(t).getFirstChild()
-		                    						.getNodeValue();
-	                    					teamStats.add(new TeamStats(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(t).getFirstChild()
-	                    						.getNodeValue(), new ArrayList<TopStats>()));
-	                    					
-	                    				}
-	                    			} 
-	                    		}
-	                    		
-	                    		if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() 
-	                    				== Node.ELEMENT_NODE && childNodes.item(i).getChildNodes().item(j)
-	                    				.getChildNodes().item(k).getNodeName().equalsIgnoreCase("ResultData")) {
-	                    			
-	                    			if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().getNamedItem("Name").getNodeValue().equalsIgnoreCase("Best Runner")||
-	                    					childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().getNamedItem("Name").getNodeValue().equalsIgnoreCase("Best Sprinter")||
-	                    					childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().getNamedItem("Name").getNodeValue().equalsIgnoreCase("Highest Distance")||
-	                    					childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().getNamedItem("Name").getNodeValue().equalsIgnoreCase("Team Top Speed")) {
-	                    				
-//	                    				System.out.println("Stat Type = " + childNodes.item(i).getChildNodes().item(j).getChildNodes()
-//		                                		.item(k).getAttributes().getNamedItem("Name").getNodeValue());
-		                    			
-		                    			teamStats.get(teamStats.size()-1).getTopStats().add(new TopStats(childNodes.item(i).getChildNodes().item(j).getChildNodes()
-		                                		.item(k).getAttributes().getNamedItem("Name").getNodeValue(), new ArrayList<PlayerStats>()));
-	                    				
-		                    			for(int l = 0; l < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().getLength(); l++) {
-		                    				
-		                    				
-		                    				
-		                            		if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k)
-		                            				.getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE 
-		                            				&& childNodes.item(i).getChildNodes().item(j)
-		                            				.getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("Result")) {
-		                            			
-//		                            			System.out.println("TEAM : " + team);
-	                                    		teamStats.get(teamStats.size()-1).getTopStats().get(teamStats.get(teamStats.size()-1).getTopStats().size()-1)
-	                        					.getPlayersStats().add(new PlayerStats(team));
-		                            			
-		                                    	for(int m = 0; m < childNodes.item(i).getChildNodes().item(j).getChildNodes()
-		                                    			.item(k).getChildNodes().item(l).getChildNodes().getLength(); m++) {
-		                                    		
-		                                    		if(childNodes.item(i).getChildNodes().item(j).getChildNodes()
-		                                    			.item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() 
-		                                    			== Node.ELEMENT_NODE) {
-		                                    			
-		                                    			if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
-			                                            		.item(m).getNodeName().equalsIgnoreCase("PlayerFirstName")) {
-		                                    				
-//		                                    				System.out.println("PlayerFirstName = " + childNodes.item(i).getChildNodes().item(j).getChildNodes()
-//			                                        				.item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue());
-		                                    				
-		                                    				teamStats.get(teamStats.size()-1).getTopStats().get(teamStats.get(teamStats.size()-1).getTopStats().size()-1)
-                                    						.getPlayersStats().get(teamStats.get(teamStats.size()-1).getTopStats().get(teamStats.get(teamStats.size()-1)
-                                    								.getTopStats().size()-1).getPlayersStats().size()-1).setFirst_name(childNodes.item(i).getChildNodes().item(j)
-                                    										.getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue());
-		                                    				
-		                                    			}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
-		                                            		.item(m).getNodeName().equalsIgnoreCase("PlayerJerseyNumber")) {
-		                                    				
-//		                                    				System.out.println("PlayerJerseyNumber = " + childNodes.item(i).getChildNodes().item(j).getChildNodes()
-//		                                        				.item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue());
-		                                    				teamStats.get(teamStats.size()-1).getTopStats().get(teamStats.get(teamStats.size()-1).getTopStats().size()-1)
-                                    						.getPlayersStats().get(teamStats.get(teamStats.size()-1).getTopStats().get(teamStats.get(teamStats.size()-1)
-                                    								.getTopStats().size()-1).getPlayersStats().size()-1).setJerseyNumber(Integer.valueOf(childNodes.item(i).getChildNodes().item(j)
-                                    										.getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue()));
-		                                    				
-		                                    				
-		                                    			}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
-		                                                		.item(m).getNodeName().equalsIgnoreCase("Value")) {
-		                                    				
-		                                    				teamStats.get(teamStats.size()-1).getTopStats().get(teamStats.get(teamStats.size()-1).getTopStats().size()-1)
-	                                    						.getPlayersStats().get(teamStats.get(teamStats.size()-1).getTopStats().get(teamStats.get(teamStats.size()-1)
-	                                    								.getTopStats().size()-1).getPlayersStats().size()-1).setValue(childNodes.item(i).getChildNodes().item(j)
-	                                    										.getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue());
-		                                    				
-//		                                    				System.out.println("Value = " + childNodes.item(i).getChildNodes().item(j).getChildNodes()
-//		                                        					.item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue());
-		                                        		}
-		                                    		}
-		                                    	}
-		                            		}
-		                            	}
-	                    			}
-	                    		}
-	                    	}
-	            		}
-	            	}
-	            }
-	        }
-		
-		return teamStats;
 	}
 	
 	public static Player populatePlayer(KabaddiService footballService, Player player, Match match)

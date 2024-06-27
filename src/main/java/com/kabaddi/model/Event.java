@@ -65,7 +65,7 @@ public Event() {
 }
 
 public Event(int eventNumber, int eventPlayerId, String eventMatchHalves, int statsId, String eventLog,
-		String eventType, int offPlayerId, int onPlayerId, int eventScore) {
+		String eventType, int offPlayerId, int onPlayerId, int eventScore,int eventTeamId) {
 	super();
 	this.eventNumber = eventNumber;
 	this.eventPlayerId = eventPlayerId;
@@ -76,6 +76,7 @@ public Event(int eventNumber, int eventPlayerId, String eventMatchHalves, int st
 	this.offPlayerId = offPlayerId;
 	this.onPlayerId = onPlayerId;
 	this.eventScore = eventScore;
+	this.eventTeamId = eventTeamId;
 }
 
 public Event(int eventNumber, int eventTeamId, String eventMatchHalves, String BonusPoint, String SuperTackelPoint,

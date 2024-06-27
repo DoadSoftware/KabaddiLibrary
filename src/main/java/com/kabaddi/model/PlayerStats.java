@@ -8,6 +8,7 @@ public class PlayerStats {
 	int playerId;
 	String player_on_court;
 	String player_raiding_now;
+	String player_revival_order;
 	
 	List<Points> points;
 	List<Raids> raids;
@@ -80,6 +81,14 @@ public class PlayerStats {
 
 	public void setPoints(List<Points> points) {
 		this.points = points;
+	}
+
+	public String getPlayer_revival_order() {
+		return player_revival_order;
+	}
+
+	public void setPlayer_revival_order(String player_revival_order) {
+		this.player_revival_order = player_revival_order;
 	}
 
 	@Override

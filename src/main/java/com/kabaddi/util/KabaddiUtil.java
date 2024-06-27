@@ -9,12 +9,14 @@ public class KabaddiUtil {
 	public final static String EVENT_DIRECTORY = "Event/";
 	public final static String MATCHES_DIRECTORY = "Matches/";
 	public final static String SCENES_DIRECTORY = "Scenes/";
+	public final static String DESTINATION_DIRECTORY = "Destination/";
 	public final static String CONFIGURATIONS_DIRECTORY = "Configurations/";
 	public final static String OUTPUT_XML = "OUTPUT.XML";
 	public final static String CLOCK_XML = "CLOCK.XML";
 	public final static String CLOCK_JSON = "CLOCK.JSON";
 	public final static String API_XML = "API.XML";
 	public final static String XML_EXTENSION = ".xml";
+	public final static String JSON_EXTENSION = ".json";
 	
 	public final static String RESET_CLOCK = "RESET_CLOCK";
 	public final static String CHECK_CLOCK_OPTION = "CHECK_CLOCK_OPTION";

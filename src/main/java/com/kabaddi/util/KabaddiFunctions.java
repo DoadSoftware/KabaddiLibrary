@@ -1,5 +1,6 @@
 package com.kabaddi.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -8,16 +9,33 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.kabaddi.model.Api_pre_match;
 import com.kabaddi.model.Configurations;
+import com.kabaddi.model.Do_Or_Die;
+import com.kabaddi.model.Fixture;
 import com.kabaddi.model.Match;
 import com.kabaddi.model.MatchStats;
 import com.kabaddi.model.Player;
-import com.kabaddi.model.PlayerStat;
 import com.kabaddi.model.PlayerStats;
+import com.kabaddi.model.Points;
+import com.kabaddi.model.RaidPoints;
+import com.kabaddi.model.Raids;
+import com.kabaddi.model.TacklePoints;
+import com.kabaddi.model.Tackles;
+import com.kabaddi.model.Team;
+import com.kabaddi.model.TeamPlayerStats;
 import com.kabaddi.service.KabaddiService;
 
 public class KabaddiFunctions {
@@ -52,29 +70,21 @@ public class KabaddiFunctions {
 	
 		return print_writer;
 	}
-	public static class PlayerStatsComparator implements Comparator<PlayerStats> {
-	    @Override
-	    public int compare(PlayerStats bs1, PlayerStats bs2) {
-	       return Float.compare(Float.valueOf(bs2.getValue()), Float.valueOf(bs1.getValue()));
-	    }
-	}
 	
-	
-	public static List<PlayerStat> processAllPlayerStats(KabaddiService footballService) {
-		
-		List<PlayerStat> playerstats = footballService.getPlayerStats();
-	
-		for(Player plyr : footballService.getAllPlayer()) {
-			for(PlayerStat ps : playerstats) {
-				if(ps.getPlayerId() == plyr.getPlayerId()) {
-					ps.setPlayer(plyr);
-					ps.setTeam(footballService.getTeams().get(plyr.getTeamId()-1));
+	public static List<Fixture> processAllFixtures(KabaddiService footballService) {
+		List<Fixture> fixtures = footballService.getFixtures();
+		for(Team tm : footballService.getTeams()) {
+			for(Fixture fix : fixtures) {
+				if(fix.getHometeamid() == tm.getTeamId()) {
+					fix.setHome_Team(tm);
+				}
+				if(fix.getAwayteamid() == tm.getTeamId()) {
+					fix.setAway_Team(tm);
 				}
 			}
 		}
-		return playerstats;
+		return fixtures;
 	}
-	
 	
 	public static String twoDigitString(long number) {
 	    if (number == 0) {
@@ -90,86 +100,6 @@ public class KabaddiFunctions {
 	    return String.valueOf(number).replace(".0", "");
 	}
 	
-	public static String getPlayerSquadType(int player_id,String Goal_Type ,Match match)
-	{	
-		if(Goal_Type.equalsIgnoreCase(KabaddiUtil.OWN_GOAL)) {
-			for(Player plyr : match.getHomeSquad()) {
-				if(plyr.getPlayerId() == player_id) {
-					return KabaddiUtil.AWAY;
-				}
-			}
-			for(Player plyr : match.getHomeSubstitutes()) {
-				if(plyr.getPlayerId() == player_id) {
-					return KabaddiUtil.AWAY;
-				}
-			}
-			for(Player plyr : match.getAwaySquad()) {
-				if(plyr.getPlayerId() == player_id) {
-					return KabaddiUtil.HOME;
-				}
-			}
-			for(Player plyr : match.getAwaySubstitutes()) {
-				if(plyr.getPlayerId() == player_id) {
-					return KabaddiUtil.HOME;
-				}
-			}
-		}else if(Goal_Type.equalsIgnoreCase(KabaddiUtil.GOAL) || Goal_Type.equalsIgnoreCase(KabaddiUtil.PENALTY)) {
-			for(Player plyr : match.getHomeSquad()) {
-				if(plyr.getPlayerId() == player_id) {
-					return KabaddiUtil.HOME;
-				}
-			}
-			for(Player plyr : match.getHomeSubstitutes()) {
-				if(plyr.getPlayerId() == player_id) {
-					return KabaddiUtil.HOME;
-				}
-			}
-			for(Player plyr : match.getAwaySquad()) {
-				if(plyr.getPlayerId() == player_id) {
-					return KabaddiUtil.AWAY;
-				}
-			}
-			for(Player plyr : match.getAwaySubstitutes()) {
-				if(plyr.getPlayerId() == player_id) {
-					return KabaddiUtil.AWAY;
-				}
-			}
-		}
-		
-		return "";
-	}
-	
-	public static String calExtraTimeGoal(String half,long number) {
-		
-		long time=0;
-		
-		if(half.equalsIgnoreCase("first") && number > 2700) {
-			time = ((number - 2700)/60) + 1;
-			return "45'(+" + time + "')" ;
-		}else if(half.equalsIgnoreCase("second") && number > 5400) {
-			time = ((number - 5400)/60) + 1;
-			return "90'(+" + time + "')" ;
-		}if(half.equalsIgnoreCase("extra1") && number > 6300) {
-			time = ((number - 6300)/60) + 1;
-			return "105'(+" + time + "')" ;
-		}else if(half.equalsIgnoreCase("extra2") && number > 7200) {
-			time = ((number - 7200)/60) + 1;
-			return "120'(+" + time + "')" ;
-		}else {
-			return String.valueOf((number/60)+1) + "'" ;
-		}
-	}
-	
-	public static String goal_shortname(String goal_type) {
-		if(goal_type.equalsIgnoreCase(KabaddiUtil.PENALTY)) {
-			return " (P) ";
-		}else if(goal_type.equalsIgnoreCase(KabaddiUtil.OWN_GOAL)) {
-			return " (OG) ";
-		}else if(goal_type.equalsIgnoreCase(KabaddiUtil.GOAL)) {
-			return " ";
-		}
-		return "";
-	}
 	public static Player populatePlayer(KabaddiService footballService, Player player, Match match)
 	{
 		Player this_plyr = new Player();

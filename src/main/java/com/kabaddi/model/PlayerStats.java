@@ -1,58 +1,92 @@
 package com.kabaddi.model;
 
+import java.util.List;
+
 public class PlayerStats {
 	
-	int JerseyNumber;
-	String first_name;
-	String last_name;
-	String team_name;
-	String Value;
+	String playerName;
+	int playerId;
+	String player_on_court;
+	String player_raiding_now;
 	
-	public PlayerStats(String team_name) {
+	List<Points> points;
+	List<Raids> raids;
+	List<Tackles> tackles;
+	List<Do_Or_Die> do_or_die;
+	
+	public PlayerStats() {
 		super();
-		this.team_name = team_name;
-	}
-	public int getJerseyNumber() {
-		return JerseyNumber;
-	}
-	public void setJerseyNumber(int jerseyNumber) {
-		JerseyNumber = jerseyNumber;
-	}
-	public String getValue() {
-		return Value;
-	}
-	public void setValue(String value) {
-		Value = value;
 	}
 
-	public String getFirst_name() {
-		return first_name;
+	public PlayerStats(String playerName, int playerId, List<Points> points,List<Raids> raids,
+			List<Tackles> tackles, List<Do_Or_Die> do_or_die) {
+		super();
+		this.playerName = playerName;
+		this.playerId = playerId;
+		this.points = points;
+		this.raids = raids;
+		this.tackles = tackles;
+		this.do_or_die = do_or_die;
+	}
+	
+	public String getPlayerName() {
+		return playerName;
+	}
+	public void setPlayerName(String playerName) {
+		this.playerName = playerName;
+	}
+	public int getPlayerId() {
+		return playerId;
+	}
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
+	}
+	public String getPlayer_on_court() {
+		return player_on_court;
+	}
+	public void setPlayer_on_court(String player_on_court) {
+		this.player_on_court = player_on_court;
+	}
+	public List<Raids> getRaids() {
+		return raids;
+	}
+	public void setRaids(List<Raids> raids) {
+		this.raids = raids;
+	}
+	public List<Tackles> getTackles() {
+		return tackles;
+	}
+	public void setTackles(List<Tackles> tackles) {
+		this.tackles = tackles;
+	}
+	public List<Do_Or_Die> getDo_or_die() {
+		return do_or_die;
+	}
+	public void setDo_or_die(List<Do_Or_Die> do_or_die) {
+		this.do_or_die = do_or_die;
 	}
 
-	public void setFirst_name(String first_name) {
-		this.first_name = first_name;
+	public String getPlayer_raiding_now() {
+		return player_raiding_now;
 	}
 
-	public String getLast_name() {
-		return last_name;
+	public void setPlayer_raiding_now(String player_raiding_now) {
+		this.player_raiding_now = player_raiding_now;
+	}
+	
+	public List<Points> getPoints() {
+		return points;
 	}
 
-	public void setLast_name(String last_name) {
-		this.last_name = last_name;
+	public void setPoints(List<Points> points) {
+		this.points = points;
 	}
 
-	public String getTeam_name() {
-		return team_name;
-	}
-
-	public void setTeam_name(String team_name) {
-		this.team_name = team_name;
-	}
 	@Override
 	public String toString() {
-		return "PlayerStats [JerseyNumber=" + JerseyNumber + ", first_name=" + first_name + ", last_name=" + last_name
-				+ ", team_name=" + team_name + ", Value=" + Value + "]";
+		return "PlayerStats [playerName=" + playerName + ", playerId=" + playerId + ", player_on_court="
+				+ player_on_court + ", player_raiding_now=" + player_raiding_now + ", raids=" + raids + ", tackles="
+				+ tackles + ", do_or_die=" + do_or_die + "]";
 	}
-	
-}
 
+}

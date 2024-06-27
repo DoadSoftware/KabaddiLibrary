@@ -80,7 +80,7 @@ public class Match {
   private Team awayTeam;
   
   @XmlTransient
-  private List<APITeam> ApiData;
+  private Api_Match Api_Match;
 
   @XmlElementWrapper(name = "homeSquad")
   @XmlElement(name = "homeSquad")
@@ -340,14 +340,6 @@ public void setAwayTeamJerseyColor(String awayTeamJerseyColor) {
 	this.awayTeamJerseyColor = awayTeamJerseyColor;
 }
 
-public List<APITeam> getApiData() {
-	return ApiData;
-}
-
-public void setApiData(List<APITeam> apiData) {
-	ApiData = apiData;
-}
-
 public String getApi_photo() {
 	return api_photo;
 }
@@ -372,20 +364,13 @@ public void setAwayTeamGKJerseyColor(String awayTeamGKJerseyColor) {
 	this.awayTeamGKJerseyColor = awayTeamGKJerseyColor;
 }
 
-@Override
-public String toString() {
-	return "Match [homeSubstitutesPerTeam=" + homeSubstitutesPerTeam + ", awaySubstitutesPerTeam="
-			+ awaySubstitutesPerTeam + ", matchFileTimeStamp=" + matchFileTimeStamp + ", matchResult=" + matchResult
-			+ ", matchStatus=" + matchStatus + ", matchFileName=" + matchFileName + ", tournament=" + tournament
-			+ ", matchIdent=" + matchIdent + ", homeTeamId=" + homeTeamId + ", awayTeamId=" + awayTeamId
-			+ ", homeTeamJerseyColor=" + homeTeamJerseyColor + ", awayTeamJerseyColor=" + awayTeamJerseyColor
-			+ ", homeTeamGKJerseyColor=" + homeTeamGKJerseyColor + ", awayTeamGKJerseyColor=" + awayTeamGKJerseyColor
-			+ ", groundId=" + groundId + ", venueName=" + venueName + ", homeTeamScore=" + homeTeamScore
-			+ ", awayTeamScore=" + awayTeamScore + ", api_photo=" + api_photo + ", ground=" + ground + ", homeTeam="
-			+ homeTeam + ", awayTeam=" + awayTeam + ", ApiData=" + ApiData + ", homeSquad=" + homeSquad
-			+ ", homeSubstitutes=" + homeSubstitutes + ", awaySquad=" + awaySquad + ", awaySubstitutes="
-			+ awaySubstitutes + ", homeOtherSquad=" + homeOtherSquad + ", awayOtherSquad=" + awayOtherSquad
-			+ ", matchStats=" + matchStats + ", clock=" + clock + ", events=" + events + "]";
+public Api_Match getApi_Match() {
+	return Api_Match;
 }
+
+public void setApi_Match(Api_Match api_Match) {
+	Api_Match = api_Match;
+}
+
 
 }

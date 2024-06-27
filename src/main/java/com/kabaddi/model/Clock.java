@@ -11,23 +11,12 @@ public class Clock {
 
   @XmlElement(name = "matchHalves")
   private String matchHalves;
-
-  @XmlElement(name = "matchStartTime")
-  private String matchStartTime;
   
   @XmlElement(name = "matchTimeStatus")
   private String matchTimeStatus;
 
-  @XmlElement(name = "matchTotalSeconds")
-  private long matchTotalSeconds;
-
-public String getMatchStartTime() {
-	return matchStartTime;
-}
-
-public void setMatchStartTime(String matchStartTime) {
-	this.matchStartTime = matchStartTime;
-}
+  @XmlElement(name = "matchTotalMilliSeconds")
+  private long matchTotalMilliSeconds;
 
 public String getMatchHalves() {
 	return matchHalves;
@@ -45,12 +34,13 @@ public void setMatchTimeStatus(String matchTimeStatus) {
 	this.matchTimeStatus = matchTimeStatus;
 }
 
-public long getMatchTotalSeconds() {
-	return matchTotalSeconds;
+public long getMatchTotalMilliSeconds() {
+	return matchTotalMilliSeconds;
 }
 
-public void setMatchTotalSeconds(long matchTotalSeconds) {
-	this.matchTotalSeconds = matchTotalSeconds;
+public void setMatchTotalMilliSeconds(long matchTotalMilliSeconds) {
+	this.matchTotalMilliSeconds = matchTotalMilliSeconds;
 }
+
 
 }

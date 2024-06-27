@@ -25,8 +25,8 @@ public class MatchStats {
   @XmlElement(name = "statsCount")
   private int statsCount;
 
-  @XmlElement(name = "totalMatchSeconds")
-  private long totalMatchSeconds;
+  @XmlElement(name = "totalMatchMilliSeconds")
+  private long totalMatchMilliSeconds;
   
   @XmlElement(name = "TeamId")
   private int TeamId;
@@ -66,7 +66,7 @@ public MatchStats() {
 //	this.raiderIn = raiderIn;
 //}
 
-public MatchStats(int statsId,int playerId,String matchHalves, String stats_type,int statsCount,long totalMatchSeconds,
+public MatchStats(int statsId,int playerId,String matchHalves, String stats_type,int statsCount,long totalMatchMilliSeconds,
 		int offplayerId,int onplayerId,int TeamId,int home_point,int away_point,String raiderIn) {
 	super();
 	this.statsId = statsId;
@@ -74,7 +74,7 @@ public MatchStats(int statsId,int playerId,String matchHalves, String stats_type
 	this.matchHalves = matchHalves;
 	this.stats_type = stats_type;
 	this.statsCount = statsCount;
-	this.totalMatchSeconds = totalMatchSeconds;
+	this.totalMatchMilliSeconds = totalMatchMilliSeconds;
 	this.TeamId = TeamId;
 	this.offplayerId = offplayerId;
 	this.onplayerId = onplayerId;
@@ -99,12 +99,12 @@ public void setPlayerId(int playerId) {
 	this.playerId = playerId;
 }
 
-public long getTotalMatchSeconds() {
-	return totalMatchSeconds;
+public long getTotalMatchMilliSeconds() {
+	return totalMatchMilliSeconds;
 }
 
-public void setTotalMatchSeconds(long totalMatchSeconds) {
-	this.totalMatchSeconds = totalMatchSeconds;
+public void setTotalMatchMilliSeconds(long totalMatchMilliSeconds) {
+	this.totalMatchMilliSeconds = totalMatchMilliSeconds;
 }
 
 public int getStatsId() {

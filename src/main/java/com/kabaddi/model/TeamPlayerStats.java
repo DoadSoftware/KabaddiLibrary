@@ -14,6 +14,7 @@ public class TeamPlayerStats {
 	int tied;
 	
 	List<Points> points;
+	PointsNminutes pointsNminutes;
 	List<Raids> raids;
 	List<Tackles> tackles;
 	List<Do_Or_Die> do_or_die;
@@ -21,15 +22,18 @@ public class TeamPlayerStats {
 
 	public TeamPlayerStats() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public TeamPlayerStats(String teamName, int teamId, int no_of_players_on_court, List<Points> points,
-			List<Raids> raids, List<Tackles> tackles, List<Do_Or_Die> do_or_die, List<PlayerStats> playerStats) {
+			PointsNminutes pointsNminutes, List<Raids> raids, List<Tackles> tackles, List<Do_Or_Die> do_or_die, 
+			List<PlayerStats> playerStats) {
 		super();
 		this.teamName = teamName;
 		this.teamId = teamId;
 		this.no_of_players_on_court = no_of_players_on_court;
 		this.points = points;
+		this.pointsNminutes = pointsNminutes;
 		this.raids = raids;
 		this.tackles = tackles;
 		this.do_or_die = do_or_die;
@@ -148,11 +152,12 @@ public class TeamPlayerStats {
 		this.tied = tied;
 	}
 
-	@Override
-	public String toString() {
-		return "TeamPlayerStats [teamName=" + teamName + ", teamId=" + teamId + ", no_of_players_on_court="
-				+ no_of_players_on_court + ", points=" + points + ", raids=" + raids + ", tackles=" + tackles
-				+ ", do_or_die=" + do_or_die + ", playerStats=" + playerStats + "]";
+	public PointsNminutes getPointsNminutes() {
+		return pointsNminutes;
 	}
-	
+
+	public void setPointsNminutes(PointsNminutes pointsNminutes) {
+		this.pointsNminutes = pointsNminutes;
+	}
+
 }

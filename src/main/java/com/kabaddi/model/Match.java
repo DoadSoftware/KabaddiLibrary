@@ -37,6 +37,9 @@ public class Match {
   @XmlElement(name = "matchIdent")
   private String matchIdent;
   
+  @XmlElement(name = "matchId")
+  private String matchId;
+  
   @XmlElement(name = "homeTeamId")
   private int homeTeamId;
 
@@ -372,5 +375,12 @@ public void setApi_Match(Api_Match api_Match) {
 	Api_Match = api_Match;
 }
 
+public String getMatchId() {
+	return matchId;
+}
+
+public void setMatchId(String matchId) {
+	this.matchId = matchId;
+}
 
 }

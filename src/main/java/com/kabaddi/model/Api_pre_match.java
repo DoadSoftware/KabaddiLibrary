@@ -2,6 +2,9 @@ package com.kabaddi.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Api_pre_match {
 
 	List<TeamPlayerStats> teamPlayerStats;

@@ -10,6 +10,11 @@ public class PlayerStats {
 	String player_raiding_now;
 	String player_revival_order;
 	
+	int high_five;
+	int super_ten;
+	int matches;
+	int matches_raided;
+	
 	List<Points> points;
 	List<Raids> raids;
 	List<Tackles> tackles;
@@ -89,6 +94,38 @@ public class PlayerStats {
 
 	public void setPlayer_revival_order(String player_revival_order) {
 		this.player_revival_order = player_revival_order;
+	}
+
+	public int getHigh_five() {
+		return high_five;
+	}
+
+	public void setHigh_five(int high_five) {
+		this.high_five = high_five;
+	}
+
+	public int getSuper_ten() {
+		return super_ten;
+	}
+
+	public void setSuper_ten(int super_ten) {
+		this.super_ten = super_ten;
+	}
+
+	public int getMatches() {
+		return matches;
+	}
+
+	public void setMatches(int matches) {
+		this.matches = matches;
+	}
+
+	public int getMatches_raided() {
+		return matches_raided;
+	}
+
+	public void setMatches_raided(int matches_raided) {
+		this.matches_raided = matches_raided;
 	}
 
 	@Override

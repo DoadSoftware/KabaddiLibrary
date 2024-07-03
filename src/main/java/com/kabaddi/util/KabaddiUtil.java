@@ -32,6 +32,7 @@ public class KabaddiUtil {
 	
 	public final static String KABADDI_SCORE_BUG_SCENE_PATH = "/Default/ScoreBug";
 	public final static String UPKL_SCORE_BUG_SCENE_PATH = "/Default/Overlays";
+	public final static String UPKL_FULLFRAMES_SCENE_PATH = "/Default/FullFrames";
 	
 	
 	public final static String LEAGUE_TABLE_DIRECTORY = "LeagueTable/";

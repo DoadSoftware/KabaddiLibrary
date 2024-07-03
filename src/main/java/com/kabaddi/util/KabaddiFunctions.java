@@ -40,6 +40,555 @@ import com.kabaddi.service.KabaddiService;
 
 public class KabaddiFunctions {
 	
+	public static List<Api_pre_match> getPreMatchDatafromXML(String file_path,String file_name) 
+			throws SAXException, IOException, ParserConfigurationException, FactoryConfigurationError{
+		
+		List<Api_pre_match> api_pre_match = new ArrayList<Api_pre_match>();
+		
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(file_path + file_name));
+        doc.getDocumentElement().normalize();
+        NodeList childNodes = doc.getDocumentElement().getChildNodes();
+        for(int i = 0; i < childNodes.getLength(); i++) {
+        	if(childNodes.item(i).getNodeType() == Node.ELEMENT_NODE && childNodes.item(i).getNodeName().equals("team-players-statistics")) {
+        		
+        		api_pre_match.add(new Api_pre_match(new ArrayList<TeamPlayerStats>()));
+        		
+        		for(int j=0;j<childNodes.item(i).getChildNodes().getLength();j++) {
+        			if(childNodes.item(i).getChildNodes().item(j).getNodeType() == Node.ELEMENT_NODE 
+            				&& childNodes.item(i).getChildNodes().item(j).getNodeName().equalsIgnoreCase("team")) {
+        				
+        				api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().add(new TeamPlayerStats(childNodes.item(i).getChildNodes().item(j).getAttributes().
+	        					getNamedItem("team-name").getNodeValue(), Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getAttributes().getNamedItem("team-id")
+	    	        			.getNodeValue()), 0, 0, 0, 0, new ArrayList<Points>(),new ArrayList<Raids>(),new ArrayList<Tackles>(),new ArrayList<Do_Or_Die>(),
+	        					new ArrayList<PlayerStats>()));
+        				
+        				for(int k = 0; k < childNodes.item(i).getChildNodes().item(j).getChildNodes().getLength();k++) {
+        					if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() == Node.ELEMENT_NODE &&
+        							childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeName().equalsIgnoreCase("matches")) {
+        						
+        						api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).
+        							setMatches(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getFirstChild().getNodeValue()));
+        						
+        					}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() == Node.ELEMENT_NODE &&
+        							childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeName().equalsIgnoreCase("won")) {
+        						
+        						api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).
+        							setWon(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getFirstChild().getNodeValue()));
+        						
+        					}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() == Node.ELEMENT_NODE &&
+        							childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeName().equalsIgnoreCase("lost")) {
+        						
+        						api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).
+        							setLost(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getFirstChild().getNodeValue()));
+        						
+        					}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() == Node.ELEMENT_NODE &&
+        							childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeName().equalsIgnoreCase("tied")) {
+        						
+        						api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).
+        							setTied(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getFirstChild().getNodeValue()));
+        						
+        					}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() == Node.ELEMENT_NODE &&
+        							childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeName().equalsIgnoreCase("points")) {
+        						
+        						api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).
+        						getPoints().add(new Points(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().
+	        							getNamedItem("total-points").getNodeValue()), new ArrayList<TacklePoints>(), new ArrayList<RaidPoints>()));
+        						
+        						for(int l = 0; l < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().getLength();l++) {
+        							if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("all-out-points")) {
+
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1)
+        									.getPoints().size()-1).setAll_out_points(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k)
+        									.getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("extra-points")) {
+        					
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1)
+    									.getPoints().size()-1).setExtra_points(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k)
+    									.getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("tackle-points")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+        									getTackle_points().add(new TacklePoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).
+        									getAttributes().getNamedItem("total-tackle-points").getNodeValue())));
+        								
+        								for(int m = 0; m < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().getLength();m++) {
+        									if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+        											childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().
+        											equalsIgnoreCase("capture-points")) {
+        									
+        										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+	        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+	        									getTackle_points().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+	        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+	        									getTackle_points().size()-1).setCapturePoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k)
+	        									.getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue()));
+        										
+        									}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+        											childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().
+        											equalsIgnoreCase("tackle-bonus-points")) {
+        										
+        										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+	        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+	        									getTackle_points().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+	        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+	        									getTackle_points().size()-1).setTackleBounsPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k)
+	        									.getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue()));
+        									}
+        								}
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("raid-points")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+    									getRaid_points().add(new RaidPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).
+    									getAttributes().getNamedItem("total-raid-points").getNodeValue())));
+        								
+	    								for(int m = 0; m < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().getLength();m++) {
+	    									if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+	    											childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().
+	    											equalsIgnoreCase("touch-points")) {
+	    										
+	    										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+	        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+	        									getRaid_points().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+	        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+	        									getRaid_points().size()-1).setTouchPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k)
+	        									.getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue()));
+	    										
+	    									}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+	    											childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().
+	    											equalsIgnoreCase("raid-bonus-points")) {
+	    										
+	    										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+	        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+	        									getRaid_points().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().
+	        									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPoints().size()-1).
+	        									getRaid_points().size()-1).setRaidBounsPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k)
+	        									.getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue()));
+	    									}
+	    								}	
+        							}
+        						}
+        					}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() == Node.ELEMENT_NODE &&
+        							childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeName().equalsIgnoreCase("raids")) {
+        						
+        						api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getRaids().add(new Raids(
+        						Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().getNamedItem("total-raids").getNodeValue()),
+        						Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().getNamedItem("super-raids").getNodeValue())));
+        						
+        						for(int l = 0; l < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().getLength();l++) {
+        							if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("successful-raids")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getRaids().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getRaids().size()-1)
+    									.setSuccessfulRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("unsuccessful-raids")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getRaids().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getRaids().size()-1)
+    									.setUnsuccessfulRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("empty-raids")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getRaids().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getRaids().size()-1)
+    									.setEmptyRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        								
+        							}
+        						}
+        						
+        					}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() == Node.ELEMENT_NODE &&
+        							childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeName().equalsIgnoreCase("tackles")) {
+        						
+        						api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getTackles().add(new Tackles(
+        						Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().getNamedItem("total-tackles").getNodeValue()),
+        						Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().getNamedItem("super-tackles").getNodeValue())));
+        						
+        						for(int l = 0; l < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().getLength();l++) {
+        							if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("successful-tackles")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getTackles().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getTackles().size()-1)
+    									.setSuccessfulTackles(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("unsuccessful-tackles")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getTackles().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getTackles().size()-1)
+    									.setUnsuccessfulTackles(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}
+        						}
+        						
+        					}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() == Node.ELEMENT_NODE &&
+        							childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeName().equalsIgnoreCase("do-or-die")) {
+        						
+        						api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().
+        						add(new Do_Or_Die(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getAttributes().getNamedItem("total-raids")
+        						.getNodeValue())));
+        						
+        						for(int l = 0; l < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().getLength();l++) {
+        							if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("successfull-raids")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().size()-1)
+    									.setSuccessfullRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("failed-raids")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().size()-1)
+    									.setFailedRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("super-raids")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().size()-1)
+    									.setSuperRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("raid-points")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().size()-1)
+    									.setRaidPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("touch-points")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().size()-1)
+    									.setTouchPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("bonus-points")) {
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().
+    									get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getDo_or_die().size()-1)
+    									.setBonusPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getFirstChild().getNodeValue()));
+        								
+        							}
+        						}
+        					}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeType() == Node.ELEMENT_NODE &&
+        							childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getNodeName().equalsIgnoreCase("players")) {
+        						for(int l = 0; l < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().getLength();l++) {
+        							//System.out.println(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName());
+        							if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeType() == Node.ELEMENT_NODE &&
+        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getNodeName().equalsIgnoreCase("player")){
+        								
+        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+    	        						add(new PlayerStats(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getAttributes().getNamedItem("player-name").getNodeValue(), 
+    	        							Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getAttributes().getNamedItem("player-id").getNodeValue()),  
+    	        							new ArrayList<Points>(),new ArrayList<Raids>(),new ArrayList<Tackles>(),new ArrayList<Do_Or_Die>()));
+        								
+        								for(int m = 0; m < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().getLength();m++) {
+        									if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+    	        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().equalsIgnoreCase("high_five")) {
+        										
+        										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        										get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        										setHigh_five(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue()));
+        										
+        									}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+    	        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().equalsIgnoreCase("super_ten")) {
+        										
+        										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        										get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        										setSuper_ten(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue()));
+        										
+        									}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+    	        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().equalsIgnoreCase("matches")) {
+        										
+        										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        										get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        										setMatches(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue()));
+        										
+        									}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+    	        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().equalsIgnoreCase("matches_raided")) {
+        										
+        										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        										get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        										setMatches_raided(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getFirstChild().getNodeValue()));
+        										
+        									}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+    	        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().equalsIgnoreCase("points")) {
+        										
+        										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+    	        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+    	        								getPoints().add(new Points(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).
+    	        								getAttributes().getNamedItem("total-points").getNodeValue()), new ArrayList<TacklePoints>(), new ArrayList<RaidPoints>()));
+        										
+        										for(int n = 0; n < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().getLength();n++) {
+        											if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("raid-points")) {
+        												
+        												api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+            	        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+            	        								getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+            	        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+            	        								getPoints().size()-1).getRaid_points().add(new RaidPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).
+            	        								getChildNodes().item(m).getChildNodes().item(n).getAttributes().getNamedItem("total-raid-points").getNodeValue())));
+        												
+        												for(int o = 0; o < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getChildNodes().getLength();o++) {
+        													if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getChildNodes().item(o).
+        														getNodeType() == Node.ELEMENT_NODE && childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).
+        														getChildNodes().item(o).getNodeName().equalsIgnoreCase("touch-points")) {
+        														
+        														api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        														get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        														getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        														get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        														getPoints().size()-1).getRaid_points().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+                												get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+                												getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+                												get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+                												getPoints().size()-1).getRaid_points().size()-1).setTouchPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).
+                												getChildNodes().item(n).getChildNodes().item(o).getAttributes().getNamedItem("total-touch-points").getNodeValue()));
+        			    										
+        			    									}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getChildNodes().item(o).
+            														getNodeType() == Node.ELEMENT_NODE && childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).
+            														getChildNodes().item(o).getNodeName().equalsIgnoreCase("raid-bonus-points")) {
+        			    										
+        			    										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        														get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        														getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        														get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        														getPoints().size()-1).getRaid_points().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+                												get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+                												getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+                												get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+                												getPoints().size()-1).getRaid_points().size()-1).setRaidBounsPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).
+        														getChildNodes().item(n).getChildNodes().item(o).getFirstChild().getNodeValue()));
+        			    										
+        			    									}
+        												}
+        												
+        											}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("tackle-points")) {
+        												
+        												api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+            	        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+            	        								getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+            	        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+            	        								getPoints().size()-1).getTackle_points().add(new TacklePoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).
+            	        								getChildNodes().item(m).getChildNodes().item(n).getAttributes().getNamedItem("total-tackle-points").getNodeValue())));
+        												
+        												for(int o = 0; o < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getChildNodes().getLength();o++) {
+        													if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getChildNodes().item(o).
+        														getNodeType() == Node.ELEMENT_NODE && childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).
+        														getChildNodes().item(o).getNodeName().equalsIgnoreCase("capture-points")) {
+        														
+        														api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        														get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        														getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        														get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        														getPoints().size()-1).getTackle_points().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+                												get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+                												getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+                												get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+                												getPoints().size()-1).getTackle_points().size()-1).setCapturePoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).
+                												getChildNodes().item(n).getChildNodes().item(o).getAttributes().getNamedItem("total-capture-points").getNodeValue()));
+        			    										
+        			    									}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getChildNodes().item(o).
+            														getNodeType() == Node.ELEMENT_NODE && childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).
+            														getChildNodes().item(o).getNodeName().equalsIgnoreCase("tackle-bonus-points")) {
+        			    										
+        			    										api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        														get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        														getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        														get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        														getPoints().size()-1).getTackle_points().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+                												get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+                												getPoints().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+                												get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+                												getPoints().size()-1).getTackle_points().size()-1).setTackleBounsPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).
+        														getChildNodes().item(n).getChildNodes().item(o).getFirstChild().getNodeValue()));
+        			    										
+        			    									}
+        												}
+        											}
+        										}
+        										
+        									}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+    	        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().equalsIgnoreCase("raids")) {
+    	        								
+    	        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+    	        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+    	        								getRaids().add(new Raids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).
+    	        								getAttributes().getNamedItem("total-raids").getNodeValue()),Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().
+    	        								item(l).getChildNodes().item(m).getAttributes().getNamedItem("super-raids").getNodeValue())));
+    	        		        						
+        		        						for(int n = 0; n < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().getLength();n++) {
+        		        							
+        		        							if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("successful-raids")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getRaids().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getRaids().size() -1).setSuccessfulRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        								
+        		        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("unsuccessful-raids")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getRaids().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getRaids().size() -1).setUnsuccessfulRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        								
+        		        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("empty-raids")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getRaids().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getRaids().size() -1).setEmptyRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        							}
+        		        						}
+    	        								
+    	        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+    	        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().equalsIgnoreCase("tackles")) {
+    	        								
+    	        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+    	        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+    	        								getTackles().add(new Tackles(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().
+    	        								item(m).getAttributes().getNamedItem("total-tackles").getNodeValue()),Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).
+    	        								getChildNodes().item(l).getChildNodes().item(m).getAttributes().getNamedItem("super-tackles").getNodeValue())));
+    	        		        						
+        		        						for(int n = 0; n < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().getLength();n++) {
+        		        							
+        		        							if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("successful-tackles")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getTackles().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getTackles().size() -1).setSuccessfulTackles(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        								
+        		        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("unsuccessful-tackles")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getTackles().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getTackles().size() -1).setUnsuccessfulTackles(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        								
+        		        							}
+        		        						}
+    	        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeType() == Node.ELEMENT_NODE &&
+    	        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getNodeName().equalsIgnoreCase("do-or-die")) {
+    	        								
+    	        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+    	        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+    	        								getDo_or_die().add(new Do_Or_Die(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().
+    	        								item(m).getAttributes().getNamedItem("total-raids").getNodeValue())));
+    	        		        						
+        		        						for(int n = 0; n < childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().getLength();n++) {
+        		        							
+        		        							if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("successful-raids")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().size() -1).setSuccessfullRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        								
+        		        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("failed-raids")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().size() -1).setFailedRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        								
+        		        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("super-raids")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().size() -1).setSuperRaids(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        								
+        		        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("raid-points")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().size() -1).setRaidPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        								
+        		        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("touch-points")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().size() -1).setTouchPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        								
+        		        							}else if(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeType() == Node.ELEMENT_NODE &&
+        		        									childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes().item(m).getChildNodes().item(n).getNodeName().equalsIgnoreCase("bonus-points")) {
+        		        								
+        		        								api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().
+        		        								get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().get(api_pre_match.get(api_pre_match.size()-1).getTeamPlayerStats().size()-1).getPlayerStats().size()-1).
+        		        								getDo_or_die().size() -1).setBonusPoints(Integer.valueOf(childNodes.item(i).getChildNodes().item(j).getChildNodes().item(k).getChildNodes().item(l).getChildNodes()
+        		        								.item(m).getChildNodes().item(n).getFirstChild().getNodeValue()));
+        		        							}
+        		        						}
+    	        							}
+        								}
+        							}
+        						}
+        					}
+        				}
+        			}
+        		}
+        	}
+        }
+        
+		return api_pre_match;
+	}
+	
 	public static void DoadWriteCommandToSelectedViz(int SelectedViz, String SendTextIn, List<PrintWriter> print_writers) 
 	{
 		if(SelectedViz > 0 && SelectedViz <= print_writers.size()) {

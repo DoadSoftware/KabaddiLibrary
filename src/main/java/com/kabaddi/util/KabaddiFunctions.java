@@ -602,6 +602,20 @@ public class KabaddiFunctions {
 		}
 	}
 	
+	public static String ordinal(int i) {
+	    int mod100 = i % 100;
+	    int mod10 = i % 10;
+	    if(mod10 == 1 && mod100 != 11) {
+	        return i + "st";
+	    } else if(mod10 == 2 && mod100 != 12) {
+	        return i + "nd";
+	    } else if(mod10 == 3 && mod100 != 13) {
+	        return i + "rd";
+	    } else {
+	        return i + "th";
+	    }
+	}
+	
 	@SuppressWarnings("resource")
 	public static List<PrintWriter> processPrintWriter(Configurations config) throws UnknownHostException, IOException
 	{
@@ -620,9 +634,9 @@ public class KabaddiFunctions {
 		return print_writer;
 	}
 	
-	public static List<Fixture> processAllFixtures(KabaddiService footballService) {
-		List<Fixture> fixtures = footballService.getFixtures();
-		for(Team tm : footballService.getTeams()) {
+	public static List<Fixture> processAllFixtures(KabaddiService kabaddiService) {
+		List<Fixture> fixtures = kabaddiService.getFixtures();
+		for(Team tm : kabaddiService.getTeams()) {
 			for(Fixture fix : fixtures) {
 				if(fix.getHometeamid() == tm.getTeamId()) {
 					fix.setHome_Team(tm);

@@ -84,6 +84,12 @@ public class Match {
   
   @XmlTransient
   private Api_Match Api_Match;
+  
+//  @XmlTransient
+//  private List<Api_pre_match> Api_PreMatch;
+  
+  @XmlTransient
+  private List<Api_pre_match> api_PreMatch;
 
   @XmlElementWrapper(name = "homeSquad")
   @XmlElement(name = "homeSquad")
@@ -381,6 +387,14 @@ public String getMatchId() {
 
 public void setMatchId(String matchId) {
 	this.matchId = matchId;
+}
+
+public List<Api_pre_match> getApi_PreMatch() {
+	return api_PreMatch;
+}
+
+public void setApi_PreMatch(List<Api_pre_match> api_PreMatch) {
+	this.api_PreMatch = api_PreMatch;
 }
 
 }

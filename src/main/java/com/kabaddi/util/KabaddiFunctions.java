@@ -782,7 +782,6 @@ public class KabaddiFunctions {
 				if(match.getApi_PreMatch().get(0).getTeamPlayerStats().get(i).getPlayerStats() != null) {
 					for(PlayerStats ps: match.getApi_PreMatch().get(0).getTeamPlayerStats().get(i).getPlayerStats()) {
 						Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
-						System.out.println(player);
 						playerPreMatchData.add(new PlayerPreMatchData(teamId ,ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), ps.getMatches(), ps.getPoints().get(0).getTotalPoints(),
 								ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
 								ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
@@ -889,7 +888,7 @@ public class KabaddiFunctions {
 	    	if(data1.getTotalRaidPoints() == data2.getTotalRaidPoints()) {
 	    		return Integer.compare(data1.getTotalRaids(), data2.getTotalRaids());
 	    	}else {
-	    		return Integer.compare(data1.getTotalRaidPoints(), data2.getTotalRaidPoints());
+	    		return Integer.compare(data2.getTotalRaidPoints(), data1.getTotalRaidPoints());
 	    	}
 	    }
 	}
@@ -899,7 +898,7 @@ public class KabaddiFunctions {
 	    	if(data1.getTotalTacklePoints() == data2.getTotalTacklePoints()) {
 	    		return Integer.compare(data1.getTotalTackles(), data2.getTotalTackles());
 	    	}else {
-	    		return Integer.compare(data1.getTotalTacklePoints(), data2.getTotalTacklePoints());
+	    		return Integer.compare(data2.getTotalTacklePoints(), data1.getTotalTacklePoints());
 	    	}
 	    }
 	}

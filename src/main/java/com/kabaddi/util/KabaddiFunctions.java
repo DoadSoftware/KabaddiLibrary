@@ -605,6 +605,14 @@ public class KabaddiFunctions {
 		}
 	}
 	
+	public static String Plural(int count){
+		if (count == 1){
+			return "";
+		} else{
+			return "s";
+		}
+	}
+	
 	public static String ordinal(int i) {
 	    int mod100 = i % 100;
 	    int mod10 = i % 10;

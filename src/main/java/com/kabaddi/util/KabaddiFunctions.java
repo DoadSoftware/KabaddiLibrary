@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,8 @@ import com.kabaddi.model.Fixture;
 import com.kabaddi.model.Match;
 import com.kabaddi.model.MatchStats;
 import com.kabaddi.model.Player;
+import com.kabaddi.model.PlayerPreMatchData;
+import com.kabaddi.model.PlayerStat;
 import com.kabaddi.model.PlayerStats;
 import com.kabaddi.model.Points;
 import com.kabaddi.model.RaidPoints;
@@ -768,5 +771,136 @@ public class KabaddiFunctions {
 			}
 		}
 		return players;
-	}	
+	}
+	
+	public static List<PlayerPreMatchData> getPlayerPreMatchData(Match match, KabaddiService kabaddiService){
+		List<PlayerPreMatchData> playerPreMatchData = new ArrayList<PlayerPreMatchData>();
+		int teamId = 0;
+		if(match != null && match.getApi_PreMatch().get(0).getTeamPlayerStats() != null) {
+			for(int i=0; i<match.getApi_PreMatch().get(0).getTeamPlayerStats().size(); i++) {
+				teamId = match.getApi_PreMatch().get(0).getTeamPlayerStats().get(i).getTeamId();
+				if(match.getApi_PreMatch().get(0).getTeamPlayerStats().get(i).getPlayerStats() != null) {
+					for(PlayerStats ps: match.getApi_PreMatch().get(0).getTeamPlayerStats().get(i).getPlayerStats()) {
+						Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
+						System.out.println(player);
+						playerPreMatchData.add(new PlayerPreMatchData(teamId ,ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), ps.getMatches(), ps.getPoints().get(0).getTotalPoints(),
+								ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
+								ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
+								ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
+					}
+				}
+			}
+		}
+		
+		return playerPreMatchData;
+	}
+	
+	public static List<PlayerPreMatchData> getPastAndCurrentMatchData(List<PlayerPreMatchData> preMatchData, Match match, KabaddiService kabaddiService){
+		
+		int playerIndex = -1;
+		
+		if(preMatchData != null && match != null) {
+			if(match.getApi_Match().getHomeTeamStats() != null && match.getApi_Match().getHomeTeamStats().getPlayerStats() != null) {
+				for(PlayerStats ps : match.getApi_Match().getHomeTeamStats().getPlayerStats()) {
+					playerIndex = -1;
+					for(int i=0; i<preMatchData.size(); i++) {
+						if(ps.getPlayerId() == preMatchData.get(i).getPlayerId()) {
+							playerIndex = i;
+							break;
+						}
+					}
+					if(playerIndex>=0) {
+						Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
+						preMatchData.get(playerIndex).setPlayer(player);
+						preMatchData.get(playerIndex).setHighFive((preMatchData.get(playerIndex).getHighFive()+ps.getHigh_five()));
+						preMatchData.get(playerIndex).setSuperTen((preMatchData.get(playerIndex).getSuperTen()+ps.getSuper_ten()));
+						preMatchData.get(playerIndex).setMatches((preMatchData.get(playerIndex).getMatches()+1));
+						
+						preMatchData.get(playerIndex).setTotalPoints((preMatchData.get(playerIndex).getTotalPoints()+ps.getPoints().get(0).getTotalPoints()));
+						preMatchData.get(playerIndex).setTotalRaidPoints((preMatchData.get(playerIndex).getTotalRaidPoints()+ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()));
+						preMatchData.get(playerIndex).setTotalTacklePoints((preMatchData.get(playerIndex).getTotalTacklePoints()+ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()));
+						
+						preMatchData.get(playerIndex).setTotalRaids((preMatchData.get(playerIndex).getTotalRaids()+ps.getRaids().get(0).getTotalRaids()));
+						preMatchData.get(playerIndex).setSuperRaids((preMatchData.get(playerIndex).getSuperRaids()+ps.getRaids().get(0).getSuperRaids()));
+						preMatchData.get(playerIndex).setSuccessfullRaids((preMatchData.get(playerIndex).getSuccessfullRaids()+ps.getRaids().get(0).getSuccessfulRaids()));
+						preMatchData.get(playerIndex).setUnsuccessfullRaids((preMatchData.get(playerIndex).getUnsuccessfullRaids()+ps.getRaids().get(0).getUnsuccessfulRaids()));
+						
+						preMatchData.get(playerIndex).setTotalTackles((preMatchData.get(playerIndex).getTotalTackles()+ps.getTackles().get(0).getTotalTackles()));
+						preMatchData.get(playerIndex).setSuperTackle((preMatchData.get(playerIndex).getSuperTackle()+ps.getTackles().get(0).getSuperTackles()));
+						preMatchData.get(playerIndex).setSuccessfullTackles((preMatchData.get(playerIndex).getSuccessfullTackles()+ps.getTackles().get(0).getSuccessfulTackles()));
+						preMatchData.get(playerIndex).setUnsuccessfullTackles((preMatchData.get(playerIndex).getUnsuccessfullTackles()+ps.getTackles().get(0).getUnsuccessfulTackles()));
+						
+					}else {
+						Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
+						preMatchData.add(new PlayerPreMatchData(match.getHomeTeam().getTeamId(),ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), ps.getMatches(), ps.getPoints().get(0).getTotalPoints(),
+								ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
+								ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
+								ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
+					}
+				}
+				
+				if(match.getApi_Match().getAwayTeamStats() != null && match.getApi_Match().getAwayTeamStats().getPlayerStats() != null) {
+					for(PlayerStats ps : match.getApi_Match().getAwayTeamStats().getPlayerStats()) {
+						playerIndex = -1;
+						for(int i=0; i<preMatchData.size(); i++) {
+							if(ps.getPlayerId() == preMatchData.get(i).getPlayerId()) {
+								playerIndex = i;
+								break;
+							}
+						}
+						if(playerIndex>=0) {
+							Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
+							preMatchData.get(playerIndex).setPlayer(player);
+							preMatchData.get(playerIndex).setHighFive((preMatchData.get(playerIndex).getHighFive()+ps.getHigh_five()));
+							preMatchData.get(playerIndex).setSuperTen((preMatchData.get(playerIndex).getSuperTen()+ps.getSuper_ten()));
+							preMatchData.get(playerIndex).setMatches((preMatchData.get(playerIndex).getMatches()+1));
+							
+							preMatchData.get(playerIndex).setTotalPoints((preMatchData.get(playerIndex).getTotalPoints()+ps.getPoints().get(0).getTotalPoints()));
+							preMatchData.get(playerIndex).setTotalRaidPoints((preMatchData.get(playerIndex).getTotalRaidPoints()+ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()));
+							preMatchData.get(playerIndex).setTotalTacklePoints((preMatchData.get(playerIndex).getTotalTacklePoints()+ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()));
+							
+							preMatchData.get(playerIndex).setTotalRaids((preMatchData.get(playerIndex).getTotalRaids()+ps.getRaids().get(0).getTotalRaids()));
+							preMatchData.get(playerIndex).setSuperRaids((preMatchData.get(playerIndex).getSuperRaids()+ps.getRaids().get(0).getSuperRaids()));
+							preMatchData.get(playerIndex).setSuccessfullRaids((preMatchData.get(playerIndex).getSuccessfullRaids()+ps.getRaids().get(0).getSuccessfulRaids()));
+							preMatchData.get(playerIndex).setUnsuccessfullRaids((preMatchData.get(playerIndex).getUnsuccessfullRaids()+ps.getRaids().get(0).getUnsuccessfulRaids()));
+							
+							preMatchData.get(playerIndex).setTotalTackles((preMatchData.get(playerIndex).getTotalTackles()+ps.getTackles().get(0).getTotalTackles()));
+							preMatchData.get(playerIndex).setSuperTackle((preMatchData.get(playerIndex).getSuperTackle()+ps.getTackles().get(0).getSuperTackles()));
+							preMatchData.get(playerIndex).setSuccessfullTackles((preMatchData.get(playerIndex).getSuccessfullTackles()+ps.getTackles().get(0).getSuccessfulTackles()));
+							preMatchData.get(playerIndex).setUnsuccessfullTackles((preMatchData.get(playerIndex).getUnsuccessfullTackles()+ps.getTackles().get(0).getUnsuccessfulTackles()));
+							
+						}else {
+							Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
+							preMatchData.add(new PlayerPreMatchData(match.getAwayTeam().getTeamId(),ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), ps.getMatches(), ps.getPoints().get(0).getTotalPoints(),
+									ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
+									ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
+									ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
+						}
+					}
+				}
+			}
+		}
+		return preMatchData;
+	}
+	
+	public static class raidPointComparator implements Comparator<PlayerPreMatchData> {
+	    @Override
+	    public int compare(PlayerPreMatchData data1, PlayerPreMatchData data2) {
+	    	if(data1.getTotalRaidPoints() == data2.getTotalRaidPoints()) {
+	    		return Integer.compare(data1.getTotalRaids(), data2.getTotalRaids());
+	    	}else {
+	    		return Integer.compare(data1.getTotalRaidPoints(), data2.getTotalRaidPoints());
+	    	}
+	    }
+	}
+	public static class tacklePointComparator implements Comparator<PlayerPreMatchData> {
+	    @Override
+	    public int compare(PlayerPreMatchData data1, PlayerPreMatchData data2) {
+	    	if(data1.getTotalTacklePoints() == data2.getTotalTacklePoints()) {
+	    		return Integer.compare(data1.getTotalTackles(), data2.getTotalTackles());
+	    	}else {
+	    		return Integer.compare(data1.getTotalTacklePoints(), data2.getTotalTacklePoints());
+	    	}
+	    }
+	}
 }

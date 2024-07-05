@@ -1,7 +1,9 @@
 package com.kabaddi.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.Socket;
@@ -11,12 +13,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -42,6 +52,112 @@ import com.kabaddi.model.TeamPlayerStats;
 import com.kabaddi.service.KabaddiService;
 
 public class KabaddiFunctions {
+	
+	public static Map<String, Map<String, Object>> ReadExcel(String Path) {
+
+        Map<String, Map<String, Object>> dataMap = new LinkedHashMap<>();
+
+        try (InputStream inputStream = new FileInputStream(Path);
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+            Sheet sheet = workbook.getSheetAt(0); 
+            Row headerRow = sheet.getRow(0); // Read the header row
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) { 
+                Row row = sheet.getRow(i);
+                if (row != null && row.getCell(0) != null) {
+                    String key = getCellValueAsString(row.getCell(0)).trim();
+                    if (!key.isEmpty()) {
+                        Map<String, Object> rowData = new LinkedHashMap<>();
+
+                        for (int j = 1; j < row.getLastCellNum(); j++) {
+                            String header = getCellValueAsString(headerRow.getCell(j)).trim();
+                            Object cellValue = getCellValue(row.getCell(j));
+                            if (cellValue != null && !cellValue.toString().isEmpty()) {
+                                rowData.put(header, cellValue);
+                            }
+                        }
+                        dataMap.put(key, rowData);
+                    }
+                }
+            }
+
+            // Print the HashMap
+//            dataMap.forEach((key, value) -> {
+//                System.out.println(key + " : " + value);
+//            });
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("dataMap = " + dataMap);
+		return dataMap;
+    }
+	public static Map<String, Object> Read_Excel(String Path) {
+
+        Map<String, Object> rowData = new LinkedHashMap<>();
+
+        try (InputStream inputStream = new FileInputStream(Path);
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+            Sheet sheet = workbook.getSheetAt(0); 
+            Row headerRow = sheet.getRow(0); // Read the header row
+            
+            for (int i = 0; i <= sheet.getLastRowNum(); i++) { 
+                Row row = sheet.getRow(i);
+                if (row != null && row.getCell(0) != null) {
+                	for (int j = 0; j < row.getLastCellNum(); j++) {
+                            String header = getCellValueAsString(headerRow.getCell(j)).trim();
+                            Object cellValue = getCellValue(row.getCell(j));
+                            if (cellValue != null && !cellValue.toString().isEmpty()) {
+                                rowData.put(header, cellValue);
+                            }
+                    }
+                }
+            }
+
+            // Print the HashMap
+            rowData.forEach((key, value) -> {
+                System.out.println(key + " : " + value);
+            });
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		return rowData;
+    }
+	private static String getCellValueAsString(Cell cell) {
+	        Object value = getCellValue(cell);
+	        return value == null ? "" : value.toString();
+	    }
+	private static Object getCellValue(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    return cell.getDateCellValue().toString();
+                } else {
+                    double numericValue = cell.getNumericCellValue();
+                    if (numericValue == (long) numericValue) {
+                        return (long) numericValue; 
+                    } else {
+                        return numericValue;
+                    }
+                }
+            case BOOLEAN:
+                return cell.getBooleanCellValue();
+            case FORMULA:
+                return cell.getCellFormula();
+            case BLANK:
+                return "";
+            default:
+                return "Unknown cell type";
+        }
+    }
 	
 	public static List<Api_pre_match> getPreMatchDatafromXML(String file_path,String file_name) 
 			throws SAXException, IOException, ParserConfigurationException, FactoryConfigurationError{

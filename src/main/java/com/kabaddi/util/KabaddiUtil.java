@@ -4,6 +4,7 @@ public class KabaddiUtil {
 
 	public final static String DOAD = "DOAD";
 	
+	public final static String LT_EXCEL = "C:\\Sports\\LT_EXCEL.xlsx";
 	public final static String FOOTBALL_STATISTICS_DIRECTORY = "C:/Sports/Football/Statistic/Match_Data/";
 	public final static String KABADDI_DIRECTORY = "C:/Sports/Kabaddi/";
 	public final static String KABADDI_SCOREBUG_SCENE_PATH = "/Default/ScoreBug";

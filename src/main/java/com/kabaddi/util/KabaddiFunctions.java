@@ -955,7 +955,7 @@ public class KabaddiFunctions {
 						
 					}else {
 						Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
-						preMatchData.add(new PlayerPreMatchData(match.getHomeTeam().getTeamId(),ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), ps.getMatches(), ps.getPoints().get(0).getTotalPoints(),
+						preMatchData.add(new PlayerPreMatchData(match.getHomeTeam().getTeamId(),ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), (ps.getMatches()+1), ps.getPoints().get(0).getTotalPoints(),
 								ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
 								ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
 								ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
@@ -994,7 +994,7 @@ public class KabaddiFunctions {
 							
 						}else {
 							Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
-							preMatchData.add(new PlayerPreMatchData(match.getAwayTeam().getTeamId(),ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), ps.getMatches(), ps.getPoints().get(0).getTotalPoints(),
+							preMatchData.add(new PlayerPreMatchData(match.getAwayTeam().getTeamId(),ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), (ps.getMatches()+1), ps.getPoints().get(0).getTotalPoints(),
 									ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
 									ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
 									ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));

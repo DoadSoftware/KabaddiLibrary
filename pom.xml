@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.kabaddi</groupId>
   <artifactId>KabaddiLibrary</artifactId>
-  <version>1.59</version>
+  <version>1.60</version>
   <name>KabaddiLibrary</name>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>

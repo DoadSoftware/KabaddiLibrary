@@ -15,6 +15,9 @@ public class Api_Match{
   private TeamPlayerStats homeTeamStats;
   private TeamPlayerStats awayTeamStats;
   
+  private play_by_play play_by_play;
+  private Phase_of_play phase_of_play;
+  
   private Clock clock;
   
 public Api_Match() {
@@ -73,11 +76,28 @@ public void setClock(Clock clock) {
 	this.clock = clock;
 }
 
+public play_by_play getPlay_by_play() {
+	return play_by_play;
+}
+
+public void setPlay_by_play(play_by_play play_by_play) {
+	this.play_by_play = play_by_play;
+}
+
+public Phase_of_play getPhase_of_play() {
+	return phase_of_play;
+}
+
+public void setPhase_of_play(Phase_of_play phase_of_play) {
+	this.phase_of_play = phase_of_play;
+}
+
 @Override
 public String toString() {
-	return "Match [matchFileName=" + matchFileName + ", homeTeamScore=" + homeTeamScore + ", awayTeamScore="
+	return "Api_Match [matchFileName=" + matchFileName + ", homeTeamScore=" + homeTeamScore + ", awayTeamScore="
 			+ awayTeamScore + ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", homeTeamStats=" + homeTeamStats
-			+ ", awayTeamStats=" + awayTeamStats + ", clock=" + clock + "]";
+			+ ", awayTeamStats=" + awayTeamStats + ", play_by_play=" + play_by_play + ", phase_of_play=" + phase_of_play
+			+ ", clock=" + clock + "]";
 }
 
 }

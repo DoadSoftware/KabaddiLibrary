@@ -23,7 +23,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -32,15 +31,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.healthmarketscience.jackcess.impl.query.QueryImpl.Row;
 import com.kabaddi.model.Api_pre_match;
 import com.kabaddi.model.Configurations;
 import com.kabaddi.model.Do_Or_Die;
 import com.kabaddi.model.Fixture;
 import com.kabaddi.model.Match;
 import com.kabaddi.model.MatchStats;
+import com.kabaddi.model.PlayByRaids;
 import com.kabaddi.model.Player;
 import com.kabaddi.model.PlayerPreMatchData;
-import com.kabaddi.model.PlayerStat;
 import com.kabaddi.model.PlayerStats;
 import com.kabaddi.model.Points;
 import com.kabaddi.model.RaidPoints;
@@ -60,10 +60,10 @@ public class KabaddiFunctions {
         try (InputStream inputStream = new FileInputStream(Path);
              Workbook workbook = new XSSFWorkbook(inputStream)) {
             Sheet sheet = workbook.getSheetAt(0); 
-            Row headerRow = sheet.getRow(0); // Read the header row
+            org.apache.poi.ss.usermodel.Row headerRow = sheet.getRow(0); // Read the header row
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) { 
-                Row row = sheet.getRow(i);
+                org.apache.poi.ss.usermodel.Row row = sheet.getRow(i);
                 if (row != null && row.getCell(0) != null) {
                     String key = getCellValueAsString(row.getCell(0)).trim();
                     if (!key.isEmpty()) {
@@ -100,11 +100,11 @@ public class KabaddiFunctions {
         try (InputStream inputStream = new FileInputStream(Path);
              Workbook workbook = new XSSFWorkbook(inputStream)) {
             Sheet sheet = workbook.getSheetAt(0); 
-            Row headerRow = sheet.getRow(0); // Read the header row
+            org.apache.poi.ss.usermodel.Row headerRow = sheet.getRow(0); // Read the header row
             
             for (int i = 0; i <= sheet.getLastRowNum(); i++) { 
-                Row row = sheet.getRow(i);
-                if (row != null && row.getCell(0) != null) {
+                org.apache.poi.ss.usermodel.Row row = sheet.getRow(i);
+                if (row != null && ((org.apache.poi.ss.usermodel.Row) row).getCell(0) != null) {
                 	for (int j = 0; j < row.getLastCellNum(); j++) {
                             String header = getCellValueAsString(headerRow.getCell(j)).trim();
                             Object cellValue = getCellValue(row.getCell(j));
@@ -158,7 +158,32 @@ public class KabaddiFunctions {
                 return "Unknown cell type";
         }
     }
-	
+	public static List<PlayByRaids> LastFiveRaids(int player_id, List<PlayByRaids> PlayerRaidsList) {
+	    List<PlayByRaids> raids = new ArrayList<>();
+
+	    for (int i = PlayerRaidsList.size() - 1; i >= 0; i--) {
+	        if (player_id == PlayerRaidsList.get(i).getRaiding_player_id()) {
+	            PlayByRaids raid = new PlayByRaids();
+	            raid.setRaid_half(PlayerRaidsList.get(i).getRaid_half());
+	            raid.setRaid_number(PlayerRaidsList.get(i).getRaid_number());
+	            raid.setRaid_outcome_id(PlayerRaidsList.get(i).getRaid_outcome_id());
+	            raid.setRaiding_player_id(PlayerRaidsList.get(i).getRaiding_player_id());
+	            raid.setRaiding_team_id(PlayerRaidsList.get(i).getRaiding_team_id());
+
+	            for (int j = 0; j < PlayerRaidsList.get(i).getTeam().size(); j++) {
+	                if (PlayerRaidsList.get(i).getTeam().get(j).getTeam_id() == PlayerRaidsList.get(i).getRaiding_team_id()) {
+	                    raid.getTeam().add(PlayerRaidsList.get(i).getTeam().get(j));
+	                }
+	            }
+	            
+	            raids.add(raid);
+	        }
+	    }
+
+	    return raids;
+	}
+
+
 	public static List<Api_pre_match> getPreMatchDatafromXML(String file_path,String file_name) 
 			throws SAXException, IOException, ParserConfigurationException, FactoryConfigurationError{
 		

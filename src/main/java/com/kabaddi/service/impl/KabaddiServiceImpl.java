@@ -13,6 +13,7 @@ import com.kabaddi.model.Fixture;
 import com.kabaddi.model.Formation;
 import com.kabaddi.model.Ground;
 import com.kabaddi.model.HeadToHead;
+import com.kabaddi.model.InfobarStats;
 import com.kabaddi.model.LeaderBoard;
 import com.kabaddi.model.NameSuper;
 import com.kabaddi.model.Officials;
@@ -142,6 +143,11 @@ public List<HeadToHead> getHeadToHeadStats() {
 @Override
 public List<PlayerStat> getPlayerStats() {
 	return footballDao.getPlayerStats();
+}
+
+@Override
+public List<InfobarStats> getInfobarStats() {
+	return footballDao.getInfobarStats();
 }
 
 }

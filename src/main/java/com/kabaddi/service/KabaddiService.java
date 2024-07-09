@@ -8,6 +8,7 @@ import com.kabaddi.model.Fixture;
 import com.kabaddi.model.Formation;
 import com.kabaddi.model.Ground;
 import com.kabaddi.model.HeadToHead;
+import com.kabaddi.model.InfobarStats;
 import com.kabaddi.model.LeaderBoard;
 import com.kabaddi.model.NameSuper;
 import com.kabaddi.model.Officials;
@@ -44,4 +45,5 @@ public interface KabaddiService {
   List<TeamStat> getTeamStats();
   List<HeadToHead> getHeadToHeadStats();
   List<PlayerStat> getPlayerStats();
+  List<InfobarStats> getInfobarStats();
 }

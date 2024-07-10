@@ -750,7 +750,7 @@ public class KabaddiFunctions {
 		if (count == 1){
 			return "";
 		} else{
-			return "s";
+			return "S";
 		}
 	}
 	
@@ -948,6 +948,7 @@ public class KabaddiFunctions {
 	public static List<PlayerPreMatchData> getPastAndCurrentMatchData(List<PlayerPreMatchData> preMatchData, Match match, KabaddiService kabaddiService){
 		
 		int playerIndex = -1;
+		int superTen = 0, highFive = 0;
 		
 		if(preMatchData != null && match != null) {
 			if(match.getApi_Match().getHomeTeamStats() != null && match.getApi_Match().getHomeTeamStats().getPlayerStats() != null) {
@@ -961,9 +962,17 @@ public class KabaddiFunctions {
 					}
 					if(playerIndex>=0) {
 						Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
+						if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
+							if(ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()>=10) {
+								superTen++;
+							}
+							if(ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()>=5) {
+								highFive++;
+							}
+						}
 						preMatchData.get(playerIndex).setPlayer(player);
-						preMatchData.get(playerIndex).setHighFive((preMatchData.get(playerIndex).getHighFive()+ps.getHigh_five()));
-						preMatchData.get(playerIndex).setSuperTen((preMatchData.get(playerIndex).getSuperTen()+ps.getSuper_ten()));
+						preMatchData.get(playerIndex).setHighFive((preMatchData.get(playerIndex).getHighFive()+highFive));
+						preMatchData.get(playerIndex).setSuperTen((preMatchData.get(playerIndex).getSuperTen()+superTen));
 						preMatchData.get(playerIndex).setMatches((preMatchData.get(playerIndex).getMatches()+1));
 						
 						preMatchData.get(playerIndex).setTotalPoints((preMatchData.get(playerIndex).getTotalPoints()+ps.getPoints().get(0).getTotalPoints()));
@@ -982,7 +991,15 @@ public class KabaddiFunctions {
 						
 					}else {
 						Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
-						preMatchData.add(new PlayerPreMatchData(match.getHomeTeam().getTeamId(),ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), (ps.getMatches()+1), ps.getPoints().get(0).getTotalPoints(),
+						if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
+							if(ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()>=10) {
+								superTen++;
+							}
+							if(ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()>=5) {
+								highFive++;
+							}
+						}
+						preMatchData.add(new PlayerPreMatchData(match.getHomeTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()+1), ps.getPoints().get(0).getTotalPoints(),
 								ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
 								ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
 								ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
@@ -1001,8 +1018,8 @@ public class KabaddiFunctions {
 						if(playerIndex>=0) {
 							Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
 							preMatchData.get(playerIndex).setPlayer(player);
-							preMatchData.get(playerIndex).setHighFive((preMatchData.get(playerIndex).getHighFive()+ps.getHigh_five()));
-							preMatchData.get(playerIndex).setSuperTen((preMatchData.get(playerIndex).getSuperTen()+ps.getSuper_ten()));
+							preMatchData.get(playerIndex).setHighFive((preMatchData.get(playerIndex).getHighFive()+highFive));
+							preMatchData.get(playerIndex).setSuperTen((preMatchData.get(playerIndex).getSuperTen()+superTen));
 							preMatchData.get(playerIndex).setMatches((preMatchData.get(playerIndex).getMatches()+1));
 							
 							preMatchData.get(playerIndex).setTotalPoints((preMatchData.get(playerIndex).getTotalPoints()+ps.getPoints().get(0).getTotalPoints()));
@@ -1021,7 +1038,15 @@ public class KabaddiFunctions {
 							
 						}else {
 							Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
-							preMatchData.add(new PlayerPreMatchData(match.getAwayTeam().getTeamId(),ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), (ps.getMatches()+1), ps.getPoints().get(0).getTotalPoints(),
+							if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
+								if(ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()>=10) {
+									superTen++;
+								}
+								if(ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()>=5) {
+									highFive++;
+								}
+							}
+							preMatchData.add(new PlayerPreMatchData(match.getAwayTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()+1), ps.getPoints().get(0).getTotalPoints(),
 									ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
 									ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
 									ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));

@@ -930,7 +930,9 @@ public class KabaddiFunctions {
 				teamId = match.getApi_PreMatch().get(0).getTeamPlayerStats().get(i).getTeamId();
 				if(match.getApi_PreMatch().get(0).getTeamPlayerStats().get(i).getPlayerStats() != null) {
 					for(PlayerStats ps: match.getApi_PreMatch().get(0).getTeamPlayerStats().get(i).getPlayerStats()) {
+						
 						Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
+						
 						playerPreMatchData.add(new PlayerPreMatchData(teamId ,ps.getPlayerId(), player, ps.getHigh_five(), ps.getSuper_ten(), ps.getMatches(), ps.getPoints().get(0).getTotalPoints(),
 								ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
 								ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),

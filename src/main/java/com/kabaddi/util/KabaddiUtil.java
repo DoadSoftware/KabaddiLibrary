@@ -12,6 +12,7 @@ public class KabaddiUtil {
 	public final static String MATCHES_DIRECTORY = "Matches/";
 	public final static String SCENES_DIRECTORY = "Scenes/";
 	public final static String DESTINATION_DIRECTORY = "Destination/";
+	public final static String SOURCE_DIRECTORY = "Source/";
 	public final static String CONFIGURATIONS_DIRECTORY = "Configurations/";
 	public final static String OUTPUT_XML = "OUTPUT.XML";
 	public final static String CLOCK_XML = "CLOCK.XML";

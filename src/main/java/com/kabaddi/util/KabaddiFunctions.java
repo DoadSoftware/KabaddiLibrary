@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -37,6 +38,7 @@ import com.kabaddi.model.Api_pre_match;
 import com.kabaddi.model.Configurations;
 import com.kabaddi.model.Do_Or_Die;
 import com.kabaddi.model.Fixture;
+import com.kabaddi.model.LeagueTeam;
 import com.kabaddi.model.Match;
 import com.kabaddi.model.MatchStats;
 import com.kabaddi.model.PlayByRaids;
@@ -184,7 +186,86 @@ public class KabaddiFunctions {
 	    return raids;
 	}
 
-
+	public static List<LeagueTeam> PointsTableAsStanding(List<LeagueTeam> points_table, Match match) throws IOException {
+		
+		if(match.getHomeTeamScore() > match.getAwayTeamScore()) {
+			for(LeagueTeam table : points_table) {
+				if(table.getTeamName().equalsIgnoreCase(match.getHomeTeam().getTeamBadge())) {
+					table.setPlayed(table.getPlayed()+1);
+					table.setWon(table.getWon()+1);
+					table.setGoal_For(table.getGoal_For() + match.getHomeTeamScore());
+					table.setGoal_Against(table.getGoal_Against() + match.getAwayTeamScore());
+					table.setGD(table.getGoal_For() - table.getGoal_Against());
+					table.setPoints(table.getPoints() + 5);
+				}
+				if(table.getTeamName().equalsIgnoreCase(match.getAwayTeam().getTeamBadge())) {
+					table.setPlayed(table.getPlayed()+1);
+					table.setLost(table.getLost()+1);
+					table.setGoal_For(table.getGoal_For() + match.getAwayTeamScore());
+					table.setGoal_Against(table.getGoal_Against() + match.getHomeTeamScore());
+					table.setGD(table.getGoal_For() - table.getGoal_Against());
+					if((match.getHomeTeamScore() - match.getAwayTeamScore()) <= 7) {
+						table.setPoints(table.getPoints() + 1);
+					}
+				}
+			}
+		}else if(match.getHomeTeamScore() < match.getAwayTeamScore()) {
+			for(LeagueTeam table : points_table) {
+				if(table.getTeamName().equalsIgnoreCase(match.getAwayTeam().getTeamBadge())) {
+					table.setPlayed(table.getPlayed()+1);
+					table.setWon(table.getWon()+1);
+					table.setGoal_For(table.getGoal_For() + match.getAwayTeamScore());
+					table.setGoal_Against(table.getGoal_Against()+ match.getHomeTeamScore());
+					table.setGD(table.getGoal_For() - table.getGoal_Against());
+					table.setPoints(table.getPoints() + 5);
+				}
+				if(table.getTeamName().equalsIgnoreCase(match.getHomeTeam().getTeamBadge())) {
+					table.setPlayed(table.getPlayed()+1);
+					table.setLost(table.getLost()+1);
+					table.setGoal_For(table.getGoal_For() + match.getHomeTeamScore());
+					table.setGoal_Against(table.getGoal_Against() + match.getAwayTeamScore());
+					table.setGD(table.getGoal_For() - table.getGoal_Against());
+					if((match.getAwayTeamScore() - match.getHomeTeamScore()) <= 7) {
+						table.setPoints(table.getPoints() + 1);
+					}
+				}
+			}
+		}else if(match.getHomeTeamScore() == match.getAwayTeamScore()) {
+			for(LeagueTeam table : points_table) {
+				if(table.getTeamName().equalsIgnoreCase(match.getAwayTeam().getTeamBadge())) {
+					table.setPlayed(table.getPlayed()+1);
+					table.setDrawn(table.getDrawn() + 1);
+					table.setGoal_For(table.getGoal_For() + match.getAwayTeamScore());
+					table.setGoal_Against(table.getGoal_Against()+ match.getHomeTeamScore());
+					table.setGD(table.getGoal_For() - table.getGoal_Against());
+					table.setPoints(table.getPoints() + 3);
+				}
+				if(table.getTeamName().equalsIgnoreCase(match.getHomeTeam().getTeamBadge())) {
+					table.setPlayed(table.getPlayed()+1);
+					table.setDrawn(table.getDrawn() + 1);
+					table.setGoal_For(table.getGoal_For() + match.getHomeTeamScore());
+					table.setGoal_Against(table.getGoal_Against() + match.getAwayTeamScore());
+					table.setGD(table.getGoal_For() - table.getGoal_Against());
+					table.setPoints(table.getPoints() + 3);
+				}
+			}
+		}
+		Collections.sort(points_table,new KabaddiFunctions.PointsComparator());
+		
+		return points_table;
+	}
+	
+	public static class PointsComparator implements Comparator<LeagueTeam> {
+	    @Override
+	    public int compare(LeagueTeam pt1, LeagueTeam pt2) {
+	    	if(pt2.getPoints() == pt1.getPoints()) {
+	    		return Integer.compare(pt2.getGD(), pt1.getGD());
+	    	}else {
+	    		return Integer.compare(pt2.getPoints(), pt1.getPoints());
+	    	}
+	    }
+	}
+	
 	public static List<Api_pre_match> getPreMatchDatafromXML(String file_path,String file_name) 
 			throws SAXException, IOException, ParserConfigurationException, FactoryConfigurationError{
 		

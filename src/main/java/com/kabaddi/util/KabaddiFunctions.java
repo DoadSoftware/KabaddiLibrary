@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -825,6 +826,73 @@ public class KabaddiFunctions {
 		return this_plyr;
 	}
 	
+	/*public static Match populateMatchVariables(KabaddiService footballService, Match match) {
+	    List<Player> players;
+
+	    players = match.getHomeSquad().stream()
+	        .map(plyr -> populatePlayer(footballService, plyr, match))
+	        .collect(Collectors.toList());
+	    match.setHomeSquad(players);
+
+	    players = match.getHomeSubstitutes().stream()
+	        .map(plyr -> populatePlayer(footballService, plyr, match))
+	        .collect(Collectors.toList());
+	    match.setHomeSubstitutes(players);
+
+	    if (match.getHomeOtherSquad() != null) {
+	        players = match.getHomeOtherSquad().stream()
+	            .map(plyr -> populatePlayer(footballService, plyr, match))
+	            .collect(Collectors.toList());
+	        match.setHomeOtherSquad(players);
+	    }
+
+	    players = match.getAwaySquad().stream()
+	        .map(plyr -> populatePlayer(footballService, plyr, match))
+	        .collect(Collectors.toList());
+	    match.setAwaySquad(players);
+
+	    players = match.getAwaySubstitutes().stream()
+	        .map(plyr -> populatePlayer(footballService, plyr, match))
+	        .collect(Collectors.toList());
+	    match.setAwaySubstitutes(players);
+
+	    if (match.getAwayOtherSquad() != null) {
+	        players = match.getAwayOtherSquad().stream()
+	            .map(plyr -> populatePlayer(footballService, plyr, match))
+	            .collect(Collectors.toList());
+	        match.setAwayOtherSquad(players);
+	    }
+
+	    try {
+	        if (match.getHomeTeamId() > 0) {
+	            match.setHomeTeam(footballService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getHomeTeamId())));
+	        }
+	        if (match.getAwayTeamId() > 0) {
+	            match.setAwayTeam(footballService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getAwayTeamId())));
+	        }
+	        if (match.getGroundId() > 0) {
+	            match.setGround(footballService.getGround(match.getGroundId()));
+	            match.setVenueName(match.getGround().getFullname());
+	        }
+	    } catch (Exception e) {
+	        // Log the error and handle it appropriately
+	        e.printStackTrace();
+	    }
+
+	    if (match.getMatchStats() != null) {
+	        for (MatchStats ms : match.getMatchStats()) {
+	            try {
+	                ms.setPlayer(footballService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(ms.getPlayerId())));
+	            } catch (Exception e) {
+	                // Log the error and handle it appropriately
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+
+	    return match;
+	}*/
+
 	public static Match populateMatchVariables(KabaddiService footballService,Match match) 
 	{
 		List<Player> players = new ArrayList<Player>();

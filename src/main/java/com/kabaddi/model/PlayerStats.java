@@ -15,6 +15,9 @@ public class PlayerStats {
 	int matches;
 	int matches_raided;
 	
+	int time_off_court;
+	int avg_raid_time;
+	
 	List<Points> points;
 	List<Raids> raids;
 	List<Tackles> tackles;
@@ -126,6 +129,22 @@ public class PlayerStats {
 
 	public void setMatches_raided(int matches_raided) {
 		this.matches_raided = matches_raided;
+	}
+
+	public int getTime_off_court() {
+		return time_off_court;
+	}
+
+	public void setTime_off_court(int time_off_court) {
+		this.time_off_court = time_off_court;
+	}
+
+	public int getAvg_raid_time() {
+		return avg_raid_time;
+	}
+
+	public void setAvg_raid_time(int avg_raid_time) {
+		this.avg_raid_time = avg_raid_time;
 	}
 
 	@Override

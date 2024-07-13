@@ -1,6 +1,6 @@
 package com.kabaddi.model;
 
-public class PlayerPreMatchData {
+public class PlayerPreMatchData implements Cloneable {
 	
 	private Player player;
 	
@@ -161,5 +161,18 @@ public class PlayerPreMatchData {
 		this.player = player;
 	}
 	
+	@Override
+	public PlayerPreMatchData clone() throws CloneNotSupportedException {
+		PlayerPreMatchData clone = null;
+	    try
+	    {
+	        clone = (PlayerPreMatchData) super.clone();
+	    } 
+	    catch (CloneNotSupportedException e) 
+	    {
+	        throw new RuntimeException(e);
+	    }
+	    return clone;
+	}
 	
 }

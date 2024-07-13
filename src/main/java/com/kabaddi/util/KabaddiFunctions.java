@@ -1099,12 +1099,21 @@ public class KabaddiFunctions {
 		int playerIndex = -1;
 		int superTen = 0, highFive = 0;
 		
-		if(preMatchData != null && match != null) {
+		List<PlayerPreMatchData> past_tournament_data_clone = preMatchData.stream().map(data -> {
+			try {
+				return data.clone();
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+			return data;
+		}).collect(Collectors.toList());
+		
+		if(past_tournament_data_clone != null && match != null) {
 			if(match.getApi_Match().getHomeTeamStats() != null && match.getApi_Match().getHomeTeamStats().getPlayerStats() != null) {
 				for(PlayerStats ps : match.getApi_Match().getHomeTeamStats().getPlayerStats()) {
 					playerIndex = -1;
-					for(int i=0; i<preMatchData.size(); i++) {
-						if(ps.getPlayerId() == preMatchData.get(i).getPlayerId()) {
+					for(int i=0; i<past_tournament_data_clone.size(); i++) {
+						if(ps.getPlayerId() == past_tournament_data_clone.get(i).getPlayerId()) {
 							playerIndex = i;
 							break;
 						}
@@ -1119,24 +1128,24 @@ public class KabaddiFunctions {
 								highFive++;
 							}
 						}
-						preMatchData.get(playerIndex).setPlayer(player);
-						preMatchData.get(playerIndex).setHighFive((preMatchData.get(playerIndex).getHighFive()+highFive));
-						preMatchData.get(playerIndex).setSuperTen((preMatchData.get(playerIndex).getSuperTen()+superTen));
-						preMatchData.get(playerIndex).setMatches((preMatchData.get(playerIndex).getMatches()));
+						past_tournament_data_clone.get(playerIndex).setPlayer(player);
+						past_tournament_data_clone.get(playerIndex).setHighFive((past_tournament_data_clone.get(playerIndex).getHighFive()+highFive));
+						past_tournament_data_clone.get(playerIndex).setSuperTen((past_tournament_data_clone.get(playerIndex).getSuperTen()+superTen));
+						past_tournament_data_clone.get(playerIndex).setMatches((past_tournament_data_clone.get(playerIndex).getMatches()));
 						
-						preMatchData.get(playerIndex).setTotalPoints((preMatchData.get(playerIndex).getTotalPoints()+ps.getPoints().get(0).getTotalPoints()));
-						preMatchData.get(playerIndex).setTotalRaidPoints((preMatchData.get(playerIndex).getTotalRaidPoints()+ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()));
-						preMatchData.get(playerIndex).setTotalTacklePoints((preMatchData.get(playerIndex).getTotalTacklePoints()+ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()));
+						past_tournament_data_clone.get(playerIndex).setTotalPoints((past_tournament_data_clone.get(playerIndex).getTotalPoints()+ps.getPoints().get(0).getTotalPoints()));
+						past_tournament_data_clone.get(playerIndex).setTotalRaidPoints((past_tournament_data_clone.get(playerIndex).getTotalRaidPoints()+ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()));
+						past_tournament_data_clone.get(playerIndex).setTotalTacklePoints((past_tournament_data_clone.get(playerIndex).getTotalTacklePoints()+ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()));
 						
-						preMatchData.get(playerIndex).setTotalRaids((preMatchData.get(playerIndex).getTotalRaids()+ps.getRaids().get(0).getTotalRaids()));
-						preMatchData.get(playerIndex).setSuperRaids((preMatchData.get(playerIndex).getSuperRaids()+ps.getRaids().get(0).getSuperRaids()));
-						preMatchData.get(playerIndex).setSuccessfullRaids((preMatchData.get(playerIndex).getSuccessfullRaids()+ps.getRaids().get(0).getSuccessfulRaids()));
-						preMatchData.get(playerIndex).setUnsuccessfullRaids((preMatchData.get(playerIndex).getUnsuccessfullRaids()+ps.getRaids().get(0).getUnsuccessfulRaids()));
+						past_tournament_data_clone.get(playerIndex).setTotalRaids((past_tournament_data_clone.get(playerIndex).getTotalRaids()+ps.getRaids().get(0).getTotalRaids()));
+						past_tournament_data_clone.get(playerIndex).setSuperRaids((past_tournament_data_clone.get(playerIndex).getSuperRaids()+ps.getRaids().get(0).getSuperRaids()));
+						past_tournament_data_clone.get(playerIndex).setSuccessfullRaids((past_tournament_data_clone.get(playerIndex).getSuccessfullRaids()+ps.getRaids().get(0).getSuccessfulRaids()));
+						past_tournament_data_clone.get(playerIndex).setUnsuccessfullRaids((past_tournament_data_clone.get(playerIndex).getUnsuccessfullRaids()+ps.getRaids().get(0).getUnsuccessfulRaids()));
 						
-						preMatchData.get(playerIndex).setTotalTackles((preMatchData.get(playerIndex).getTotalTackles()+ps.getTackles().get(0).getTotalTackles()));
-						preMatchData.get(playerIndex).setSuperTackle((preMatchData.get(playerIndex).getSuperTackle()+ps.getTackles().get(0).getSuperTackles()));
-						preMatchData.get(playerIndex).setSuccessfullTackles((preMatchData.get(playerIndex).getSuccessfullTackles()+ps.getTackles().get(0).getSuccessfulTackles()));
-						preMatchData.get(playerIndex).setUnsuccessfullTackles((preMatchData.get(playerIndex).getUnsuccessfullTackles()+ps.getTackles().get(0).getUnsuccessfulTackles()));
+						past_tournament_data_clone.get(playerIndex).setTotalTackles((past_tournament_data_clone.get(playerIndex).getTotalTackles()+ps.getTackles().get(0).getTotalTackles()));
+						past_tournament_data_clone.get(playerIndex).setSuperTackle((past_tournament_data_clone.get(playerIndex).getSuperTackle()+ps.getTackles().get(0).getSuperTackles()));
+						past_tournament_data_clone.get(playerIndex).setSuccessfullTackles((past_tournament_data_clone.get(playerIndex).getSuccessfullTackles()+ps.getTackles().get(0).getSuccessfulTackles()));
+						past_tournament_data_clone.get(playerIndex).setUnsuccessfullTackles((past_tournament_data_clone.get(playerIndex).getUnsuccessfullTackles()+ps.getTackles().get(0).getUnsuccessfulTackles()));
 						
 					}else {
 						Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
@@ -1148,7 +1157,7 @@ public class KabaddiFunctions {
 								highFive++;
 							}
 						}
-						preMatchData.add(new PlayerPreMatchData(match.getHomeTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()), ps.getPoints().get(0).getTotalPoints(),
+						past_tournament_data_clone.add(new PlayerPreMatchData(match.getHomeTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()), ps.getPoints().get(0).getTotalPoints(),
 								ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
 								ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
 								ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
@@ -1158,32 +1167,32 @@ public class KabaddiFunctions {
 				if(match.getApi_Match().getAwayTeamStats() != null && match.getApi_Match().getAwayTeamStats().getPlayerStats() != null) {
 					for(PlayerStats ps : match.getApi_Match().getAwayTeamStats().getPlayerStats()) {
 						playerIndex = -1;
-						for(int i=0; i<preMatchData.size(); i++) {
-							if(ps.getPlayerId() == preMatchData.get(i).getPlayerId()) {
+						for(int i=0; i<past_tournament_data_clone.size(); i++) {
+							if(ps.getPlayerId() == past_tournament_data_clone.get(i).getPlayerId()) {
 								playerIndex = i;
 								break;
 							}
 						}
 						if(playerIndex>=0) {
 							Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
-							preMatchData.get(playerIndex).setPlayer(player);
-							preMatchData.get(playerIndex).setHighFive((preMatchData.get(playerIndex).getHighFive()+highFive));
-							preMatchData.get(playerIndex).setSuperTen((preMatchData.get(playerIndex).getSuperTen()+superTen));
-							preMatchData.get(playerIndex).setMatches((preMatchData.get(playerIndex).getMatches()));
+							past_tournament_data_clone.get(playerIndex).setPlayer(player);
+							past_tournament_data_clone.get(playerIndex).setHighFive((past_tournament_data_clone.get(playerIndex).getHighFive()+highFive));
+							past_tournament_data_clone.get(playerIndex).setSuperTen((past_tournament_data_clone.get(playerIndex).getSuperTen()+superTen));
+							past_tournament_data_clone.get(playerIndex).setMatches((past_tournament_data_clone.get(playerIndex).getMatches()));
 							
-							preMatchData.get(playerIndex).setTotalPoints((preMatchData.get(playerIndex).getTotalPoints()+ps.getPoints().get(0).getTotalPoints()));
-							preMatchData.get(playerIndex).setTotalRaidPoints((preMatchData.get(playerIndex).getTotalRaidPoints()+ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()));
-							preMatchData.get(playerIndex).setTotalTacklePoints((preMatchData.get(playerIndex).getTotalTacklePoints()+ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()));
+							past_tournament_data_clone.get(playerIndex).setTotalPoints((past_tournament_data_clone.get(playerIndex).getTotalPoints()+ps.getPoints().get(0).getTotalPoints()));
+							past_tournament_data_clone.get(playerIndex).setTotalRaidPoints((past_tournament_data_clone.get(playerIndex).getTotalRaidPoints()+ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()));
+							past_tournament_data_clone.get(playerIndex).setTotalTacklePoints((past_tournament_data_clone.get(playerIndex).getTotalTacklePoints()+ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()));
 							
-							preMatchData.get(playerIndex).setTotalRaids((preMatchData.get(playerIndex).getTotalRaids()+ps.getRaids().get(0).getTotalRaids()));
-							preMatchData.get(playerIndex).setSuperRaids((preMatchData.get(playerIndex).getSuperRaids()+ps.getRaids().get(0).getSuperRaids()));
-							preMatchData.get(playerIndex).setSuccessfullRaids((preMatchData.get(playerIndex).getSuccessfullRaids()+ps.getRaids().get(0).getSuccessfulRaids()));
-							preMatchData.get(playerIndex).setUnsuccessfullRaids((preMatchData.get(playerIndex).getUnsuccessfullRaids()+ps.getRaids().get(0).getUnsuccessfulRaids()));
+							past_tournament_data_clone.get(playerIndex).setTotalRaids((past_tournament_data_clone.get(playerIndex).getTotalRaids()+ps.getRaids().get(0).getTotalRaids()));
+							past_tournament_data_clone.get(playerIndex).setSuperRaids((past_tournament_data_clone.get(playerIndex).getSuperRaids()+ps.getRaids().get(0).getSuperRaids()));
+							past_tournament_data_clone.get(playerIndex).setSuccessfullRaids((past_tournament_data_clone.get(playerIndex).getSuccessfullRaids()+ps.getRaids().get(0).getSuccessfulRaids()));
+							past_tournament_data_clone.get(playerIndex).setUnsuccessfullRaids((past_tournament_data_clone.get(playerIndex).getUnsuccessfullRaids()+ps.getRaids().get(0).getUnsuccessfulRaids()));
 							
-							preMatchData.get(playerIndex).setTotalTackles((preMatchData.get(playerIndex).getTotalTackles()+ps.getTackles().get(0).getTotalTackles()));
-							preMatchData.get(playerIndex).setSuperTackle((preMatchData.get(playerIndex).getSuperTackle()+ps.getTackles().get(0).getSuperTackles()));
-							preMatchData.get(playerIndex).setSuccessfullTackles((preMatchData.get(playerIndex).getSuccessfullTackles()+ps.getTackles().get(0).getSuccessfulTackles()));
-							preMatchData.get(playerIndex).setUnsuccessfullTackles((preMatchData.get(playerIndex).getUnsuccessfullTackles()+ps.getTackles().get(0).getUnsuccessfulTackles()));
+							past_tournament_data_clone.get(playerIndex).setTotalTackles((past_tournament_data_clone.get(playerIndex).getTotalTackles()+ps.getTackles().get(0).getTotalTackles()));
+							past_tournament_data_clone.get(playerIndex).setSuperTackle((past_tournament_data_clone.get(playerIndex).getSuperTackle()+ps.getTackles().get(0).getSuperTackles()));
+							past_tournament_data_clone.get(playerIndex).setSuccessfullTackles((past_tournament_data_clone.get(playerIndex).getSuccessfullTackles()+ps.getTackles().get(0).getSuccessfulTackles()));
+							past_tournament_data_clone.get(playerIndex).setUnsuccessfullTackles((past_tournament_data_clone.get(playerIndex).getUnsuccessfullTackles()+ps.getTackles().get(0).getUnsuccessfulTackles()));
 							
 						}else {
 							Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
@@ -1195,7 +1204,7 @@ public class KabaddiFunctions {
 									highFive++;
 								}
 							}
-							preMatchData.add(new PlayerPreMatchData(match.getAwayTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()), ps.getPoints().get(0).getTotalPoints(),
+							past_tournament_data_clone.add(new PlayerPreMatchData(match.getAwayTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()), ps.getPoints().get(0).getTotalPoints(),
 									ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
 									ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
 									ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
@@ -1204,7 +1213,7 @@ public class KabaddiFunctions {
 				}
 			}
 		}
-		return preMatchData;
+		return past_tournament_data_clone;
 	}
 	
 	public static class raidPointComparator implements Comparator<PlayerPreMatchData> {

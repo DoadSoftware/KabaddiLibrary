@@ -32,19 +32,23 @@ public class Configurations {
 	
 	@XmlElement(name="vizscene")
 	private String vizscene;
+	
+	@XmlElement(name="preview")
+	private String preview;
 
 	public Configurations() {
 		super();
 	}
-
+	
 	public Configurations(String broadcaster, String ipAddress, int portNumber, String secondaryipAddress,
-			int secondaryportNumber) {
+			int secondaryportNumber, String preview) {
 		super();
 		this.broadcaster = broadcaster;
 		this.ipAddress = ipAddress;
 		this.portNumber = portNumber;
 		this.secondaryipAddress = secondaryipAddress;
 		this.secondaryportNumber = secondaryportNumber;
+		this.preview = preview;
 	}
 
 	public String getVizscene() {
@@ -99,4 +103,13 @@ public class Configurations {
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
+
+	public String getPreview() {
+		return preview;
+	}
+
+	public void setPreview(String preview) {
+		this.preview = preview;
+	}
+	
 }

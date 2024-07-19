@@ -186,6 +186,28 @@ public class KabaddiFunctions {
 	    return raids;
 	}
 
+	public static Match SwapMatch(Match match) {
+		Match swapMatch = new Match();
+		
+		//clock
+		swapMatch.setClock(match.getClock());
+		
+		swapMatch.setHomeTeamId(match.getAwayTeamId());
+		swapMatch.setAwayTeamId(match.getHomeTeamId());
+		
+		//scores
+		swapMatch.setHomeTeamScore(match.getAwayTeamScore());
+		swapMatch.setAwayTeamScore(match.getHomeTeamScore());
+		//team
+		swapMatch.setHomeTeam(match.getAwayTeam());
+		swapMatch.setAwayTeam(match.getHomeTeam());
+		
+		swapMatch.getApi_Match().setHomeTeamStats(match.getApi_Match().getAwayTeamStats());
+		swapMatch.getApi_Match().setAwayTeamStats(match.getApi_Match().getHomeTeamStats());
+		
+		return swapMatch;
+	}
+	
 	public static List<LeagueTeam> PointsTableAsStanding(List<LeagueTeam> points_table, Match match) throws IOException {
 		
 		if(match.getHomeTeamScore() > match.getAwayTeamScore()) {

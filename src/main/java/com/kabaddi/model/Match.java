@@ -83,7 +83,7 @@ public class Match {
   private Team awayTeam;
   
   @XmlTransient
-  private Api_Match Api_Match;
+  private Api_Match Api_Match = new Api_Match();
   
 //  @XmlTransient
 //  private List<Api_pre_match> Api_PreMatch;

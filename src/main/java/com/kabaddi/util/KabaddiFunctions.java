@@ -33,7 +33,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.healthmarketscience.jackcess.impl.query.QueryImpl.Row;
+import com.api.model.kabaddi.InMatchData;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kabaddi.model.Api_Match;
 import com.kabaddi.model.Api_pre_match;
 import com.kabaddi.model.Configurations;
 import com.kabaddi.model.Do_Or_Die;
@@ -46,6 +50,7 @@ import com.kabaddi.model.Player;
 import com.kabaddi.model.PlayerPreMatchData;
 import com.kabaddi.model.PlayerStats;
 import com.kabaddi.model.Points;
+import com.kabaddi.model.PointsNminutes;
 import com.kabaddi.model.RaidPoints;
 import com.kabaddi.model.Raids;
 import com.kabaddi.model.TacklePoints;
@@ -186,7 +191,7 @@ public class KabaddiFunctions {
 	    return raids;
 	}
 
-	public static Match SwapMatch(Match match) {
+	public static Match SwapMatch(Match match) throws Exception {
 		Match swapMatch = new Match();
 		
 		//clock
@@ -202,12 +207,147 @@ public class KabaddiFunctions {
 		swapMatch.setHomeTeam(match.getAwayTeam());
 		swapMatch.setAwayTeam(match.getHomeTeam());
 		
+		swapMatch.getApi_Match().setHomeTeam(match.getHomeTeam());
+		swapMatch.getApi_Match().setAwayTeam(match.getAwayTeam());
+		
 		swapMatch.getApi_Match().setHomeTeamStats(match.getApi_Match().getAwayTeamStats());
 		swapMatch.getApi_Match().setAwayTeamStats(match.getApi_Match().getHomeTeamStats());
 		
+		setMatch(swapMatch.getApi_Match());
+		
 		return swapMatch;
 	}
+	public static void setMatch(Api_Match match)throws Exception {
+		InMatchData mch = new ObjectMapper().readValue(new File("C:\\Users\\azaza\\Downloads\\"
+				+ "4698-in-match(Punjabi Tigers Team Point).json"), InMatchData.class);
+		
+		for(com.api.model.kabaddi.InMatchData.Team tm :mch.getInMatch().getTeamPlayersStatistics().getTeam()) {
+			if(tm.getTeamName().contains(match.getHomeTeam().getTeamName1())) {
+				setTeamStats(match.getHomeTeamStats() , tm);
+			}else {
+				setTeamStats(match.getAwayTeamStats() , tm);
+			}
+		}
+	}
 	
+	public static void setTeamStats(TeamPlayerStats team ,com.api.model.kabaddi.InMatchData.Team tm)throws Exception {
+		team.setTeamId(Integer.valueOf(tm.getTeamId()));
+		team.setTeamName(tm.getTeamName());
+		team.setNo_of_players_on_court(Integer.valueOf(tm.getNoOfPlayersOnCourt()));
+		 
+		 Points point = new Points();
+		 
+		team.setPoints(new ArrayList<Points>());
+		point.setRaid_points(new ArrayList<RaidPoints>());
+		point.setTackle_points(new ArrayList<TacklePoints>());
+		team.setRaids(new ArrayList<Raids>());
+		team.setTackles(new ArrayList<Tackles>());
+
+		 
+		 point.setAll_out_points(Integer.valueOf(tm.getPoints().getAllOutPoints()));
+		 point.setTotalPoints(Integer.valueOf(tm.getPoints().getTotalPoints()));
+		 point.setExtra_points(Integer.valueOf(tm.getPoints().getExtraPoints()));
+		 
+		 point.getRaid_points().set(0,new RaidPoints(
+				 Integer.valueOf(tm.getPoints().getRaidPoints().getTotalRaidPoints()),
+				 Integer.valueOf(tm.getPoints().getRaidPoints().getTouchPoints()), 
+				 Integer.valueOf(tm.getPoints().getRaidPoints().getRaidBonusPoints())));
+		 
+		 point.getTackle_points().set(0, new TacklePoints(
+				Integer.parseInt(tm.getPoints().getTacklePoints().getTotalTacklePoints()),
+			    Integer.parseInt(tm.getPoints().getTacklePoints().getCapturePoints()),
+			    Integer.parseInt(tm.getPoints().getTacklePoints().getTackleBonusPoints())));
+
+		team.getPoints().add(point);
+		 
+		team.setPointsNminutes(new PointsNminutes(
+				 Integer.parseInt(tm.getPointsLastNMinutes().getFive()) ,
+				 Integer.parseInt(tm.getPointsLastNMinutes().getTen())));
+			
+		team.getRaids().add(new Raids(
+				 Integer.parseInt(tm.getRaids().getTotalRaids()) ,
+				 Integer.parseInt(tm.getRaids().getSuperRaids()) ,
+				 Integer.parseInt(tm.getRaids().getSuccessfulRaids()) ,
+				 Integer.parseInt(tm.getRaids().getUnsuccessfulRaids()) ,
+				 Integer.parseInt(tm.getRaids().getEmptyRaids()) ));
+		 
+		team.getTackles().add(new Tackles(
+				 Integer.parseInt(tm.getTackles().getTotalTackles()) ,
+				 Integer.parseInt(tm.getTackles().getSuperTackles()) ,
+				 Integer.parseInt(tm.getTackles().getSuccessfulTackles()) ,
+				 Integer.parseInt(tm.getTackles().getUnsuccessfulTackles()) 
+				 ));
+		 
+		team.getDo_or_die().add(new Do_Or_Die(
+				 Integer.parseInt(tm.getDoOrDie().getTotalRaids()) ,
+				 Integer.parseInt(tm.getDoOrDie().getSuccessfulRaids()) ,
+				 Integer.parseInt(tm.getDoOrDie().getFailedRaids()) ,
+				 Integer.parseInt(tm.getDoOrDie().getSuperRaids()) ,
+				 Integer.parseInt(tm.getDoOrDie().getRaidPoints()) ,
+				 Integer.parseInt(tm.getDoOrDie().getTouchPoints()) ,
+				 Integer.parseInt(tm.getDoOrDie().getBonusPoints()) 
+				 ));
+		
+		team.setPlayerStats(new ArrayList<PlayerStats>());
+		 
+		 for(com.api.model.kabaddi.InMatchData.Player ply :tm.getPlayers().getPlayer()) {
+			 
+			 PlayerStats PlayerStats = new PlayerStats();
+			 
+			 PlayerStats.setPlayerId(Integer.valueOf(ply.getPlayerId()));
+			 PlayerStats.setPlayer_on_court(ply.getPlayerOnCourt());
+			 PlayerStats.setAvg_raid_time(Integer.valueOf(ply.getAvgRaidTime()));
+
+			 point = new Points();
+			 
+   			 team.setPoints(new ArrayList<Points>());
+			 point.setRaid_points(new ArrayList<RaidPoints>());
+			 point.setTackle_points(new ArrayList<TacklePoints>());
+			 team.setRaids(new ArrayList<Raids>());
+			 team.setTackles(new ArrayList<Tackles>());
+
+			 point.setTotalPoints(Integer.valueOf(ply.getPoints().getTotalPoints()));
+			 
+			 point.getRaid_points().set(0,new RaidPoints(
+					 Integer.valueOf(ply.getPoints().getRaidPoints().getTotalRaidPoints()),
+					 Integer.valueOf(ply.getPoints().getRaidPoints().getTouchPoints().getTotalTouchPoints()), 
+					 Integer.valueOf(ply.getPoints().getRaidPoints().getTotalRaidPoints())));
+			 
+			 point.getTackle_points().set(0, new TacklePoints(
+					Integer.parseInt(ply.getPoints().getTacklePoints().getTotalTacklePoints()),
+				    Integer.parseInt((ply.getPoints().getTacklePoints().getCapturePoints().getTotalCapturePoints())),
+				    Integer.parseInt(ply.getPoints().getTacklePoints().getTackleBonusPoints())));
+
+			 PlayerStats.getPoints().add(point);
+			 
+			 PlayerStats.getRaids().add(new Raids(
+					 Integer.parseInt(ply.getRaids().getTotalRaids()) ,
+					 Integer.parseInt(ply.getRaids().getSuperRaids()) ,
+					 Integer.parseInt(ply.getRaids().getSuccessfulRaids()) ,
+					 Integer.parseInt(ply.getRaids().getUnsuccessfulRaids()) ,
+					 Integer.parseInt(ply.getRaids().getEmptyRaids()) ));
+			 
+			 PlayerStats.getTackles().add(new Tackles(
+					 Integer.parseInt(ply.getTackles().getTotalTackles()) ,
+					 Integer.parseInt(ply.getTackles().getSuperTackles()) ,
+					 Integer.parseInt(ply.getTackles().getSuccessfulTackles()) ,
+					 Integer.parseInt(ply.getTackles().getUnsuccessfulTackles()) 
+					 ));
+			 
+			 PlayerStats.getDo_or_die().add(new Do_Or_Die(
+					 Integer.parseInt(ply.getDoOrDie().getTotalRaids()) ,
+					 Integer.parseInt(ply.getDoOrDie().getSuccessfulRaids()) ,
+					 Integer.parseInt(ply.getDoOrDie().getFailedRaids()) ,
+					 Integer.parseInt(ply.getDoOrDie().getSuperRaids()) ,
+					 Integer.parseInt(ply.getDoOrDie().getRaidPoints()) ,
+					 Integer.parseInt(ply.getDoOrDie().getTouchPoints()) ,
+					 Integer.parseInt(ply.getDoOrDie().getBonusPoints()) 
+					 ));
+			 
+			 team.getPlayerStats().add(PlayerStats);
+		 }
+	}
+
 	public static List<LeagueTeam> PointsTableAsStanding(List<LeagueTeam> points_table, Match match) throws IOException {
 		
 		if(match.getHomeTeamScore() > match.getAwayTeamScore()) {

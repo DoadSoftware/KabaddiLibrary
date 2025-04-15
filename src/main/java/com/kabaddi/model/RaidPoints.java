@@ -36,6 +36,12 @@ public class RaidPoints {
 		this.raidBounsPoints = raidBounsPoints;
 	}
 	
+	public RaidPoints(int totalRaidPoints, int touchPoints, int raidBounsPoints) {
+		super();
+		this.totalRaidPoints = totalRaidPoints;
+		this.touchPoints = touchPoints;
+		this.raidBounsPoints = raidBounsPoints;
+	}
 	@Override
 	public String toString() {
 		return "RaidPoints [totalRaidPoints=" + totalRaidPoints + ", touchPoints=" + touchPoints + ", raidBounsPoints="

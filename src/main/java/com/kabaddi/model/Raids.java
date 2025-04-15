@@ -22,6 +22,15 @@ public class Raids {
 		this.superRaids = superRaids;
 	}
 	
+	public Raids(int totalRaids, int superRaids, int successfulRaids, int unsuccessfulRaids, int emptyRaids) {
+		super();
+		this.totalRaids = totalRaids;
+		this.superRaids = superRaids;
+		this.successfulRaids = successfulRaids;
+		this.unsuccessfulRaids = unsuccessfulRaids;
+		this.emptyRaids = emptyRaids;
+	}
+
 	public int getTotalRaids() {
 		return totalRaids;
 	}

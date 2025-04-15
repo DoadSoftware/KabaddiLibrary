@@ -1,5 +1,6 @@
 package com.api.model.kabaddi;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
@@ -109,12 +110,13 @@ public class InMatchData {
         @JsonProperty("no-of-players-on-court")
         public String noOfPlayersOnCourt;
 
-        public Points points;
+        public PointsTeam points;
 
         @JsonProperty("points-last-n-minutes")
         public PointsLastNMinutes pointsLastNMinutes;
 
         public Raids raids;
+        
         public Tackles tackles;
 
         @JsonProperty("do-or-die")
@@ -146,11 +148,11 @@ public class InMatchData {
 			this.noOfPlayersOnCourt = noOfPlayersOnCourt;
 		}
 
-		public Points getPoints() {
+		public PointsTeam getPoints() {
 			return points;
 		}
 
-		public void setPoints(Points points) {
+		public void setPoints(PointsTeam points) {
 			this.points = points;
 		}
 
@@ -206,8 +208,79 @@ public class InMatchData {
 			// TODO Auto-generated constructor stub
 		}
     }
-
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Points {
+        @JsonProperty("total-points")
+        public String totalPoints;
+
+        @JsonProperty("tackle-points")
+        public TacklePointsPlayer tacklePoints;
+
+        @JsonProperty("raid-points")
+        public RaidPointsPlayer raidPoints;
+
+        @JsonProperty("all-out-points")
+        public String allOutPoints;
+
+        @JsonProperty("extra-points")
+        public String extraPoints;
+        
+		public String getTotalPoints() {
+			return totalPoints;
+		}
+
+		public void setTotalPoints(String totalPoints) {
+			this.totalPoints = totalPoints;
+		}
+
+		public TacklePointsPlayer getTacklePoints() {
+			return tacklePoints;
+		}
+
+		public void setTacklePoints(TacklePointsPlayer tacklePoints) {
+			this.tacklePoints = tacklePoints;
+		}
+
+		public RaidPointsPlayer getRaidPoints() {
+			return raidPoints;
+		}
+
+		public void setRaidPoints(RaidPointsPlayer raidPoints) {
+			this.raidPoints = raidPoints;
+		}
+
+		public String getAllOutPoints() {
+			return allOutPoints;
+		}
+
+		public void setAllOutPoints(String allOutPoints) {
+			this.allOutPoints = allOutPoints;
+		}
+
+		public String getExtraPoints() {
+			return extraPoints;
+		}
+
+		public void setExtraPoints(String extraPoints) {
+			this.extraPoints = extraPoints;
+		}
+
+		@Override
+		public String toString() {
+			return "Points [totalPoints=" + totalPoints + ", tacklePoints=" + tacklePoints + ", raidPoints="
+					+ raidPoints + "]";
+		}
+
+		public Points() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
+        
+    }
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class PointsTeam {
         @JsonProperty("total-points")
         public String totalPoints;
 
@@ -269,20 +342,22 @@ public class InMatchData {
 					+ raidPoints + ", allOutPoints=" + allOutPoints + ", extraPoints=" + extraPoints + "]";
 		}
 
-		public Points() {
+		public PointsTeam() {
 			super();
 			// TODO Auto-generated constructor stub
 		}
         
     }
-
+    
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class TacklePoints {
         @JsonProperty("total-tackle-points")
         public String totalTacklePoints;
 
         @JsonProperty("capture-points")
-        public Object capturePoints; // can be string or object (based on team/player)
-
+        public String capturePoints; 
+        
         @JsonProperty("tackle-bonus-points")
         public String tackleBonusPoints;
 
@@ -294,11 +369,11 @@ public class InMatchData {
 			this.totalTacklePoints = totalTacklePoints;
 		}
 
-		public Object getCapturePoints() {
+		public String getCapturePoints() {
 			return capturePoints;
 		}
 
-		public void setCapturePoints(Object capturePoints) {
+		public void setCapturePoints(String capturePoints) {
 			this.capturePoints = capturePoints;
 		}
 
@@ -317,6 +392,53 @@ public class InMatchData {
 		}
 
 		public TacklePoints() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
+        
+    }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class TacklePointsPlayer {
+        @JsonProperty("total-tackle-points")
+        public String totalTacklePoints;
+
+        @JsonProperty("capture-points")
+        public CapturePoints capturePoints; 
+        
+        @JsonProperty("tackle-bonus-points")
+        public String tackleBonusPoints;
+
+		public String getTotalTacklePoints() {
+			return totalTacklePoints;
+		}
+
+		public void setTotalTacklePoints(String totalTacklePoints) {
+			this.totalTacklePoints = totalTacklePoints;
+		}
+
+		public CapturePoints getCapturePoints() {
+			return capturePoints;
+		}
+
+		public void setCapturePoints(CapturePoints capturePoints) {
+			this.capturePoints = capturePoints;
+		}
+
+		public String getTackleBonusPoints() {
+			return tackleBonusPoints;
+		}
+
+		public void setTackleBonusPoints(String tackleBonusPoints) {
+			this.tackleBonusPoints = tackleBonusPoints;
+		}
+
+		@Override
+		public String toString() {
+			return "TacklePoints [totalTacklePoints=" + totalTacklePoints + ", capturePoints=" + capturePoints
+					+ ", tackleBonusPoints=" + tackleBonusPoints + "]";
+		}
+
+		public TacklePointsPlayer() {
 			super();
 			// TODO Auto-generated constructor stub
 		}
@@ -393,12 +515,14 @@ public class InMatchData {
         
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true) 
     public static class RaidPoints {
+    	
         @JsonProperty("total-raid-points")
         public String totalRaidPoints;
 
         @JsonProperty("touch-points")
-        public Object touchPoints; // sometimes number, sometimes object
+        public String touchPoints; 
 
         @JsonProperty("raid-bonus-points")
         public String raidBonusPoints;
@@ -411,11 +535,11 @@ public class InMatchData {
 			this.totalRaidPoints = totalRaidPoints;
 		}
 
-		public Object getTouchPoints() {
+		public String getTouchPoints() {
 			return touchPoints;
 		}
 
-		public void setTouchPoints(Object touchPoints) {
+		public void setTouchPoints(String touchPoints) {
 			this.touchPoints = touchPoints;
 		}
 
@@ -439,7 +563,125 @@ public class InMatchData {
 		}
         
     }
+    @JsonIgnoreProperties(ignoreUnknown = true) 
+    public static class RaidPointsPlayer {
+    	
+        @JsonProperty("total-raid-points")
+        public String totalRaidPoints;
 
+        @JsonProperty("touch-points")
+        public TouchPointsPlayer touchPoints; 
+
+
+		public String getTotalRaidPoints() {
+			return totalRaidPoints;
+		}
+
+		public void setTotalRaidPoints(String totalRaidPoints) {
+			this.totalRaidPoints = totalRaidPoints;
+		}
+
+		public TouchPointsPlayer getTouchPoints() {
+			return touchPoints;
+		}
+
+		public void setTouchPoints(TouchPointsPlayer touchPoints) {
+			this.touchPoints = touchPoints;
+		}
+
+
+		@Override
+		public String toString() {
+			return "RaidPoints [totalRaidPoints=" + totalRaidPoints + ", touchPoints=" + touchPoints+ "]";
+		}
+
+		public RaidPointsPlayer() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
+        
+    }
+    public static class TouchPointsPlayer{
+    	@JsonProperty("total-touch-points")
+        public String totalTouchPoints;
+
+        @JsonProperty("skill-points")
+        public SkillPoints skillPoints;
+
+		public String getTotalTouchPoints() {
+			return totalTouchPoints;
+		}
+
+		public void setTotalTouchPoints(String totalTouchPoints) {
+			this.totalTouchPoints = totalTouchPoints;
+		}
+
+		public SkillPoints getSkillPoints() {
+			return skillPoints;
+		}
+
+		public void setSkillPoints(SkillPoints skillPoints) {
+			this.skillPoints = skillPoints;
+		}
+
+		@Override
+		public String toString() {
+			return "TouchPointsPlayer [totalTouchPoints=" + totalTouchPoints + ", skillPoints=" + skillPoints + "]";
+		}
+
+		public TouchPointsPlayer() {
+			super();
+			// TODO Auto-generated constructor stub
+		}  
+
+    }
+    public static class TouchPoints {
+    	
+    	@JsonProperty("total-tackle-points")
+        public String totalTacklePoints;
+    	
+    	@JsonProperty("capture-points")
+        public CapturePoints capturePoints;
+    	
+    	@JsonProperty("tackle-bonus-points")
+        public String tackleBonusPoints;
+
+		public String getTotalTacklePoints() {
+			return totalTacklePoints;
+		}
+
+		public void setTotalTacklePoints(String totalTacklePoints) {
+			this.totalTacklePoints = totalTacklePoints;
+		}
+
+		public CapturePoints getCapturePoints() {
+			return capturePoints;
+		}
+
+		public void setCapturePoints(CapturePoints capturePoints) {
+			this.capturePoints = capturePoints;
+		}
+
+		public String getTackleBonusPoints() {
+			return tackleBonusPoints;
+		}
+
+		public void setTackleBonusPoints(String tackleBonusPoints) {
+			this.tackleBonusPoints = tackleBonusPoints;
+		}
+
+		@Override
+		public String toString() {
+			return "TouchPoints [totalTacklePoints=" + totalTacklePoints + ", capturePoints=" + capturePoints
+					+ ", tackleBonusPoints=" + tackleBonusPoints + "]";
+		}
+
+		public TouchPoints() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
+    }
+    
     public static class PointsLastNMinutes {
         public String five;
         public String ten;
@@ -1136,7 +1378,7 @@ public class InMatchData {
         @JsonProperty("total-points")
         public String totalPoints;
 
-        public Points points;
+        public PointsTeam points;
 
 		public RaidTeam() {
 			super();
@@ -1164,11 +1406,11 @@ public class InMatchData {
 			this.totalPoints = totalPoints;
 		}
 
-		public Points getPoints() {
+		public PointsTeam getPoints() {
 			return points;
 		}
 
-		public void setPoints(Points points) {
+		public void setPoints(PointsTeam points) {
 			this.points = points;
 		}
         

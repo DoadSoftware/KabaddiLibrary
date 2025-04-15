@@ -41,6 +41,18 @@ public class Player implements Comparable<Player>
   
   @Column(name = "PHOTO")
   private String photo;
+  
+  @Column(name = "Age")
+  private String age;
+  
+  @Column(name = "OverseasPlayer")
+  private boolean overseasPlayer;
+  
+  @Column(name = "Category")
+  private String category;
+
+  @Column(name = "Nationality")
+  private String nationality;
  
   @Transient
   private Integer playerPosition;
@@ -164,6 +176,38 @@ public String getPlayerAPIId() {
 
 public void setPlayerAPIId(String playerAPIId) {
 	PlayerAPIId = playerAPIId;
+}
+
+public String getAge() {
+	return age;
+}
+
+public void setAge(String age) {
+	this.age = age;
+}
+
+public boolean isOverseasPlayer() {
+	return overseasPlayer;
+}
+
+public void setOverseasPlayer(boolean overseasPlayer) {
+	this.overseasPlayer = overseasPlayer;
+}
+
+public String getCategory() {
+	return category;
+}
+
+public void setCategory(String category) {
+	this.category = category;
+}
+
+public String getNationality() {
+	return nationality;
+}
+
+public void setNationality(String nationality) {
+	this.nationality = nationality;
 }
 
 @Override

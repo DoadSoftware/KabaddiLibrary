@@ -2,127 +2,117 @@ package com.kabaddi.model;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name="Match")
-@XmlAccessorType(XmlAccessType.FIELD)
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Match {
 
-  @XmlElement(name = "homeSubstitutesPerTeam")
+  @JsonProperty("homeSubstitutesPerTeam")
   private int homeSubstitutesPerTeam;
 
-  @XmlElement(name = "awaySubstitutesPerTeam")
+  @JsonProperty("awaySubstitutesPerTeam")
   private int awaySubstitutesPerTeam;
   
-  @XmlElement(name = "matchFileTimeStamp")
+  @JsonProperty("matchFileTimeStamp")
   private String matchFileTimeStamp;
 
-  @XmlElement(name = "matchResult")
+  @JsonProperty("matchResult")
   private String matchResult;
 
-  @XmlElement(name = "matchStatus")
+  @JsonProperty("matchStatus")
   private String matchStatus;
   
-  @XmlElement(name = "matchFileName")
+  @JsonProperty("matchFileName")
   private String matchFileName;
 
-  @XmlElement(name = "tournament")
+  @JsonProperty("tournament")
   private String tournament;
 
-  @XmlElement(name = "matchIdent")
+  @JsonProperty("matchIdent")
   private String matchIdent;
   
-  @XmlElement(name = "matchId")
+  @JsonProperty("matchId")
   private String matchId;
   
-  @XmlElement(name = "homeTeamId")
+  @JsonProperty("homeTeamId")
   private int homeTeamId;
 
-  @XmlElement(name = "awayTeamId")
+  @JsonProperty("awayTeamId")
   private int awayTeamId;
  
-  @XmlElement(name = "homeTeamJerseyColor")
+  @JsonProperty("homeTeamJerseyColor")
   private String homeTeamJerseyColor;
 
-  @XmlElement(name = "awayTeamJerseyColor")
+  @JsonProperty("awayTeamJerseyColor")
   private String awayTeamJerseyColor;
   
-  @XmlElement(name = "homeTeamGKJerseyColor")
+  @JsonProperty("homeTeamGKJerseyColor")
   private String homeTeamGKJerseyColor;
 
-  @XmlElement(name = "awayTeamGKJerseyColor")
+  @JsonProperty("awayTeamGKJerseyColor")
   private String awayTeamGKJerseyColor;
 
-  @XmlElement(name = "groundId")
+  @JsonProperty("groundId")
   private int groundId;
 
-  @XmlElement(name = "venueName")
+  @JsonProperty("venueName")
   private String venueName;
 
-  @XmlElement(name = "homeTeamScore")
+  @JsonProperty("homeTeamScore")
   private int homeTeamScore;
 
-  @XmlElement(name = "awayTeamScore")
+  @JsonProperty("awayTeamScore")
   private int awayTeamScore;
 
-  @XmlTransient
+  @JsonIgnore
   private String api_photo;
   
-  @XmlTransient
+  @JsonIgnore
   private Ground ground;
   
-  @XmlTransient
+  @JsonIgnore
   private Team homeTeam;
 
-  @XmlTransient
+  @JsonIgnore
   private Team awayTeam;
   
-  @XmlTransient
+  @JsonIgnore
   private Api_Match Api_Match = new Api_Match();
   
-//  @XmlTransient
+//  @JsonIgnore
 //  private List<Api_pre_match> Api_PreMatch;
   
-  @XmlTransient
+  @JsonIgnore
   private List<Api_pre_match> api_PreMatch;
 
-  @XmlElementWrapper(name = "homeSquad")
-  @XmlElement(name = "homeSquad")
+  @JsonProperty("homeSquad")
   private List<Player> homeSquad;
 
-  @XmlElementWrapper(name = "homeSubstitutes")
-  @XmlElement(name = "homeSubstitutes")
+  @JsonProperty("homeSubstitutes")
   private List<Player> homeSubstitutes;
   
-  @XmlElementWrapper(name = "awaySquad")
-  @XmlElement(name = "awaySquad")
+  @JsonProperty("awaySquad")
   private List<Player> awaySquad;
 
-  @XmlElementWrapper(name = "awaySubstitutes")
-  @XmlElement(name = "awaySubstitutes")
+  @JsonProperty("awaySubstitutes")
   private List<Player> awaySubstitutes;
   
-  @XmlElementWrapper(name = "homeOtherSquad")
-  @XmlElement(name = "homeOtherSquad")
+  @JsonProperty("homeOtherSquad")
   private List<Player> homeOtherSquad;
 
-  @XmlElementWrapper(name = "awayOtherSquad")
-  @XmlElement(name = "awayOtherSquad")
+  @JsonProperty("awayOtherSquad")
   private List<Player> awayOtherSquad;
 
-  @XmlElementWrapper(name = "matchStats")
-  @XmlElement(name = "matchStat")
+  @JsonProperty("matchStat")
   private List<MatchStats> matchStats;
   
-  @XmlElement(name = "clock")
+  @JsonProperty("clock")
   private Clock clock;
 
-  @XmlTransient
+  String categoryType = "";
+  @JsonIgnore
   private List<Event> events;
 
 public Clock getClock() {
@@ -395,6 +385,31 @@ public List<Api_pre_match> getApi_PreMatch() {
 
 public void setApi_PreMatch(List<Api_pre_match> api_PreMatch) {
 	this.api_PreMatch = api_PreMatch;
+}
+
+public String getCategoryType() {
+	return categoryType;
+}
+
+public void setCategoryType(String categoryType) {
+	this.categoryType = categoryType;
+}
+
+@Override
+public String toString() {
+	return "Match [homeSubstitutesPerTeam=" + homeSubstitutesPerTeam + ", awaySubstitutesPerTeam="
+			+ awaySubstitutesPerTeam + ", matchFileTimeStamp=" + matchFileTimeStamp + ", matchResult=" + matchResult
+			+ ", matchStatus=" + matchStatus + ", matchFileName=" + matchFileName + ", tournament=" + tournament
+			+ ", matchIdent=" + matchIdent + ", matchId=" + matchId + ", homeTeamId=" + homeTeamId + ", awayTeamId="
+			+ awayTeamId + ", homeTeamJerseyColor=" + homeTeamJerseyColor + ", awayTeamJerseyColor="
+			+ awayTeamJerseyColor + ", homeTeamGKJerseyColor=" + homeTeamGKJerseyColor + ", awayTeamGKJerseyColor="
+			+ awayTeamGKJerseyColor + ", groundId=" + groundId + ", venueName=" + venueName + ", homeTeamScore="
+			+ homeTeamScore + ", awayTeamScore=" + awayTeamScore + ", api_photo=" + api_photo + ", ground=" + ground
+			+ ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", Api_Match=" + Api_Match + ", api_PreMatch="
+			+ api_PreMatch + ", homeSquad=" + homeSquad + ", homeSubstitutes=" + homeSubstitutes + ", awaySquad="
+			+ awaySquad + ", awaySubstitutes=" + awaySubstitutes + ", homeOtherSquad=" + homeOtherSquad
+			+ ", awayOtherSquad=" + awayOtherSquad + ", matchStats=" + matchStats + ", clock=" + clock + ", events="
+			+ events + "]";
 }
 
 }

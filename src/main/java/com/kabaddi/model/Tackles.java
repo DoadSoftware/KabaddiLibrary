@@ -21,6 +21,14 @@ public class Tackles {
 		this.superTackles = superTackles;
 	}
 	
+	public Tackles(int totalTackles, int superTackles, int successfulTackles, int unsuccessfulTackles) {
+		super();
+		this.totalTackles = totalTackles;
+		this.superTackles = superTackles;
+		this.successfulTackles = successfulTackles;
+		this.unsuccessfulTackles = unsuccessfulTackles;
+	}
+
 	public int getTotalTackles() {
 		return totalTackles;
 	}

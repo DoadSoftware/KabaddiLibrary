@@ -1,63 +1,58 @@
 package com.kabaddi.model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@XmlRootElement(name="event")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Event implements Comparable<Event> {
 
-  @XmlElement(name = "eventNumber")
+ @JsonProperty("eventNumber")
   private int eventNumber;
 
-  @XmlElement(name = "eventPlayerId")
+ @JsonProperty("eventPlayerId")
   private int eventPlayerId;
   
-  @XmlElement(name = "eventMatchHalves")
+ @JsonProperty("eventMatchHalves")
   private String eventMatchHalves;
   
-  @XmlElement(name = "statsId")
+ @JsonProperty("statsId")
   private int statsId;
 
-  @XmlElement(name = "eventLog")
+ @JsonProperty("eventLog")
   private String eventLog;
   
-  @XmlElement(name = "eventType")
+ @JsonProperty("eventType")
   private String eventType;
   
-  @XmlElement(name = "offPlayerId")
+ @JsonProperty("offPlayerId")
   private int offPlayerId;
   
-  @XmlElement(name = "onPlayerId")
+ @JsonProperty("onPlayerId")
   private int onPlayerId;
 
-  @XmlElement(name = "eventScore")
+ @JsonProperty("eventScore")
   private int eventScore;
   
-  @XmlElement(name = "eventTeamId")
+ @JsonProperty("eventTeamId")
   private int eventTeamId;
   
-  @XmlElement(name = "BonusPoint")
+ @JsonProperty("BonusPoint")
   private String BonusPoint;
   
-  @XmlElement(name = "SuperTackelPoint")
+ @JsonProperty("SuperTackelPoint")
   private String SuperTackelPoint;
   
-  @XmlElement(name = "SuperRaidPoint")
+ @JsonProperty("SuperRaidPoint")
   private String SuperRaidPoint;
   
-  @XmlElement(name = "AllOutPoint")
+ @JsonProperty("AllOutPoint")
   private String AllOutPoint;
   
-  @XmlElement(name = "TouchesPoint")
+ @JsonProperty("TouchesPoint")
   private int TouchesPoint;
   
-  @XmlElement(name = "totalHomePoints")
+ @JsonProperty("totalHomePoints")
   private int totalHomePoints;
   
-  @XmlElement(name = "totalAwayPoints")
+ @JsonProperty("totalAwayPoints")
   private int totalAwayPoints;
   
 public Event() {

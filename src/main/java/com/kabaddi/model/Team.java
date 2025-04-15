@@ -46,6 +46,9 @@ public class Team implements Comparable<Team> {
   @Column(name = "TeamApiId")
   private String teamApiId;
 
+  @Column(name = "Category")
+  private String category;
+
 public int getTeamId() {
 	return teamId;
 }
@@ -140,6 +143,14 @@ public String getTeamAssistantCoach() {
 
 public void setTeamAssistantCoach(String teamAssistantCoach) {
 	this.teamAssistantCoach = teamAssistantCoach;
+}
+
+public String getCategory() {
+	return category;
+}
+
+public void setCategory(String category) {
+	this.category = category;
 }
 
 @Override

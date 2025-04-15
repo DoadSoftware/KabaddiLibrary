@@ -17,6 +17,19 @@ public class Do_Or_Die {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	public Do_Or_Die(int totalRaids, int successfullRaids, int failedRaids, int superRaids, int raidPoints,
+			int touchPoints, int bonusPoints) {
+		super();
+		this.totalRaids = totalRaids;
+		this.successfullRaids = successfullRaids;
+		this.failedRaids = failedRaids;
+		this.superRaids = superRaids;
+		this.raidPoints = raidPoints;
+		this.touchPoints = touchPoints;
+		this.bonusPoints = bonusPoints;
+	}
+
 	public Do_Or_Die(int totalRaids) {
 		super();
 		this.totalRaids = totalRaids;

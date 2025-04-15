@@ -36,6 +36,12 @@ public class TacklePoints {
 		this.tackleBounsPoints = tackleBounsPoints;
 	}
 	
+	public TacklePoints(int totalTacklePoints, int capturePoints, int tackleBounsPoints) {
+		super();
+		this.totalTacklePoints = totalTacklePoints;
+		this.capturePoints = capturePoints;
+		this.tackleBounsPoints = tackleBounsPoints;
+	}
 	@Override
 	public String toString() {
 		return "TacklePoints [totalTacklePoints=" + totalTacklePoints + ", capturePoints=" + capturePoints

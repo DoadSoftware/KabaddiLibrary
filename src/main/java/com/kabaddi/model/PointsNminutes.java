@@ -26,4 +26,15 @@ public class PointsNminutes {
 		this.ten = ten;
 	}
 
+	public PointsNminutes(int five, int ten) {
+		super();
+		this.five = five;
+		this.ten = ten;
+	}
+
+	@Override
+	public String toString() {
+		return "PointsNminutes [five=" + five + ", ten=" + ten + "]";
+	}
+
 }

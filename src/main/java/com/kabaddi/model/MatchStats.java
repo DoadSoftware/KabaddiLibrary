@@ -1,52 +1,49 @@
 package com.kabaddi.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name="matchStats")
-@XmlAccessorType(XmlAccessType.FIELD)
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class MatchStats {
 
-  @XmlElement(name = "statsId")
+  @JsonProperty("statsId")
   private int statsId;
 
-  @XmlElement(name = "playerId")
+  @JsonProperty("playerId")
   private int playerId;
   
-  @XmlElement(name = "matchHalves")
+  @JsonProperty("matchHalves")
   private String matchHalves;
   
-  @XmlElement(name = "statsType")
+  @JsonProperty("statsType")
   private String stats_type;
 
-  @XmlElement(name = "statsCount")
+  @JsonProperty("statsCount")
   private int statsCount;
 
-  @XmlElement(name = "totalMatchMilliSeconds")
+  @JsonProperty("totalMatchMilliSeconds")
   private long totalMatchMilliSeconds;
   
-  @XmlElement(name = "TeamId")
+  @JsonProperty("TeamId")
   private int TeamId;
   
-  @XmlElement(name = "offplayerId")
+  @JsonProperty("offplayerId")
   private int offplayerId;
   
-  @XmlElement(name = "onplayerId")
+  @JsonProperty("onplayerId")
   private int onplayerId;
   
-  @XmlElement(name = "raiderIn")
+  @JsonProperty("raiderIn")
   private String raiderIn;
   
-  @XmlElement(name = "home_point")
+  @JsonProperty("home_point")
   private int home_point;
   
-  @XmlElement(name = "away_point")
+  @JsonProperty("away_point")
   private int away_point;
 
-  @XmlTransient
+  @JsonIgnore
   private Player player;
   
 public MatchStats() {

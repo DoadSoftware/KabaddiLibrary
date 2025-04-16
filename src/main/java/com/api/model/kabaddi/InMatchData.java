@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class InMatchData {
 
     @JsonProperty("in-match")
@@ -1313,6 +1314,7 @@ public class InMatchData {
         
     }
     
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Result {
         @JsonProperty("match-status-id")
         public String matchStatusId;
@@ -1325,6 +1327,9 @@ public class InMatchData {
 
         @JsonProperty("winner-declared")
         public String winnerDeclared;
+        
+        @JsonProperty("result-type")
+        public String resultType;
 
 		public String getMatchStatusId() {
 			return matchStatusId;
@@ -1356,6 +1361,14 @@ public class InMatchData {
 
 		public void setWinnerDeclared(String winnerDeclared) {
 			this.winnerDeclared = winnerDeclared;
+		}
+		
+		public String getResultType() {
+			return resultType;
+		}
+
+		public void setResultType(String resultType) {
+			this.resultType = resultType;
 		}
 
 		public Result() {

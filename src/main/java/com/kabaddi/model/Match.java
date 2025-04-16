@@ -2,11 +2,11 @@ package com.kabaddi.model;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlTransient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Match {
 
   @JsonProperty("homeSubstitutesPerTeam")

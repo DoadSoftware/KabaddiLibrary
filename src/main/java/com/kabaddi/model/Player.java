@@ -46,7 +46,7 @@ public class Player implements Comparable<Player>
   private String age;
   
   @Column(name = "OverseasPlayer")
-  private boolean overseasPlayer;
+  private String overseasPlayer;
   
   @Column(name = "Category")
   private String category;
@@ -186,11 +186,11 @@ public void setAge(String age) {
 	this.age = age;
 }
 
-public boolean isOverseasPlayer() {
+public String getOverseasPlayer() {
 	return overseasPlayer;
 }
 
-public void setOverseasPlayer(boolean overseasPlayer) {
+public void setOverseasPlayer(String overseasPlayer) {
 	this.overseasPlayer = overseasPlayer;
 }
 

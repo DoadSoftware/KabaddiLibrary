@@ -35,4 +35,11 @@ public void setMatchTotalMilliSeconds(long matchTotalMilliSeconds) {
 	this.matchTotalMilliSeconds = matchTotalMilliSeconds;
 }
 
+public Clock() {
+	super();
+	this.matchHalves = "";
+	this.matchTimeStatus = "";
+	this.matchTotalMilliSeconds = 0;
+}
+
 }

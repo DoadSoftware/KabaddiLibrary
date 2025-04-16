@@ -213,21 +213,18 @@ public class KabaddiFunctions {
 		swapMatch.getApi_Match().setHomeTeamStats(match.getApi_Match().getAwayTeamStats());
 		swapMatch.getApi_Match().setAwayTeamStats(match.getApi_Match().getHomeTeamStats());
 		
-		setMatch(swapMatch.getApi_Match());
+		setMatch(swapMatch.getApi_Match(),match);
 		
 		return swapMatch;
 	}
-	public static void setMatch(Api_Match match)throws Exception {
-		InMatchData mch = new ObjectMapper().readValue(new File("C:\\Users\\azaza\\Downloads\\"
-				+ "4698-in-match(Punjabi Tigers Team Point).json"), InMatchData.class);
+	public static void setMatch(Api_Match match,Match session_match)throws Exception {
+		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +session_match.getMatchId() +"-in-match" 
+				+ KabaddiUtil.JSON_EXTENSION), InMatchData.class);
 		
-		for(com.api.model.kabaddi.InMatchData.Team tm :mch.getInMatch().getTeamPlayersStatistics().getTeam()) {
-			if(tm.getTeamName().contains(match.getHomeTeam().getTeamName1())) {
-				setTeamStats(match.getHomeTeamStats() , tm);
-			}else {
-				setTeamStats(match.getAwayTeamStats() , tm);
-			}
-		}
+		match.setHomeTeamStats(new TeamPlayerStats());
+		match.setAwayTeamStats(new TeamPlayerStats());
+		setTeamStats(match.getHomeTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0));
+		setTeamStats(match.getAwayTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1));
 	}
 	
 	public static void setTeamStats(TeamPlayerStats team ,com.api.model.kabaddi.InMatchData.Team tm)throws Exception {
@@ -235,25 +232,26 @@ public class KabaddiFunctions {
 		team.setTeamName(tm.getTeamName());
 		team.setNo_of_players_on_court(Integer.valueOf(tm.getNoOfPlayersOnCourt()));
 		 
-		 Points point = new Points();
+		Points point = new Points();
 		 
 		team.setPoints(new ArrayList<Points>());
 		point.setRaid_points(new ArrayList<RaidPoints>());
 		point.setTackle_points(new ArrayList<TacklePoints>());
 		team.setRaids(new ArrayList<Raids>());
 		team.setTackles(new ArrayList<Tackles>());
+		team.setDo_or_die(new ArrayList<Do_Or_Die>());
 
 		 
 		 point.setAll_out_points(Integer.valueOf(tm.getPoints().getAllOutPoints()));
 		 point.setTotalPoints(Integer.valueOf(tm.getPoints().getTotalPoints()));
 		 point.setExtra_points(Integer.valueOf(tm.getPoints().getExtraPoints()));
 		 
-		 point.getRaid_points().set(0,new RaidPoints(
+		 point.getRaid_points().add(new RaidPoints(
 				 Integer.valueOf(tm.getPoints().getRaidPoints().getTotalRaidPoints()),
 				 Integer.valueOf(tm.getPoints().getRaidPoints().getTouchPoints()), 
 				 Integer.valueOf(tm.getPoints().getRaidPoints().getRaidBonusPoints())));
 		 
-		 point.getTackle_points().set(0, new TacklePoints(
+		 point.getTackle_points().add(new TacklePoints(
 				Integer.parseInt(tm.getPoints().getTacklePoints().getTotalTacklePoints()),
 			    Integer.parseInt(tm.getPoints().getTacklePoints().getCapturePoints()),
 			    Integer.parseInt(tm.getPoints().getTacklePoints().getTackleBonusPoints())));
@@ -288,7 +286,7 @@ public class KabaddiFunctions {
 				 Integer.parseInt(tm.getDoOrDie().getBonusPoints()) 
 				 ));
 		
-		team.setPlayerStats(new ArrayList<PlayerStats>());
+		 team.setPlayerStats(new ArrayList<PlayerStats>());
 		 
 		 for(com.api.model.kabaddi.InMatchData.Player ply :tm.getPlayers().getPlayer()) {
 			 
@@ -300,20 +298,21 @@ public class KabaddiFunctions {
 
 			 point = new Points();
 			 
-   			 team.setPoints(new ArrayList<Points>());
+			 PlayerStats.setPoints(new ArrayList<Points>());
 			 point.setRaid_points(new ArrayList<RaidPoints>());
 			 point.setTackle_points(new ArrayList<TacklePoints>());
-			 team.setRaids(new ArrayList<Raids>());
-			 team.setTackles(new ArrayList<Tackles>());
+			 PlayerStats.setRaids(new ArrayList<Raids>());
+			 PlayerStats.setTackles(new ArrayList<Tackles>());
+			 PlayerStats.setDo_or_die(new ArrayList<Do_Or_Die>());
 
 			 point.setTotalPoints(Integer.valueOf(ply.getPoints().getTotalPoints()));
 			 
-			 point.getRaid_points().set(0,new RaidPoints(
+			 point.getRaid_points().add( new RaidPoints(
 					 Integer.valueOf(ply.getPoints().getRaidPoints().getTotalRaidPoints()),
 					 Integer.valueOf(ply.getPoints().getRaidPoints().getTouchPoints().getTotalTouchPoints()), 
 					 Integer.valueOf(ply.getPoints().getRaidPoints().getTotalRaidPoints())));
 			 
-			 point.getTackle_points().set(0, new TacklePoints(
+			 point.getTackle_points().add(  new TacklePoints(
 					Integer.parseInt(ply.getPoints().getTacklePoints().getTotalTacklePoints()),
 				    Integer.parseInt((ply.getPoints().getTacklePoints().getCapturePoints().getTotalCapturePoints())),
 				    Integer.parseInt(ply.getPoints().getTacklePoints().getTackleBonusPoints())));

@@ -163,4 +163,12 @@ public class TeamPlayerStats {
 		this.pointsNminutes = pointsNminutes;
 	}
 
+	@Override
+	public String toString() {
+		return "TeamPlayerStats [teamName=" + teamName + ", teamId=" + teamId + ", no_of_players_on_court="
+				+ no_of_players_on_court + ", matches=" + matches + ", won=" + won + ", lost=" + lost + ", tied=" + tied
+				+ ", points=" + points + ", pointsNminutes=" + pointsNminutes + ", raids=" + raids + ", tackles="
+				+ tackles + ", do_or_die=" + do_or_die + ", playerStats=" + playerStats + "]";
+	}
+
 }

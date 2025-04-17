@@ -23,6 +23,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.compress.harmony.pack200.NewAttributeBands.Integral;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -34,6 +35,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.api.model.kabaddi.InMatchData;
+import com.api.model.kabaddi.InMatchData.PlayByPlay;
+import com.api.model.kabaddi.InMatchData.Raid;
+import com.api.model.kabaddi.InMatchData.RaidTeam;
 import com.api.model.kabaddi.PreMatchData;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -46,7 +50,10 @@ import com.kabaddi.model.Fixture;
 import com.kabaddi.model.LeagueTeam;
 import com.kabaddi.model.Match;
 import com.kabaddi.model.MatchStats;
+import com.kabaddi.model.Phase;
+import com.kabaddi.model.Phase_of_play;
 import com.kabaddi.model.PlayByRaids;
+import com.kabaddi.model.PlayByTeams;
 import com.kabaddi.model.Player;
 import com.kabaddi.model.PlayerPreMatchData;
 import com.kabaddi.model.PlayerStats;
@@ -58,6 +65,7 @@ import com.kabaddi.model.TacklePoints;
 import com.kabaddi.model.Tackles;
 import com.kabaddi.model.Team;
 import com.kabaddi.model.TeamPlayerStats;
+import com.kabaddi.model.play_by_play;
 import com.kabaddi.service.KabaddiService;
 
 public class KabaddiFunctions {
@@ -218,7 +226,9 @@ public class KabaddiFunctions {
 		
 		return swapMatch;
 	}
+	
 	public static void setMatch(Api_Match match,Match session_match)throws Exception {
+		
 		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +session_match.getMatchId() +"-in-match" 
 				+ KabaddiUtil.JSON_EXTENSION), InMatchData.class);
 		
@@ -226,8 +236,137 @@ public class KabaddiFunctions {
 		match.setAwayTeamStats(new TeamPlayerStats());
 		setTeamStats(match.getHomeTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0));
 		setTeamStats(match.getAwayTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1));
+		
+		if(match.getPlay_by_play()==null) {
+			match.setPlay_by_play(new play_by_play());
+		}
+		match.getPlay_by_play().setPlayByRaids( new ArrayList<PlayByRaids>());
+		setPlayByRaid(match ,mch);
+		
+		if(match.getPhase_of_play()==null) {
+			match.setPhase_of_play(new Phase_of_play());
+		}
+		setPhaseOfPlay(match ,mch);
 	}
 	
+	
+	private static void setPhaseOfPlay(Api_Match match, InMatchData mch) {
+		if (match.getPhase_of_play() == null || mch.getInMatch() == null || 
+		        mch.getInMatch().getPhase_of_play() == null || 
+		        mch.getInMatch().getPhase_of_play().getPhase() == null) {
+		        return;
+		  }
+		match.getPhase_of_play().setPhase(new ArrayList<Phase>());
+		
+		for(com.api.model.kabaddi.InMatchData.Phase phase :mch.getInMatch().getPhase_of_play().getPhase()) {
+			Phase pse = new Phase();
+			pse.setPhase_name(phase.getPhaseName());
+			pse.setTeam(new ArrayList<PlayByTeams>());
+			
+			if (phase.getTeam() != null) {
+				 
+			 for (com.api.model.kabaddi.InMatchData.Team tm : phase.getTeam()) {
+				 
+				 PlayByTeams team = new PlayByTeams();
+				 	
+				 team.setTeam_id(Integer.valueOf(tm.getTeamId()));
+				 	team.setTeam_name(tm.getTeamName());
+				 	team.setTotal_points(Integer.valueOf(tm.getPoints().getTotalPoints()));
+				 	 
+				 	Points point = new Points();
+				 	 
+	                if (tm.getPoints() != null) {
+	                    point.setAll_out_points(tm.getPoints().getAllOutPoints() != null ? Integer.parseInt(tm.getPoints().getAllOutPoints()) : 0);
+	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
+	                    point.setExtra_points(tm.getPoints().getExtraPoints() != null ? Integer.parseInt(tm.getPoints().getExtraPoints()) : 0);
+	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
+
+	                    point.setRaid_points(new ArrayList<>());
+	                    if (tm.getPoints().getRaidPoints() != null) {
+	                        point.getRaid_points().add(new RaidPoints(
+	                            tm.getPoints().getRaidPoints().getTotalRaidPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTotalRaidPoints()) : 0,
+	                            tm.getPoints().getRaidPoints().getTouchPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTouchPoints()) : 0,
+	                            tm.getPoints().getRaidPoints().getRaidBonusPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getRaidBonusPoints()) : 0
+	                        ));
+	                    }
+
+	                    point.setTackle_points(new ArrayList<>());
+	                    if (tm.getPoints().getTacklePoints() != null) {
+	                        point.getTackle_points().add(new TacklePoints(
+	                            tm.getPoints().getTacklePoints().getTotalTacklePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTotalTacklePoints()) : 0,
+	                            tm.getPoints().getTacklePoints().getCapturePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getCapturePoints()) : 0,
+	                            tm.getPoints().getTacklePoints().getTackleBonusPoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTackleBonusPoints()) : 0
+	                        ));
+	                    }
+	                }
+		            team.setPoints(point);	
+		            pse.getTeam().add(team);
+				} 
+			 }
+			match.getPhase_of_play().getPhase().add(pse);
+		}
+	}
+	private static void setPlayByRaid(Api_Match match, InMatchData mch) {
+	    if (match.getPlay_by_play() == null || mch.getInMatch() == null || 
+	        mch.getInMatch().getPlay_by_play() == null || 
+	        mch.getInMatch().getPlay_by_play().getRaid() == null) {
+	        return;
+	    }
+
+	    match.getPlay_by_play().setPlayByRaids(new ArrayList<>());
+
+	    for (Raid raid : mch.getInMatch().getPlay_by_play().getRaid()) {
+	        PlayByRaids raids = new PlayByRaids();
+
+	        raids.setRaid_number(raid.getRaidNumber() != null ? Integer.parseInt(raid.getRaidNumber()) : 0);
+	        raids.setRaid_half(raid.getRaidHalf() != null ? Integer.parseInt(raid.getRaidHalf()) : 0);
+	        raids.setRaid_outcome_id(raid.getRaidOutcomeId() != null ? Integer.parseInt(raid.getRaidOutcomeId()) : 0);
+	        raids.setRaiding_player_id(raid.getRaidingPlayerId() != null ? Integer.parseInt(raid.getRaidingPlayerId()) : 0);
+	        raids.setRaiding_team_id(raid.getRaidingTeamId() != null ? Integer.parseInt(raid.getRaidingTeamId()) : 0);
+
+	        raids.setTeam(new ArrayList<>());
+
+	        if (raid.getTeam() != null) {
+	            for (RaidTeam tm : raid.getTeam()) {
+	                PlayByTeams team = new PlayByTeams();
+	                team.setTeam_id(tm.getTeamId() != null ? Integer.parseInt(tm.getTeamId()) : 0);
+	                team.setTotal_points(tm.getTotalPoints() != null ? Integer.parseInt(tm.getTotalPoints()) : 0);
+
+	                Points point = new Points();
+	                if (tm.getPoints() != null) {
+	                    point.setAll_out_points(tm.getPoints().getAllOutPoints() != null ? Integer.parseInt(tm.getPoints().getAllOutPoints()) : 0);
+	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
+	                    point.setExtra_points(tm.getPoints().getExtraPoints() != null ? Integer.parseInt(tm.getPoints().getExtraPoints()) : 0);
+	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
+
+	                    point.setRaid_points(new ArrayList<>());
+	                    if (tm.getPoints().getRaidPoints() != null) {
+	                        point.getRaid_points().add(new RaidPoints(
+	                            tm.getPoints().getRaidPoints().getTotalRaidPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTotalRaidPoints()) : 0,
+	                            tm.getPoints().getRaidPoints().getTouchPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTouchPoints()) : 0,
+	                            tm.getPoints().getRaidPoints().getRaidBonusPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getRaidBonusPoints()) : 0
+	                        ));
+	                    }
+
+	                    point.setTackle_points(new ArrayList<>());
+	                    if (tm.getPoints().getTacklePoints() != null) {
+	                        point.getTackle_points().add(new TacklePoints(
+	                            tm.getPoints().getTacklePoints().getTotalTacklePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTotalTacklePoints()) : 0,
+	                            tm.getPoints().getTacklePoints().getCapturePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getCapturePoints()) : 0,
+	                            tm.getPoints().getTacklePoints().getTackleBonusPoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTackleBonusPoints()) : 0
+	                        ));
+	                    }
+	                }
+
+	                team.setPoints(point);
+	                raids.getTeam().add(team);
+	            }
+	        }
+
+	        match.getPlay_by_play().getPlayByRaids().add(raids);
+	    }
+	}
+
 	public static void setPreMatch(Api_pre_match match,Match session_match)throws Exception {
 		PreMatchData mch ;
 		if(session_match.getCategoryType().equalsIgnoreCase("men")) {
@@ -299,6 +438,68 @@ public class KabaddiFunctions {
 					 Integer.parseInt(tm.getDoOrDie().getBonusPoints()) 
 					 ));
 			match.getTeamPlayerStats().add(team);
+			match.getTeamPlayerStats().get(match.getTeamPlayerStats().size()-1).setPlayerStats(new ArrayList<PlayerStats>());
+			if(tm.getPlayers()!=null && tm.getPlayers().getPlayer()!=null) {
+				for(com.api.model.kabaddi.PreMatchData.Player ply :tm.getPlayers().getPlayer()) {
+					 PlayerStats PlayerStats = new PlayerStats();
+					 
+					 PlayerStats.setPlayerId(Integer.valueOf(ply.getPlayerId()));
+					 PlayerStats.setHigh_five(Integer.valueOf(ply.getHighFive()));
+					 PlayerStats.setSuper_ten(Integer.valueOf(ply.getSuperTen()));
+					 PlayerStats.setMatches(Integer.valueOf(ply.getMatches()));
+					 PlayerStats.setMatches(Integer.valueOf(ply.getMatches()));
+					 PlayerStats.setMatches_raided(Integer.valueOf(ply.getMatchesRaided()));
+					 
+					 point = new Points();
+					 
+					 PlayerStats.setPoints(new ArrayList<Points>());
+					 point.setRaid_points(new ArrayList<RaidPoints>());
+					 point.setTackle_points(new ArrayList<TacklePoints>());
+					 PlayerStats.setRaids(new ArrayList<Raids>());
+					 PlayerStats.setTackles(new ArrayList<Tackles>());
+					 PlayerStats.setDo_or_die(new ArrayList<Do_Or_Die>());
+
+					 point.setTotalPoints(Integer.valueOf(ply.getPoints().getTotalPoints()));
+					 
+					 point.getRaid_points().add( new RaidPoints(
+							 Integer.valueOf(ply.getPoints().getRaidPoints().getTotalRaidPoints()),
+							 Integer.valueOf(ply.getPoints().getRaidPoints().getRaidPoints().getTotalTouchPoints()), 
+							 Integer.valueOf(ply.getPoints().getRaidPoints().getTotalRaidPoints())));
+					 
+					 point.getTackle_points().add(  new TacklePoints(
+							Integer.parseInt(ply.getPoints().getTacklePoints().getTotalTacklePoints()),
+						    Integer.parseInt((ply.getPoints().getTacklePoints().getCapturePoints().getTotalCapturePoints())),
+						    Integer.parseInt(ply.getPoints().getTacklePoints().getTackleBonusPoints())));
+
+					 PlayerStats.getPoints().add(point);
+					 
+					 PlayerStats.getRaids().add(new Raids(
+							 Integer.parseInt(ply.getRaids().getTotalRaids()) ,
+							 Integer.parseInt(ply.getRaids().getSuperRaids()) ,
+							 Integer.parseInt(ply.getRaids().getSuccessfulRaids()) ,
+							 Integer.parseInt(ply.getRaids().getUnsuccessfulRaids()) ,
+							 Integer.parseInt(ply.getRaids().getEmptyRaids()) ));
+					 
+					 PlayerStats.getTackles().add(new Tackles(
+							 Integer.parseInt(ply.getTackles().getTotalTackles()) ,
+							 Integer.parseInt(ply.getTackles().getSuperTackles()) ,
+							 Integer.parseInt(ply.getTackles().getSuccessfulTackles()) ,
+							 Integer.parseInt(ply.getTackles().getUnsuccessfulTackles()) 
+							 ));
+					 
+					 PlayerStats.getDo_or_die().add(new Do_Or_Die(
+							 Integer.parseInt(ply.getDoOrDie().getTotalRaids()) ,
+							 Integer.parseInt(ply.getDoOrDie().getSuccessfullRaids()) ,
+							 Integer.parseInt(ply.getDoOrDie().getFailedRaids()) ,
+							 Integer.parseInt(ply.getDoOrDie().getSuperRaids()) ,
+							 Integer.parseInt(ply.getDoOrDie().getRaidPoints()) ,
+							 Integer.parseInt(ply.getDoOrDie().getTouchPoints()) ,
+							 Integer.parseInt(ply.getDoOrDie().getBonusPoints()) 
+							 ));
+					 
+					 match.getTeamPlayerStats().get(match.getTeamPlayerStats().size()-1).getPlayerStats().add(PlayerStats);
+				 }	
+			} 
 		}
 	}
 	public static void setTeamStats(TeamPlayerStats team ,com.api.model.kabaddi.InMatchData.Team tm)throws Exception {

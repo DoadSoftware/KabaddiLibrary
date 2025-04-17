@@ -368,13 +368,16 @@ public class KabaddiFunctions {
 	}
 
 	public static void setPreMatch(Api_pre_match match,Match session_match)throws Exception {
-		PreMatchData mch ;
-		if(session_match.getCategoryType().equalsIgnoreCase("men")) {
+		PreMatchData mch = null ;
+		if(session_match.getCategoryType().equalsIgnoreCase("MEN")) {
 			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_76m" 
 					+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
-		}else {
+		}else  if(session_match.getCategoryType().equalsIgnoreCase("WOMEN")) {
 			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_77m" 
 					+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
+		}
+		if(mch == null) {
+			return;
 		}
 		match.setTeamPlayerStats(new ArrayList<TeamPlayerStats>());
 		

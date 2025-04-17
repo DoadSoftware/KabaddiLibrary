@@ -34,6 +34,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.api.model.kabaddi.InMatchData;
+import com.api.model.kabaddi.PreMatchData;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -227,6 +228,79 @@ public class KabaddiFunctions {
 		setTeamStats(match.getAwayTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1));
 	}
 	
+	public static void setPreMatch(Api_pre_match match,Match session_match)throws Exception {
+		PreMatchData mch ;
+		if(session_match.getCategoryType().equalsIgnoreCase("men")) {
+			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_76m" 
+					+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
+		}else {
+			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_77m" 
+					+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
+		}
+		match.setTeamPlayerStats(new ArrayList<TeamPlayerStats>());
+		
+		for(com.api.model.kabaddi.PreMatchData.Team tm :mch.getPreMatch().getTeamPlayersStatistics().getTeam()) {
+			TeamPlayerStats team = new TeamPlayerStats();
+			team.setTeamId(Integer.valueOf(tm.getTeamId()));
+			team.setTeamName(tm.getTeamName());
+			 
+			Points point = new Points();
+			 
+			 team.setPoints(new ArrayList<Points>());
+			 point.setRaid_points(new ArrayList<RaidPoints>());
+			 point.setTackle_points(new ArrayList<TacklePoints>());
+			 team.setRaids(new ArrayList<Raids>());
+			 team.setTackles(new ArrayList<Tackles>());
+			 team.setDo_or_die(new ArrayList<Do_Or_Die>());
+
+			 team.setMatches(Integer.valueOf(tm.getMatches()));
+			 team.setWon(Integer.valueOf(tm.getWon()));
+			 team.setLost(Integer.valueOf(tm.getLost()));
+			 team.setTied(Integer.valueOf(tm.getTied()));
+			 
+			 point.setAll_out_points(Integer.valueOf(tm.getPoints().getAllOutPoints()));
+			 point.setTotalPoints(Integer.valueOf(tm.getPoints().getTotalPoints()));
+			 point.setExtra_points(Integer.valueOf(tm.getPoints().getExtraPoints()));
+			 
+			 point.getRaid_points().add(new RaidPoints(
+					 Integer.valueOf(tm.getPoints().getRaidPoints().getTotalRaidPoints()),
+					 Integer.valueOf(tm.getPoints().getRaidPoints().getTouchPoints()), 
+					 Integer.valueOf(tm.getPoints().getRaidPoints().getRaidBonusPoints())));
+			 
+			 point.getTackle_points().add(new TacklePoints(
+					Integer.parseInt(tm.getPoints().getTacklePoints().getTotalTacklePoints()),
+				    Integer.parseInt(tm.getPoints().getTacklePoints().getCapturePoints()),
+				    Integer.parseInt(tm.getPoints().getTacklePoints().getTackleBonusPoints())));
+
+			team.getPoints().add(point);
+			 
+				
+			team.getRaids().add(new Raids(
+					 Integer.parseInt(tm.getRaids().getTotalRaids()) ,
+					 Integer.parseInt(tm.getRaids().getSuperRaids()) ,
+					 Integer.parseInt(tm.getRaids().getSuccessfulRaids()) ,
+					 Integer.parseInt(tm.getRaids().getUnsuccessfulRaids()) ,
+					 Integer.parseInt(tm.getRaids().getEmptyRaids()) ));
+			 
+			team.getTackles().add(new Tackles(
+					 Integer.parseInt(tm.getTackles().getTotalTackles()) ,
+					 Integer.parseInt(tm.getTackles().getSuperTackles()) ,
+					 Integer.parseInt(tm.getTackles().getSuccessfulTackles()) ,
+					 Integer.parseInt(tm.getTackles().getUnsuccessfulTackles()) 
+					 ));
+			 
+			team.getDo_or_die().add(new Do_Or_Die(
+					 Integer.parseInt(tm.getDoOrDie().getTotalRaids()) ,
+					 Integer.parseInt(tm.getDoOrDie().getSuccessfullRaids()) ,
+					 Integer.parseInt(tm.getDoOrDie().getFailedRaids()) ,
+					 Integer.parseInt(tm.getDoOrDie().getSuperRaids()) ,
+					 Integer.parseInt(tm.getDoOrDie().getRaidPoints()) ,
+					 Integer.parseInt(tm.getDoOrDie().getTouchPoints()) ,
+					 Integer.parseInt(tm.getDoOrDie().getBonusPoints()) 
+					 ));
+			match.getTeamPlayerStats().add(team);
+		}
+	}
 	public static void setTeamStats(TeamPlayerStats team ,com.api.model.kabaddi.InMatchData.Team tm)throws Exception {
 		team.setTeamId(Integer.valueOf(tm.getTeamId()));
 		team.setTeamName(tm.getTeamName());

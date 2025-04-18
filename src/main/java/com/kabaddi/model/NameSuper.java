@@ -3,17 +3,9 @@ package com.kabaddi.model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.apache.commons.lang3.builder.DiffBuilder;
-import org.apache.commons.lang3.builder.DiffResult;
-import org.apache.commons.lang3.builder.Diffable;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.Column;
 
-
-@SuppressWarnings("unused")
 @Entity
 @Table(name = "NameSupers")
 public class NameSuper

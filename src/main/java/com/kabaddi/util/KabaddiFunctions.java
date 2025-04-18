@@ -222,8 +222,6 @@ public class KabaddiFunctions {
 		swapMatch.getApi_Match().setHomeTeamStats(match.getApi_Match().getAwayTeamStats());
 		swapMatch.getApi_Match().setAwayTeamStats(match.getApi_Match().getHomeTeamStats());
 		
-		setMatch(swapMatch.getApi_Match(),match);
-		
 		return swapMatch;
 	}
 	

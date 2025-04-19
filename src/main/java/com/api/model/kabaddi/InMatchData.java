@@ -21,7 +21,8 @@ public class InMatchData {
 	public void setInMatch(InMatch inMatch) {
 		this.inMatch = inMatch;
 	}
-
+	
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class InMatch {
         @JsonProperty("team-players-statistics")
         public TeamPlayersStatistics teamPlayersStatistics;
@@ -78,7 +79,8 @@ public class InMatchData {
 			// TODO Auto-generated constructor stub
 		}
     }
-
+	
+	@JsonIgnoreProperties(ignoreUnknown = true)
     public static class TeamPlayersStatistics {
         public List<Team> team;
 
@@ -100,7 +102,8 @@ public class InMatchData {
 			// TODO Auto-generated constructor stub
 		}
     }
-
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Team {
         @JsonProperty("team-name")
         public String teamName;
@@ -445,7 +448,8 @@ public class InMatchData {
 		}
         
     }
-
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CapturePoints {
         @JsonProperty("total-capture-points")
         public String totalCapturePoints;
@@ -480,7 +484,8 @@ public class InMatchData {
 		}
         
     }
-
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class SkillPoints {
         @JsonProperty("skill-id")
         public String skillId;
@@ -602,6 +607,8 @@ public class InMatchData {
 		}
         
     }
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class TouchPointsPlayer{
     	@JsonProperty("total-touch-points")
         public String totalTouchPoints;
@@ -636,6 +643,8 @@ public class InMatchData {
 		}  
 
     }
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class TouchPoints {
     	
     	@JsonProperty("total-tackle-points")
@@ -682,7 +691,7 @@ public class InMatchData {
 			// TODO Auto-generated constructor stub
 		}
     }
-    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PointsLastNMinutes {
         public String five;
         public String ten;
@@ -708,7 +717,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Raids {
         @JsonProperty("total-raids")
         public String totalRaids;
@@ -777,7 +786,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Tackles {
         @JsonProperty("total-tackles")
         public String totalTackles;
@@ -835,7 +844,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DoOrDie {
         @JsonProperty("total-raids")
         public String totalRaids;
@@ -927,7 +936,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Players {
         public List<Player> player;
 
@@ -950,7 +959,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Player {
         @JsonProperty("player-id")
         public String playerId;
@@ -963,6 +972,9 @@ public class InMatchData {
 
         @JsonProperty("player-revival-order")
         public String playerRevivalOrder;
+        
+        @JsonProperty("player-raiding-now")
+        public String playerRaidingCourt;
 
         public Points points;
         public Raids raids;
@@ -1082,7 +1094,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class RaidMapLocations {
         public List<Location> location;
 
@@ -1105,7 +1117,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Location {
         @JsonProperty("location-id")
         public String locationId;
@@ -1139,7 +1151,7 @@ public class InMatchData {
 			return "Location [locationId=" + locationId + ", strong=" + strong + ", weak=" + weak + "]";
 		}
     }
-    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class MatchDetails {
         public Result result;
 
@@ -1162,7 +1174,7 @@ public class InMatchData {
 		} 
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PhaseOfPlay {
         public List<Phase> phase;
 
@@ -1185,7 +1197,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Phase {
         @JsonProperty("phase-name")
         public String phaseName;
@@ -1214,7 +1226,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PlayByPlay {
         public List<Raid> raid;
 
@@ -1232,7 +1244,7 @@ public class InMatchData {
 		}
         
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Raid {
         @JsonProperty("raid-number")
         public String raidNumber;
@@ -1383,7 +1395,7 @@ public class InMatchData {
 		}
         
     }
-    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class RaidTeam {
         @JsonProperty("team-id")
         public String teamId;

@@ -125,4 +125,6 @@ public class KabaddiUtil {
 	public final static String SESSION = "SESSION";
 
 	public final static String PLURAL = "PLURAL";
+
+	public static final String FF_EXCEL = "C:\\Sports\\Kabaddi\\FF_EXCEL.xlsx";
 }

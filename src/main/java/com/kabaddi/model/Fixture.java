@@ -50,6 +50,9 @@ public class Fixture {
   @Column(name = "AwayScorer")
   private String awayScorer;
   
+  @Column(name = "Category")
+  private String category;
+  
   @Transient
   private Team home_Team;
 
@@ -183,6 +186,14 @@ public String getAwayScorer() {
 
 public void setAwayScorer(String awayScorer) {
 	this.awayScorer = awayScorer;
+}
+
+public String getCategory() {
+	return category;
+}
+
+public void setCategory(String category) {
+	this.category = category;
 }
 
 }

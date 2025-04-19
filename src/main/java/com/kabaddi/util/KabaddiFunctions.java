@@ -695,6 +695,15 @@ public class KabaddiFunctions {
 		return points_table;
 	}
 	
+	public static int mapNumber(int n) {
+        int groupIndex = (n - 1) / 6;
+        int base = groupIndex * 3;
+        int positionInGroup = (n - 1) % 6;
+        int offset = positionInGroup % 3;
+
+        return base + offset + 1;
+    }
+	
 	public static class PointsComparator implements Comparator<LeagueTeam> {
 	    @Override
 	    public int compare(LeagueTeam pt1, LeagueTeam pt2) {
@@ -1595,18 +1604,20 @@ public class KabaddiFunctions {
 						
 					}else {
 						Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
-						if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
-							if(ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()>=10) {
-								superTen++;
+						if(player != null) {
+							if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
+								if(ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()>=10) {
+									superTen++;
+								}
+								if(ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()>=5) {
+									highFive++;
+								}
 							}
-							if(ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()>=5) {
-								highFive++;
-							}
+							past_tournament_data_clone.add(new PlayerPreMatchData(match.getHomeTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()), ps.getPoints().get(0).getTotalPoints(),
+									ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
+									ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
+									ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
 						}
-						past_tournament_data_clone.add(new PlayerPreMatchData(match.getHomeTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()), ps.getPoints().get(0).getTotalPoints(),
-								ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
-								ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
-								ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
 					}
 				}
 				
@@ -1643,18 +1654,20 @@ public class KabaddiFunctions {
 							
 						}else {
 							Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
-							if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
-								if(ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()>=10) {
-									superTen++;
+							if(player != null) {
+								if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
+									if(ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()>=10) {
+										superTen++;
+									}
+									if(ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()>=5) {
+										highFive++;
+									}
 								}
-								if(ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()>=5) {
-									highFive++;
-								}
+								past_tournament_data_clone.add(new PlayerPreMatchData(match.getAwayTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()), ps.getPoints().get(0).getTotalPoints(),
+										ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
+										ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
+										ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
 							}
-							past_tournament_data_clone.add(new PlayerPreMatchData(match.getAwayTeam().getTeamId(),ps.getPlayerId(), player, highFive, superTen, (ps.getMatches()), ps.getPoints().get(0).getTotalPoints(),
-									ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(), ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
-									ps.getRaids().get(0).getTotalRaids(), ps.getRaids().get(0).getSuperRaids(), ps.getRaids().get(0).getSuccessfulRaids(), ps.getRaids().get(0).getUnsuccessfulRaids(),
-									ps.getTackles().get(0).getTotalTackles(), ps.getTackles().get(0).getSuperTackles(), ps.getTackles().get(0).getSuccessfulTackles(), ps.getTackles().get(0).getUnsuccessfulTackles()));
 						}
 					}
 				}

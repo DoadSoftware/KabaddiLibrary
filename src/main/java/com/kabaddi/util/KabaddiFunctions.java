@@ -640,7 +640,7 @@ public class KabaddiFunctions {
 					table.setGoal_For(table.getGoal_For() + match.getHomeTeamScore());
 					table.setGoal_Against(table.getGoal_Against() + match.getAwayTeamScore());
 					table.setGD(table.getGoal_For() - table.getGoal_Against());
-					table.setPoints(table.getPoints() + 5);
+					table.setPoints(table.getPoints() + 4);
 				}
 				if(table.getTeamName().equalsIgnoreCase(match.getAwayTeam().getTeamBadge())) {
 					table.setPlayed(table.getPlayed()+1);
@@ -661,7 +661,7 @@ public class KabaddiFunctions {
 					table.setGoal_For(table.getGoal_For() + match.getAwayTeamScore());
 					table.setGoal_Against(table.getGoal_Against()+ match.getHomeTeamScore());
 					table.setGD(table.getGoal_For() - table.getGoal_Against());
-					table.setPoints(table.getPoints() + 5);
+					table.setPoints(table.getPoints() + 4);
 				}
 				if(table.getTeamName().equalsIgnoreCase(match.getHomeTeam().getTeamBadge())) {
 					table.setPlayed(table.getPlayed()+1);
@@ -682,7 +682,7 @@ public class KabaddiFunctions {
 					table.setGoal_For(table.getGoal_For() + match.getAwayTeamScore());
 					table.setGoal_Against(table.getGoal_Against()+ match.getHomeTeamScore());
 					table.setGD(table.getGoal_For() - table.getGoal_Against());
-					table.setPoints(table.getPoints() + 3);
+					table.setPoints(table.getPoints() + 2);
 				}
 				if(table.getTeamName().equalsIgnoreCase(match.getHomeTeam().getTeamBadge())) {
 					table.setPlayed(table.getPlayed()+1);
@@ -690,7 +690,7 @@ public class KabaddiFunctions {
 					table.setGoal_For(table.getGoal_For() + match.getHomeTeamScore());
 					table.setGoal_Against(table.getGoal_Against() + match.getAwayTeamScore());
 					table.setGD(table.getGoal_For() - table.getGoal_Against());
-					table.setPoints(table.getPoints() + 3);
+					table.setPoints(table.getPoints() + 2);
 				}
 			}
 		}
@@ -1697,6 +1697,20 @@ public class KabaddiFunctions {
 	    		return Integer.compare(data1.getTotalTackles(), data2.getTotalTackles());
 	    	}else {
 	    		return Integer.compare(data2.getTotalTacklePoints(), data1.getTotalTacklePoints());
+	    	}
+	    }
+	}
+	public static class TotalPointComparator implements Comparator<PlayerPreMatchData> {
+	    @Override
+	    public int compare(PlayerPreMatchData data1, PlayerPreMatchData data2) {
+	    	if(data1.getTotalPoints() == data2.getTotalPoints()) {
+	    		if(data1.getTotalRaidPoints() == data2.getTotalRaidPoints()) {
+	    			return Integer.compare(data2.getTotalTacklePoints(), data1.getTotalTacklePoints());
+	    		}else {
+	    			return Integer.compare(data2.getTotalRaidPoints(), data1.getTotalRaidPoints());
+	    		}
+	    	}else {
+	    		return Integer.compare(data2.getTotalPoints(), data1.getTotalPoints());
 	    	}
 	    }
 	}

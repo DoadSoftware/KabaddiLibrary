@@ -229,7 +229,12 @@ public class KabaddiFunctions {
 		
 		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +session_match.getMatchId() +"-in-match" 
 				+ KabaddiUtil.JSON_EXTENSION), InMatchData.class);
+		//TEAMS
+		match.setHomeTeam(session_match.getHomeTeam());
+		match.setAwayTeam(session_match.getAwayTeam());
 		
+		
+		//team STATS
 		match.setHomeTeamStats(new TeamPlayerStats());
 		match.setAwayTeamStats(new TeamPlayerStats());
 		setTeamStats(match.getHomeTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0));
@@ -414,7 +419,6 @@ public class KabaddiFunctions {
 
 			team.getPoints().add(point);
 			 
-				
 			team.getRaids().add(new Raids(
 					 Integer.parseInt(tm.getRaids().getTotalRaids()) ,
 					 Integer.parseInt(tm.getRaids().getSuperRaids()) ,
@@ -567,7 +571,6 @@ public class KabaddiFunctions {
 		 for(com.api.model.kabaddi.InMatchData.Player ply :tm.getPlayers().getPlayer()) {
 			 
 			 PlayerStats PlayerStats = new PlayerStats();
-			 
 			 PlayerStats.setPlayerId(Integer.valueOf(ply.getPlayerId()));
 			 PlayerStats.setPlayer_on_court(ply.getPlayerOnCourt());
 			 PlayerStats.setAvg_raid_time(Integer.valueOf(ply.getAvgRaidTime()));

@@ -1000,6 +1000,14 @@ public class InMatchData {
 					+ ", avgRaidTime=" + avgRaidTime + ", raidMapLocations=" + raidMapLocations + "]";
 		}
 
+		public String getPlayerRaidingCourt() {
+			return playerRaidingCourt;
+		}
+
+		public void setPlayerRaidingCourt(String playerRaidingCourt) {
+			this.playerRaidingCourt = playerRaidingCourt;
+		}
+
 		public String getPlayerId() {
 			return playerId;
 		}

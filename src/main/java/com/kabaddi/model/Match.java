@@ -111,7 +111,9 @@ public class Match {
   @JsonProperty("clock")
   private Clock clock;
 
-  String categoryType = "";
+  @JsonProperty("categoryType")
+  private String categoryType = "";
+  
   @JsonIgnore
   private List<Event> events;
 

@@ -26,5 +26,10 @@ public class Api_pre_match {
 	public void setTeamPlayerStats(List<TeamPlayerStats> teamPlayerStats) {
 		this.teamPlayerStats = teamPlayerStats;
 	}
+
+	@Override
+	public String toString() {
+		return "Api_pre_match [teamPlayerStats=" + teamPlayerStats + "]";
+	}
 	
 }

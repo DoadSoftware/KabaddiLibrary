@@ -19,6 +19,7 @@ import com.kabaddi.model.LeaderBoard;
 import com.kabaddi.model.NameSuper;
 import com.kabaddi.model.Officials;
 import com.kabaddi.model.Player;
+import com.kabaddi.model.PlayerComparison;
 import com.kabaddi.model.PlayerStat;
 import com.kabaddi.model.Playoff;
 import com.kabaddi.model.Staff;
@@ -165,6 +166,12 @@ public List<PlayerStat> getPlayerStats() {
 @Override
 public List<InfobarStats> getInfobarStats() {
 	return sessionFactory.getCurrentSession().createQuery("from InfobarStats").list();
+}
+
+@Override
+public List<PlayerComparison> getPlayerComparisons() {
+	return sessionFactory.getCurrentSession().createQuery("from PlayerComparison").list();
+
 }
 
 }

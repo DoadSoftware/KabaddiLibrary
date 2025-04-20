@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kabaddi.model.PlayerComparison;
 import com.kabaddi.dao.KabaddiDao;
 import com.kabaddi.model.Bugs;
 import com.kabaddi.model.ExtraData;
@@ -149,5 +150,8 @@ public List<PlayerStat> getPlayerStats() {
 public List<InfobarStats> getInfobarStats() {
 	return footballDao.getInfobarStats();
 }
-
+@Override
+public List<PlayerComparison> getPlayerComparisons() {
+	return footballDao.getPlayerComparisons();
+}
 }

@@ -42,6 +42,7 @@ import com.api.model.kabaddi.PreMatchData;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kabaddi.model.PlayerComparison;
 import com.kabaddi.model.Api_Match;
 import com.kabaddi.model.Api_pre_match;
 import com.kabaddi.model.Configurations;
@@ -1678,7 +1679,7 @@ public class KabaddiFunctions {
 		}
 		return past_tournament_data_clone;
 	}
-	
+
 	public static class raidPointComparator implements Comparator<PlayerPreMatchData> {
 	    @Override
 	    public int compare(PlayerPreMatchData data1, PlayerPreMatchData data2) {
@@ -1698,5 +1699,22 @@ public class KabaddiFunctions {
 	    		return Integer.compare(data2.getTotalTacklePoints(), data1.getTotalTacklePoints());
 	    	}
 	    }
+	}
+	public static List<PlayerComparison> processAllPlayerStatsComparion(KabaddiService KabaddiService) {
+		
+		List<PlayerComparison> playerstats = KabaddiService.getPlayerComparisons();
+	
+		for(Player plyr : KabaddiService.getAllPlayer()) {
+			for(PlayerComparison ps : playerstats) {
+				if(ps.getPlayerId() == plyr.getPlayerId()) {
+					ps.setPlayer(plyr);
+					ps.setTeam(KabaddiService.getTeams().get(plyr.getTeamId()-1));
+				}if(ps.getPlayerId1() == plyr.getPlayerId()) {
+					ps.setPlayer1(plyr);
+					ps.setTeam1(KabaddiService.getTeams().get(plyr.getTeamId()-1));
+				}
+			}
+		}
+		return playerstats;
 	}
 }

@@ -2,6 +2,7 @@ package com.kabaddi.service;
 
 import java.util.List;
 
+import com.kabaddi.model.PlayerComparison;
 import com.kabaddi.model.Bugs;
 import com.kabaddi.model.ExtraData;
 import com.kabaddi.model.Fixture;
@@ -46,4 +47,6 @@ public interface KabaddiService {
   List<HeadToHead> getHeadToHeadStats();
   List<PlayerStat> getPlayerStats();
   List<InfobarStats> getInfobarStats();
+  List<PlayerComparison> getPlayerComparisons();
+
 }

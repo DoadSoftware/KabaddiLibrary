@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -706,6 +708,30 @@ public class KabaddiFunctions {
         int offset = positionInGroup % 3;
 
         return base + offset + 1;
+    }
+	
+	public static String checkWhichDay(String dateStr, String firstDate) {
+        String whichDay = "";
+        try {
+            // Parse all dates into Date objects and sort them
+            Set<Date> dateSet = new TreeSet<>();
+            dateSet.add(new SimpleDateFormat("dd-MM-yyyy").parse(firstDate));
+
+            // Get the earliest date
+            Date startDate = ((TreeSet<Date>) dateSet).first();
+            Date matchDate = new SimpleDateFormat("dd-MM-yyyy").parse(dateStr);
+
+            // Calculate difference in days
+            long diffInMillies = matchDate.getTime() - startDate.getTime();
+            long diffInDays = diffInMillies / (1000 * 60 * 60 * 24);
+
+            whichDay = "DAY " + (diffInDays + 1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return whichDay;
     }
 	
 	public static class PointsComparator implements Comparator<LeagueTeam> {

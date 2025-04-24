@@ -1604,6 +1604,8 @@ public class KabaddiFunctions {
 						}
 					}
 					if(playerIndex>=0) {
+						superTen = 0;highFive = 0;
+						
 						Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
 						if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
 							if(ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()>=10) {
@@ -1633,6 +1635,8 @@ public class KabaddiFunctions {
 						past_tournament_data_clone.get(playerIndex).setUnsuccessfullTackles((past_tournament_data_clone.get(playerIndex).getUnsuccessfullTackles()+ps.getTackles().get(0).getUnsuccessfulTackles()));
 						
 					}else {
+						superTen = 0;highFive = 0;
+						
 						Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
 						if(player != null) {
 							if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
@@ -1661,6 +1665,7 @@ public class KabaddiFunctions {
 							}
 						}
 						if(playerIndex>=0) {
+							superTen = 0;highFive = 0;
 							Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
 
 							preMatchData.get(playerIndex).setPlayer(player);
@@ -1683,6 +1688,7 @@ public class KabaddiFunctions {
 							past_tournament_data_clone.get(playerIndex).setUnsuccessfullTackles((past_tournament_data_clone.get(playerIndex).getUnsuccessfullTackles()+ps.getTackles().get(0).getUnsuccessfulTackles()));
 							
 						}else {
+							superTen = 0;highFive = 0;
 							Player player = kabaddiService.getAllPlayer().stream().filter(plyr->Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
 							if(player != null) {
 								if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {

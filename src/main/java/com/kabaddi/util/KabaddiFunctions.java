@@ -1667,11 +1667,18 @@ public class KabaddiFunctions {
 						if(playerIndex>=0) {
 							superTen = 0;highFive = 0;
 							Player player = kabaddiService.getAllPlayer().stream().filter(plyr -> Integer.valueOf(plyr.getPlayerAPIId()) == ps.getPlayerId()).findAny().orElse(null);
-
-							preMatchData.get(playerIndex).setPlayer(player);
-							preMatchData.get(playerIndex).setHighFive((preMatchData.get(playerIndex).getHighFive()+highFive));
-							preMatchData.get(playerIndex).setSuperTen((preMatchData.get(playerIndex).getSuperTen()+superTen));
-							//preMatchData.get(playerIndex).setMatches((preMatchData.get(playerIndex).getMatches()+1));
+							if(ps.getPlayerId() == Integer.parseInt(player.getPlayerAPIId())) {
+								if(ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()>=10) {
+									superTen++;
+								}
+								if(ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints()>=5) {
+									highFive++;
+								}
+							}
+							past_tournament_data_clone.get(playerIndex).setPlayer(player);
+							past_tournament_data_clone.get(playerIndex).setHighFive((past_tournament_data_clone.get(playerIndex).getHighFive()+highFive));
+							past_tournament_data_clone.get(playerIndex).setSuperTen((past_tournament_data_clone.get(playerIndex).getSuperTen()+superTen));
+							past_tournament_data_clone.get(playerIndex).setMatches((past_tournament_data_clone.get(playerIndex).getMatches()));
 
 							past_tournament_data_clone.get(playerIndex).setTotalPoints((past_tournament_data_clone.get(playerIndex).getTotalPoints()+ps.getPoints().get(0).getTotalPoints()));
 							past_tournament_data_clone.get(playerIndex).setTotalRaidPoints((past_tournament_data_clone.get(playerIndex).getTotalRaidPoints()+ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints()));

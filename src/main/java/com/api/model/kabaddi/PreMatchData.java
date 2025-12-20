@@ -1,6 +1,5 @@
 package com.api.model.kabaddi;
 
-import com.api.model.kabaddi.InMatchData.CapturePoints;
 import com.api.model.kabaddi.InMatchData.RaidMapLocations;
 import com.api.model.kabaddi.InMatchData.SkillPoints;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

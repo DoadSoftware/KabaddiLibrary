@@ -230,16 +230,16 @@ public class KabaddiFunctions {
 	
 	public static void setMatch(Api_Match match,Match session_match)throws Exception {
 		
-		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +session_match.getMatchId() +"-in-match" 
-				+ KabaddiUtil.JSON_EXTENSION), InMatchData.class);
+		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +
+				session_match.getMatchId() +"-in-match" + KabaddiUtil.JSON_EXTENSION), InMatchData.class);
 		//TEAMS
 		match.setHomeTeam(session_match.getHomeTeam());
 		match.setAwayTeam(session_match.getAwayTeam());
 		
-		
 		//team STATS
 		match.setHomeTeamStats(new TeamPlayerStats());
 		match.setAwayTeamStats(new TeamPlayerStats());
+		
 		setTeamStats(match.getHomeTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0));
 		setTeamStats(match.getAwayTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1));
 		
@@ -253,6 +253,22 @@ public class KabaddiFunctions {
 			match.setPhase_of_play(new Phase_of_play());
 		}
 		setPhaseOfPlay(match ,mch);
+	}
+	
+	public static void setMatchApi(Api_Match match, Match session_match)throws Exception {
+		
+		Api_Match mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +
+				session_match.getMatchId() +"-in-match" + KabaddiUtil.JSON_EXTENSION), Api_Match.class);
+		//TEAMS
+		match.setHomeTeam(session_match.getHomeTeam());
+		match.setAwayTeam(session_match.getAwayTeam());
+		
+		//team STATS
+		match.setHomeTeamStats(mch.getHomeTeamStats());
+		match.setAwayTeamStats(mch.getAwayTeamStats());
+		match.setPlay_by_play(mch.getPlay_by_play());
+		match.setPhase_of_play(mch.getPhase_of_play());
+		
 	}
 	
 	

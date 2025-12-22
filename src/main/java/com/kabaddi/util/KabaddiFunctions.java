@@ -255,23 +255,6 @@ public class KabaddiFunctions {
 		setPhaseOfPlay(match ,mch);
 	}
 	
-	public static void setMatchApi(Api_Match match, Match session_match)throws Exception {
-		
-		Api_Match mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +
-				session_match.getMatchId() +"-in-match" + KabaddiUtil.JSON_EXTENSION), Api_Match.class);
-		//TEAMS
-		match.setHomeTeam(session_match.getHomeTeam());
-		match.setAwayTeam(session_match.getAwayTeam());
-		
-		//team STATS
-		match.setHomeTeamStats(mch.getHomeTeamStats());
-		match.setAwayTeamStats(mch.getAwayTeamStats());
-		match.setPlay_by_play(mch.getPlay_by_play());
-		match.setPhase_of_play(mch.getPhase_of_play());
-		
-	}
-	
-	
 	private static void setPhaseOfPlay(Api_Match match, InMatchData mch) {
 		if (match.getPhase_of_play() == null || mch.getInMatch() == null || 
 		        mch.getInMatch().getPhase_of_play() == null || 
@@ -389,15 +372,24 @@ public class KabaddiFunctions {
 	    }
 	}
 
-	public static void setPreMatch(Api_pre_match match,Match session_match)throws Exception {
+	public static void setPreMatch(Api_pre_match match, Match session_match, String broudcaster)throws Exception {
 		PreMatchData mch = null ;
-		if(session_match.getCategoryType().equalsIgnoreCase("MEN")) {
-			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_76m" 
+		switch (broudcaster) {
+		case KabaddiUtil.UPKL:
+			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_86m" 
 					+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
-		}else  if(session_match.getCategoryType().equalsIgnoreCase("WOMEN")) {
-			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_77m" 
-					+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
+			break;
+		case KabaddiUtil.GIPKL:
+			if(session_match.getCategoryType().equalsIgnoreCase("MEN")) {
+				mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_76m" 
+						+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
+			}else  if(session_match.getCategoryType().equalsIgnoreCase("WOMEN")) {
+				mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_77m" 
+						+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
+			}
+			break;
 		}
+		
 		if(mch == null) {
 			return;
 		}

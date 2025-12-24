@@ -25,7 +25,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.compress.harmony.pack200.NewAttributeBands.Integral;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -37,12 +36,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.api.model.kabaddi.InMatchData;
-import com.api.model.kabaddi.InMatchData.PlayByPlay;
 import com.api.model.kabaddi.InMatchData.Raid;
 import com.api.model.kabaddi.InMatchData.RaidTeam;
 import com.api.model.kabaddi.PreMatchData;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kabaddi.model.PlayerComparison;
 import com.kabaddi.model.Api_Match;
@@ -372,11 +368,11 @@ public class KabaddiFunctions {
 	    }
 	}
 
-	public static void setPreMatch(Api_pre_match match, Match session_match, String broudcaster)throws Exception {
+	public static void setPreMatch(Api_pre_match match, Match session_match, String broudcaster, String preMatchFileName)throws Exception {
 		PreMatchData mch = null ;
 		switch (broudcaster) {
 		case KabaddiUtil.UPKL:
-			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +"pre-match_86m" 
+			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY + preMatchFileName 
 					+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
 			break;
 		case KabaddiUtil.GIPKL:

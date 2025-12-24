@@ -66,6 +66,9 @@ public void setTeamName1(String teamName1) {
 }
 
 public String getTeamName2() {
+	if(teamName2 == null) {
+		teamName2 = "";
+	}
 	return teamName2;
 }
 
@@ -74,6 +77,9 @@ public void setTeamName2(String teamName2) {
 }
 
 public String getTeamName3() {
+	if(teamName3 == null) {
+		teamName3 = "";
+	}
 	return teamName3;
 }
 

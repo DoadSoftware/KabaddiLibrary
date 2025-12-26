@@ -18,6 +18,29 @@ public class Statistics
   
   @Column(name="MATCHES")
   private Integer matches;
+  
+  @Column(name="Info1")
+  private Integer info1;
+  
+  @Column(name="Info2")
+  private Integer info2;
+  
+
+public Integer getInfo1() {
+	return info1;
+}
+
+public void setInfo1(Integer info1) {
+	this.info1 = info1;
+}
+
+public Integer getInfo2() {
+	return info2;
+}
+
+public void setInfo2(Integer info2) {
+	this.info2 = info2;
+}
 
 public Integer getStatistics_id() {
 	return statistics_id;

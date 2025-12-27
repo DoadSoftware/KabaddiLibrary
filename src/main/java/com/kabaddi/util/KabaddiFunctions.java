@@ -20,11 +20,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -34,7 +32,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import com.api.model.kabaddi.InMatchData;
 import com.api.model.kabaddi.InMatchData.Raid;
 import com.api.model.kabaddi.InMatchData.RaidTeam;
@@ -49,8 +46,6 @@ import com.kabaddi.model.Fixture;
 import com.kabaddi.model.LeagueTeam;
 import com.kabaddi.model.Match;
 import com.kabaddi.model.MatchStats;
-import com.kabaddi.model.Phase;
-import com.kabaddi.model.Phase_of_play;
 import com.kabaddi.model.PlayByRaids;
 import com.kabaddi.model.PlayByTeams;
 import com.kabaddi.model.Player;
@@ -64,7 +59,6 @@ import com.kabaddi.model.TacklePoints;
 import com.kabaddi.model.Tackles;
 import com.kabaddi.model.Team;
 import com.kabaddi.model.TeamPlayerStats;
-import com.kabaddi.model.play_by_play;
 import com.kabaddi.service.KabaddiService;
 
 public class KabaddiFunctions {
@@ -223,99 +217,113 @@ public class KabaddiFunctions {
 		
 		return swapMatch;
 	}
-	
-	public static void setMatch(Api_Match match,Match session_match)throws Exception {
-		
+	public static Api_Match setMatchStats(Api_Match match, Match session_match) throws Exception 
+	{
 		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +
 				session_match.getMatchId() +"-in-match" + KabaddiUtil.JSON_EXTENSION), InMatchData.class);
-		//TEAMS
+
 		match.setHomeTeam(session_match.getHomeTeam());
 		match.setAwayTeam(session_match.getAwayTeam());
 		
-		//team STATS
 		match.setHomeTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0)));
 		match.setAwayTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1)));
+
+		match.setPlayByRaids(setPlayByRaid(match ,mch));
 		
-		//setTeamStats(match.getHomeTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0));
-		//setTeamStats(match.getAwayTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1));
-		
-		if(match.getPlay_by_play()==null) {
-			match.setPlay_by_play(new play_by_play());
-		}
-		match.getPlay_by_play().setPlayByRaids( new ArrayList<PlayByRaids>());
-		setPlayByRaid(match ,mch);
-		
-		if(match.getPhase_of_play()==null) {
-			match.setPhase_of_play(new Phase_of_play());
-		}
-		setPhaseOfPlay(match ,mch);
+		return match;
 	}
 	
-	private static void setPhaseOfPlay(Api_Match match, InMatchData mch) {
-		if (match.getPhase_of_play() == null || mch.getInMatch() == null || 
-		        mch.getInMatch().getPhase_of_play() == null || 
-		        mch.getInMatch().getPhase_of_play().getPhase() == null) {
-		        return;
-		  }
-		match.getPhase_of_play().setPhase(new ArrayList<Phase>());
-		
-		for(com.api.model.kabaddi.InMatchData.Phase phase :mch.getInMatch().getPhase_of_play().getPhase()) {
-			Phase pse = new Phase();
-			pse.setPhase_name(phase.getPhaseName());
-			pse.setTeam(new ArrayList<PlayByTeams>());
-			
-			if (phase.getTeam() != null) {
-				 
-			 for (com.api.model.kabaddi.InMatchData.Team tm : phase.getTeam()) {
-				 
-				 PlayByTeams team = new PlayByTeams();
-				 	
-				 team.setTeam_id(Integer.valueOf(tm.getTeamId()));
-				 	team.setTeam_name(tm.getTeamName());
-				 	team.setTotal_points(Integer.valueOf(tm.getPoints().getTotalPoints()));
-				 	 
-				 	Points point = new Points();
-				 	 
-	                if (tm.getPoints() != null) {
-	                    point.setAll_out_points(tm.getPoints().getAllOutPoints() != null ? Integer.parseInt(tm.getPoints().getAllOutPoints()) : 0);
-	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
-	                    point.setExtra_points(tm.getPoints().getExtraPoints() != null ? Integer.parseInt(tm.getPoints().getExtraPoints()) : 0);
-	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
+//	public static void setMatch(Api_Match match,Match session_match)throws Exception {
+//		
+//		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +
+//				session_match.getMatchId() +"-in-match" + KabaddiUtil.JSON_EXTENSION), InMatchData.class);
+//		//TEAMS
+//		match.setHomeTeam(session_match.getHomeTeam());
+//		match.setAwayTeam(session_match.getAwayTeam());
+//		
+//		//team STATS
+//		match.setHomeTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0)));
+//		match.setAwayTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1)));
+//		
+//		if(match.getPlay_by_play()==null) {
+//			match.setPlay_by_play(new play_by_play());
+//		}
+//		match.getPlay_by_play().setPlayByRaids( new ArrayList<PlayByRaids>());
+//		setPlayByRaid(match ,mch);
+//		if(match.getPhase_of_play()==null) {
+//			match.setPhase_of_play(new Phase_of_play());
+//		}
+//		setPhaseOfPlay(match ,mch);
+//	}
+	
+//	private static void setPhaseOfPlay(Api_Match match, InMatchData mch) {
+//		if (match.getPhase_of_play() == null || mch.getInMatch() == null || 
+//		        mch.getInMatch().getPhase_of_play() == null || 
+//		        mch.getInMatch().getPhase_of_play().getPhase() == null) {
+//		        return;
+//		  }
+//		match.getPhase_of_play().setPhase(new ArrayList<Phase>());
+//		
+//		for(com.api.model.kabaddi.InMatchData.Phase phase :mch.getInMatch().getPhase_of_play().getPhase()) {
+//			Phase pse = new Phase();
+//			pse.setPhase_name(phase.getPhaseName());
+//			pse.setTeam(new ArrayList<PlayByTeams>());
+//			
+//			if (phase.getTeam() != null) {
+//				 
+//			 for (com.api.model.kabaddi.InMatchData.Team tm : phase.getTeam()) {
+//				 
+//				 PlayByTeams team = new PlayByTeams();
+//				 	
+//				 team.setTeam_id(Integer.valueOf(tm.getTeamId()));
+//				 	team.setTeam_name(tm.getTeamName());
+//				 	team.setTotal_points(Integer.valueOf(tm.getPoints().getTotalPoints()));
+//				 	 
+//				 	Points point = new Points();
+//				 	 
+//	                if (tm.getPoints() != null) {
+//	                    point.setAll_out_points(tm.getPoints().getAllOutPoints() != null ? Integer.parseInt(tm.getPoints().getAllOutPoints()) : 0);
+//	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
+//	                    point.setExtra_points(tm.getPoints().getExtraPoints() != null ? Integer.parseInt(tm.getPoints().getExtraPoints()) : 0);
+//	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
+//
+//	                    point.setRaid_points(new ArrayList<>());
+//	                    if (tm.getPoints().getRaidPoints() != null) {
+//	                        point.getRaid_points().add(new RaidPoints(
+//	                            tm.getPoints().getRaidPoints().getTotalRaidPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTotalRaidPoints()) : 0,
+//	                            tm.getPoints().getRaidPoints().getTouchPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTouchPoints()) : 0,
+//	                            tm.getPoints().getRaidPoints().getRaidBonusPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getRaidBonusPoints()) : 0
+//	                        ));
+//	                    }
+//
+//	                    point.setTackle_points(new ArrayList<>());
+//	                    if (tm.getPoints().getTacklePoints() != null) {
+//	                        point.getTackle_points().add(new TacklePoints(
+//	                            tm.getPoints().getTacklePoints().getTotalTacklePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTotalTacklePoints()) : 0,
+//	                            tm.getPoints().getTacklePoints().getCapturePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getCapturePoints()) : 0,
+//	                            tm.getPoints().getTacklePoints().getTackleBonusPoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTackleBonusPoints()) : 0
+//	                        ));
+//	                    }
+//	                }
+//		            team.setPoints(point);	
+//		            pse.getTeam().add(team);
+//				} 
+//			 }
+//			match.getPhase_of_play().getPhase().add(pse);
+//		}
+//	}
 
-	                    point.setRaid_points(new ArrayList<>());
-	                    if (tm.getPoints().getRaidPoints() != null) {
-	                        point.getRaid_points().add(new RaidPoints(
-	                            tm.getPoints().getRaidPoints().getTotalRaidPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTotalRaidPoints()) : 0,
-	                            tm.getPoints().getRaidPoints().getTouchPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTouchPoints()) : 0,
-	                            tm.getPoints().getRaidPoints().getRaidBonusPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getRaidBonusPoints()) : 0
-	                        ));
-	                    }
-
-	                    point.setTackle_points(new ArrayList<>());
-	                    if (tm.getPoints().getTacklePoints() != null) {
-	                        point.getTackle_points().add(new TacklePoints(
-	                            tm.getPoints().getTacklePoints().getTotalTacklePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTotalTacklePoints()) : 0,
-	                            tm.getPoints().getTacklePoints().getCapturePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getCapturePoints()) : 0,
-	                            tm.getPoints().getTacklePoints().getTackleBonusPoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTackleBonusPoints()) : 0
-	                        ));
-	                    }
-	                }
-		            team.setPoints(point);	
-		            pse.getTeam().add(team);
-				} 
-			 }
-			match.getPhase_of_play().getPhase().add(pse);
-		}
-	}
-	private static void setPlayByRaid(Api_Match match, InMatchData mch) {
-	    if (match.getPlay_by_play() == null || mch.getInMatch() == null || 
-	        mch.getInMatch().getPlay_by_play() == null || 
+	private static List<PlayByRaids> setPlayByRaid(Api_Match match, InMatchData mch) 
+	{
+		if (mch.getInMatch() == null || mch.getInMatch().getPlay_by_play() == null || 
 	        mch.getInMatch().getPlay_by_play().getRaid() == null) {
-	        return;
+	        return null;
 	    }
 
-	    match.getPlay_by_play().setPlayByRaids(new ArrayList<>());
-
+		if(match.getPlayByRaids() == null) {
+			match.setPlayByRaids(new ArrayList<PlayByRaids>());
+		}
+		
 	    for (Raid raid : mch.getInMatch().getPlay_by_play().getRaid()) {
 	        PlayByRaids raids = new PlayByRaids();
 
@@ -364,8 +372,10 @@ public class KabaddiFunctions {
 	            }
 	        }
 
-	        match.getPlay_by_play().getPlayByRaids().add(raids);
+	        match.getPlayByRaids().add(raids);
 	    }
+	    
+	    return match.getPlayByRaids();
 	}
 
 	public static void setPreMatch(Api_pre_match match, Match session_match, String broudcaster, String preMatchFileName)throws Exception {
@@ -514,7 +524,8 @@ public class KabaddiFunctions {
 			} 
 		}
 	}
-	public static TeamPlayerStats setTeamStats(com.api.model.kabaddi.InMatchData.Team tm)throws Exception {
+	public static TeamPlayerStats setTeamStats(com.api.model.kabaddi.InMatchData.Team tm)throws Exception 
+	{
 		TeamPlayerStats team = new TeamPlayerStats();
 		
 		team.setTeamId(Integer.valueOf(tm.getTeamId()));
@@ -1389,62 +1400,62 @@ public class KabaddiFunctions {
 	    return String.valueOf(number).replace(".0", "");
 	}
 	
-	public static Player populatePlayer(KabaddiService footballService, Player player, Match match)
+	public static Player populatePlayer(KabaddiService kabaddiService, Player player) //, Match match)
 	{
 		Player this_plyr = new Player();
-		this_plyr = footballService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(player.getPlayerId()));
+		this_plyr = kabaddiService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(player.getPlayerId()));
 		if(this_plyr != null) {
 			this_plyr.setPlayerPosition(player.getPlayerPosition()); this_plyr.setCaptainGoalKeeper(player.getCaptainGoalKeeper());
 		}
 		return this_plyr;
 	}
 	
-	/*public static Match populateMatchVariables(KabaddiService footballService, Match match) {
+	/*public static Match populateMatchVariables(KabaddiService kabaddiService, Match match) {
 	    List<Player> players;
 
 	    players = match.getHomeSquad().stream()
-	        .map(plyr -> populatePlayer(footballService, plyr, match))
+	        .map(plyr -> populatePlayer(kabaddiService, plyr, match))
 	        .collect(Collectors.toList());
 	    match.setHomeSquad(players);
 
 	    players = match.getHomeSubstitutes().stream()
-	        .map(plyr -> populatePlayer(footballService, plyr, match))
+	        .map(plyr -> populatePlayer(kabaddiService, plyr, match))
 	        .collect(Collectors.toList());
 	    match.setHomeSubstitutes(players);
 
 	    if (match.getHomeOtherSquad() != null) {
 	        players = match.getHomeOtherSquad().stream()
-	            .map(plyr -> populatePlayer(footballService, plyr, match))
+	            .map(plyr -> populatePlayer(kabaddiService, plyr, match))
 	            .collect(Collectors.toList());
 	        match.setHomeOtherSquad(players);
 	    }
 
 	    players = match.getAwaySquad().stream()
-	        .map(plyr -> populatePlayer(footballService, plyr, match))
+	        .map(plyr -> populatePlayer(kabaddiService, plyr, match))
 	        .collect(Collectors.toList());
 	    match.setAwaySquad(players);
 
 	    players = match.getAwaySubstitutes().stream()
-	        .map(plyr -> populatePlayer(footballService, plyr, match))
+	        .map(plyr -> populatePlayer(kabaddiService, plyr, match))
 	        .collect(Collectors.toList());
 	    match.setAwaySubstitutes(players);
 
 	    if (match.getAwayOtherSquad() != null) {
 	        players = match.getAwayOtherSquad().stream()
-	            .map(plyr -> populatePlayer(footballService, plyr, match))
+	            .map(plyr -> populatePlayer(kabaddiService, plyr, match))
 	            .collect(Collectors.toList());
 	        match.setAwayOtherSquad(players);
 	    }
 
 	    try {
 	        if (match.getHomeTeamId() > 0) {
-	            match.setHomeTeam(footballService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getHomeTeamId())));
+	            match.setHomeTeam(kabaddiService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getHomeTeamId())));
 	        }
 	        if (match.getAwayTeamId() > 0) {
-	            match.setAwayTeam(footballService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getAwayTeamId())));
+	            match.setAwayTeam(kabaddiService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getAwayTeamId())));
 	        }
 	        if (match.getGroundId() > 0) {
-	            match.setGround(footballService.getGround(match.getGroundId()));
+	            match.setGround(kabaddiService.getGround(match.getGroundId()));
 	            match.setVenueName(match.getGround().getFullname());
 	        }
 	    } catch (Exception e) {
@@ -1455,7 +1466,7 @@ public class KabaddiFunctions {
 	    if (match.getMatchStats() != null) {
 	        for (MatchStats ms : match.getMatchStats()) {
 	            try {
-	                ms.setPlayer(footballService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(ms.getPlayerId())));
+	                ms.setPlayer(kabaddiService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(ms.getPlayerId())));
 	            } catch (Exception e) {
 	                // Log the error and handle it appropriately
 	                e.printStackTrace();
@@ -1466,61 +1477,61 @@ public class KabaddiFunctions {
 	    return match;
 	}*/
 
-	public static Match populateMatchVariables(KabaddiService footballService,Match match) 
+	public static Match populateMatchVariables(KabaddiService kabaddiService,Match match) 
 	{
 		List<Player> players = new ArrayList<Player>();
 		
 		for(Player plyr:match.getHomeSquad()) {
-			players.add(populatePlayer(footballService, plyr, match));
+			players.add(populatePlayer(kabaddiService, plyr)); //, match));
 		}
 		match.setHomeSquad(players);
 
 		players = new ArrayList<Player>();
 		for(Player plyr:match.getHomeSubstitutes()) {
-			players.add(populatePlayer(footballService, plyr, match));
+			players.add(populatePlayer(kabaddiService, plyr)); //, match));
 		}
 		match.setHomeSubstitutes(players);
 		
 		players = new ArrayList<Player>();
 		if(match.getHomeOtherSquad() != null) {
 			for(Player plyr:match.getHomeOtherSquad()) {
-				players.add(populatePlayer(footballService, plyr, match));
+				players.add(populatePlayer(kabaddiService, plyr)); //, match));
 			}
 		}
 		match.setHomeOtherSquad(players);
 		
 		players = new ArrayList<Player>();
 		for(Player plyr:match.getAwaySquad()) {
-			players.add(populatePlayer(footballService, plyr, match));
+			players.add(populatePlayer(kabaddiService, plyr)); //, match));
 		}
 		match.setAwaySquad(players);
 
 		players = new ArrayList<Player>();
 		for(Player plyr:match.getAwaySubstitutes()) {
-			players.add(populatePlayer(footballService, plyr, match));
+			players.add(populatePlayer(kabaddiService, plyr)); //, match));
 		}
 		match.setAwaySubstitutes(players);
 		
 		players = new ArrayList<Player>();
 		if(match.getAwayOtherSquad() != null) {
 			for(Player plyr:match.getAwayOtherSquad()) {
-				players.add(populatePlayer(footballService, plyr, match));
+				players.add(populatePlayer(kabaddiService, plyr)); //, match));
 			}
 		}
 		match.setAwayOtherSquad(players);
 		
 		if(match.getHomeTeamId() > 0)
-			match.setHomeTeam(footballService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getHomeTeamId())));
+			match.setHomeTeam(kabaddiService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getHomeTeamId())));
 		if(match.getAwayTeamId() > 0)
-			match.setAwayTeam(footballService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getAwayTeamId())));
+			match.setAwayTeam(kabaddiService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getAwayTeamId())));
 		if(match.getGroundId() > 0) {
-			match.setGround(footballService.getGround(match.getGroundId()));
+			match.setGround(kabaddiService.getGround(match.getGroundId()));
 			match.setVenueName(match.getGround().getFullname());
 		}
 
 		if(match.getMatchStats() != null) {
 			for(MatchStats ms : match.getMatchStats()) {
-				ms.setPlayer(footballService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(ms.getPlayerId())));
+				ms.setPlayer(kabaddiService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(ms.getPlayerId())));
 			}
 		}
 		
@@ -1533,7 +1544,7 @@ public class KabaddiFunctions {
 		return new SimpleDateFormat("yyyy-MM-dd").format(new Date(httpCon.getDate()));
 	}	
 	
-	public static List<Player> getPlayersFromDB(KabaddiService footballService, String whichTeamToProcess, Match match)
+	public static List<Player> getPlayersFromDB(KabaddiService kabaddiService, String whichTeamToProcess, Match match)
 	{
 		List<Player> players = new ArrayList<Player>(),whichTeamToCheck = new ArrayList<Player>();
 		boolean player_found = false; 
@@ -1549,7 +1560,7 @@ public class KabaddiFunctions {
 			whichTeamToCheck = match.getAwaySquad();
 			break;
 		}
-		for(Player plyr : footballService.getPlayers(KabaddiUtil.TEAM,String.valueOf(whichTeamId))) {
+		for(Player plyr : kabaddiService.getPlayers(KabaddiUtil.TEAM,String.valueOf(whichTeamId))) {
 			player_found = false;
 			for(Player subPlyr : whichTeamToCheck) {
 				if (subPlyr.getPlayerId() == plyr.getPlayerId()) {

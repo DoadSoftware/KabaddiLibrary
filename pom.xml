@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.kabaddi</groupId>
   <artifactId>KabaddiLibrary</artifactId>
-  <version>1.82</version>
+  <version>1.84</version>
   <name>KabaddiLibrary</name>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -10,7 +10,6 @@
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 <dependencies>
-
 <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
 <dependency>
     <groupId>com.fasterxml.jackson.dataformat</groupId>

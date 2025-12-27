@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Api_In_match {
 	
 	List<TeamPlayerStats> teamPlayerStats;
-	play_by_play play_by_play;
+	//DELETEplay_by_play play_by_play;
 	Phase_of_play phase_of_play;
 	
 	public Api_In_match() {
@@ -28,14 +28,6 @@ public class Api_In_match {
 		this.teamPlayerStats = teamPlayerStats;
 	}
 
-	public play_by_play getPlay_by_play() {
-		return play_by_play;
-	}
-
-	public void setPlay_by_play(play_by_play play_by_play) {
-		this.play_by_play = play_by_play;
-	}
-
 	public Phase_of_play getPhase_of_play() {
 		return phase_of_play;
 	}
@@ -46,8 +38,7 @@ public class Api_In_match {
 
 	@Override
 	public String toString() {
-		return "Api_In_match [teamPlayerStats=" + teamPlayerStats + ", play_by_play=" + play_by_play
-				+ ", phase_of_play=" + phase_of_play + "]";
+		return "Api_In_match [teamPlayerStats=" + teamPlayerStats + ", phase_of_play=" + phase_of_play + "]";
 	}
 	
 }

@@ -233,11 +233,11 @@ public class KabaddiFunctions {
 		match.setAwayTeam(session_match.getAwayTeam());
 		
 		//team STATS
-		match.setHomeTeamStats(new TeamPlayerStats());
-		match.setAwayTeamStats(new TeamPlayerStats());
+		match.setHomeTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0)));
+		match.setAwayTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1)));
 		
-		setTeamStats(match.getHomeTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0));
-		setTeamStats(match.getAwayTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1));
+		//setTeamStats(match.getHomeTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0));
+		//setTeamStats(match.getAwayTeamStats() , mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1));
 		
 		if(match.getPlay_by_play()==null) {
 			match.setPlay_by_play(new play_by_play());
@@ -514,7 +514,9 @@ public class KabaddiFunctions {
 			} 
 		}
 	}
-	public static void setTeamStats(TeamPlayerStats team ,com.api.model.kabaddi.InMatchData.Team tm)throws Exception {
+	public static TeamPlayerStats setTeamStats(com.api.model.kabaddi.InMatchData.Team tm)throws Exception {
+		TeamPlayerStats team = new TeamPlayerStats();
+		
 		team.setTeamId(Integer.valueOf(tm.getTeamId()));
 		team.setTeamName(tm.getTeamName());
 		team.setNo_of_players_on_court(Integer.valueOf(tm.getNoOfPlayersOnCourt()));
@@ -634,6 +636,7 @@ public class KabaddiFunctions {
 			 
 			 team.getPlayerStats().add(PlayerStats);
 		 }
+		return team;
 	}
 
 	public static List<LeagueTeam> PointsTableAsStanding(List<LeagueTeam> points_table, Match match) throws IOException {

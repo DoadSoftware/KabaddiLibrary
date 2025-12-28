@@ -43,6 +43,7 @@ import com.kabaddi.model.Api_pre_match;
 import com.kabaddi.model.Configurations;
 import com.kabaddi.model.Do_Or_Die;
 import com.kabaddi.model.Fixture;
+import com.kabaddi.model.Ground;
 import com.kabaddi.model.LeagueTeam;
 import com.kabaddi.model.Match;
 import com.kabaddi.model.MatchStats;
@@ -1477,66 +1478,127 @@ public class KabaddiFunctions {
 	    return match;
 	}*/
 
-	public static Match populateMatchVariables(KabaddiService kabaddiService,Match match) 
+	public static Match populateMatchVariables(Match match, List<Player> allPlayers, List<Team> allTeams, List<Ground> allGrounds) 
 	{
 		List<Player> players = new ArrayList<Player>();
 		
 		for(Player plyr:match.getHomeSquad()) {
-			players.add(populatePlayer(kabaddiService, plyr)); //, match));
+			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
 		}
 		match.setHomeSquad(players);
 
 		players = new ArrayList<Player>();
 		for(Player plyr:match.getHomeSubstitutes()) {
-			players.add(populatePlayer(kabaddiService, plyr)); //, match));
+			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
 		}
 		match.setHomeSubstitutes(players);
 		
 		players = new ArrayList<Player>();
 		if(match.getHomeOtherSquad() != null) {
 			for(Player plyr:match.getHomeOtherSquad()) {
-				players.add(populatePlayer(kabaddiService, plyr)); //, match));
+				players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
 			}
 		}
 		match.setHomeOtherSquad(players);
 		
 		players = new ArrayList<Player>();
 		for(Player plyr:match.getAwaySquad()) {
-			players.add(populatePlayer(kabaddiService, plyr)); //, match));
+			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
 		}
 		match.setAwaySquad(players);
 
 		players = new ArrayList<Player>();
 		for(Player plyr:match.getAwaySubstitutes()) {
-			players.add(populatePlayer(kabaddiService, plyr)); //, match));
+			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
 		}
 		match.setAwaySubstitutes(players);
 		
 		players = new ArrayList<Player>();
 		if(match.getAwayOtherSquad() != null) {
 			for(Player plyr:match.getAwayOtherSquad()) {
-				players.add(populatePlayer(kabaddiService, plyr)); //, match));
+				players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
 			}
 		}
 		match.setAwayOtherSquad(players);
 		
 		if(match.getHomeTeamId() > 0)
-			match.setHomeTeam(kabaddiService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getHomeTeamId())));
+			match.setHomeTeam(allTeams.stream().filter(tm -> tm.getTeamId() == match.getHomeTeamId()).findFirst().orElse(null));
 		if(match.getAwayTeamId() > 0)
-			match.setAwayTeam(kabaddiService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getAwayTeamId())));
+			match.setAwayTeam(allTeams.stream().filter(tm -> tm.getTeamId() == match.getAwayTeamId()).findFirst().orElse(null));
 		if(match.getGroundId() > 0) {
-			match.setGround(kabaddiService.getGround(match.getGroundId()));
+			match.setGround(allGrounds.stream().filter(grd -> grd.getGroundId() == match.getGroundId()).findFirst().orElse(null));
 			match.setVenueName(match.getGround().getFullname());
 		}
 
 		if(match.getMatchStats() != null) {
 			for(MatchStats ms : match.getMatchStats()) {
-				ms.setPlayer(kabaddiService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(ms.getPlayerId())));
+				ms.setPlayer(allPlayers.stream().filter(pl -> pl.getPlayerId() == ms.getPlayerId()).findFirst().orElse(null));
 			}
 		}
 		
 		return match;
 	}
+	
+//	public static Match populateMatchVariables(KabaddiService kabaddiService,Match match) 
+//	{
+//		List<Player> players = new ArrayList<Player>();
+//		
+//		for(Player plyr:match.getHomeSquad()) {
+//			players.add(populatePlayer(kabaddiService, plyr)); //, match));
+//		}
+//		match.setHomeSquad(players);
+//
+//		players = new ArrayList<Player>();
+//		for(Player plyr:match.getHomeSubstitutes()) {
+//			players.add(populatePlayer(kabaddiService, plyr)); //, match));
+//		}
+//		match.setHomeSubstitutes(players);
+//		
+//		players = new ArrayList<Player>();
+//		if(match.getHomeOtherSquad() != null) {
+//			for(Player plyr:match.getHomeOtherSquad()) {
+//				players.add(populatePlayer(kabaddiService, plyr)); //, match));
+//			}
+//		}
+//		match.setHomeOtherSquad(players);
+//		
+//		players = new ArrayList<Player>();
+//		for(Player plyr:match.getAwaySquad()) {
+//			players.add(populatePlayer(kabaddiService, plyr)); //, match));
+//		}
+//		match.setAwaySquad(players);
+//
+//		players = new ArrayList<Player>();
+//		for(Player plyr:match.getAwaySubstitutes()) {
+//			players.add(populatePlayer(kabaddiService, plyr)); //, match));
+//		}
+//		match.setAwaySubstitutes(players);
+//		
+//		players = new ArrayList<Player>();
+//		if(match.getAwayOtherSquad() != null) {
+//			for(Player plyr:match.getAwayOtherSquad()) {
+//				players.add(populatePlayer(kabaddiService, plyr)); //, match));
+//			}
+//		}
+//		match.setAwayOtherSquad(players);
+//		
+//		if(match.getHomeTeamId() > 0)
+//			match.setHomeTeam(kabaddiService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getHomeTeamId())));
+//		if(match.getAwayTeamId() > 0)
+//			match.setAwayTeam(kabaddiService.getTeam(KabaddiUtil.TEAM, String.valueOf(match.getAwayTeamId())));
+//		if(match.getGroundId() > 0) {
+//			match.setGround(kabaddiService.getGround(match.getGroundId()));
+//			match.setVenueName(match.getGround().getFullname());
+//		}
+//
+//		if(match.getMatchStats() != null) {
+//			for(MatchStats ms : match.getMatchStats()) {
+//				ms.setPlayer(kabaddiService.getPlayer(KabaddiUtil.PLAYER, String.valueOf(ms.getPlayerId())));
+//			}
+//		}
+//		
+//		return match;
+//	}
 	
 	public static String getOnlineCurrentDate() throws IOException
 	{

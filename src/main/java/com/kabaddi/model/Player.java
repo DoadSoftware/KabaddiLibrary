@@ -74,6 +74,27 @@ public class Player implements Comparable<Player>
 	this.player_type = player_type;
   }
 
+public Player(Player original) {
+	super();
+	this.playerId = original.playerId;
+	PlayerAPIId = original.PlayerAPIId;
+	this.jersey_number = original.jersey_number;
+	this.full_name = original.full_name;
+	this.firstname = original.firstname;
+	this.surname = original.surname;
+	this.ticker_name = original.ticker_name;
+	this.role = original.role;
+	this.teamId = original.teamId;
+	this.photo = original.photo;
+	this.age = original.age;
+	this.overseasPlayer = original.overseasPlayer;
+	this.category = original.category;
+	this.nationality = original.nationality;
+	this.playerPosition = original.playerPosition;
+	this.captainGoalKeeper = original.captainGoalKeeper;
+	this.player_type = original.player_type;
+}
+
 public String getCaptainGoalKeeper() {
 	return captainGoalKeeper;
 }

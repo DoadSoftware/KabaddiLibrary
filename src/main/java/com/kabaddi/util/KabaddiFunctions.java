@@ -220,7 +220,7 @@ public class KabaddiFunctions {
 	}
 	public static Api_Match setMatchStats(Api_Match match, Match session_match) throws Exception 
 	{
-		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY +
+		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.SOURCE_DIRECTORY +
 				session_match.getMatchId() +"-in-match" + KabaddiUtil.JSON_EXTENSION), InMatchData.class);
 
 		match.setHomeTeam(session_match.getHomeTeam());
@@ -383,7 +383,7 @@ public class KabaddiFunctions {
 		PreMatchData mch = null ;
 		switch (broudcaster) {
 		case KabaddiUtil.UPKL:
-			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.DESTINATION_DIRECTORY + preMatchFileName 
+			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.SOURCE_DIRECTORY + preMatchFileName 
 					+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
 			break;
 		case KabaddiUtil.GIPKL:
@@ -661,7 +661,7 @@ public class KabaddiFunctions {
 					table.setGoal_For(table.getGoal_For() + match.getHomeTeamScore());
 					table.setGoal_Against(table.getGoal_Against() + match.getAwayTeamScore());
 					table.setGD(table.getGoal_For() - table.getGoal_Against());
-					table.setPoints(table.getPoints() + 4);
+					table.setPoints(table.getPoints() + 2);
 				}
 				if(table.getTeamName().equalsIgnoreCase(match.getAwayTeam().getTeamBadge())) {
 					table.setPlayed(table.getPlayed()+1);
@@ -682,7 +682,7 @@ public class KabaddiFunctions {
 					table.setGoal_For(table.getGoal_For() + match.getAwayTeamScore());
 					table.setGoal_Against(table.getGoal_Against()+ match.getHomeTeamScore());
 					table.setGD(table.getGoal_For() - table.getGoal_Against());
-					table.setPoints(table.getPoints() + 4);
+					table.setPoints(table.getPoints() + 2);
 				}
 				if(table.getTeamName().equalsIgnoreCase(match.getHomeTeam().getTeamBadge())) {
 					table.setPlayed(table.getPlayed()+1);
@@ -1478,50 +1478,127 @@ public class KabaddiFunctions {
 	    return match;
 	}*/
 
-	public static Match populateMatchVariables(Match match, List<Player> allPlayers, List<Team> allTeams, List<Ground> allGrounds) 
+	public static Match populateMatchVariables(
+	        Match match,
+	        List<Player> allPlayers,
+	        List<Team> allTeams,
+	        List<Ground> allGrounds) 
 	{
-		List<Player> players = new ArrayList<Player>();
-		
-		for(Player plyr:match.getHomeSquad()) {
-			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
-		}
-		match.setHomeSquad(players);
+	    List<Player> homePlayers = new ArrayList<>();
 
-		players = new ArrayList<Player>();
-		for(Player plyr:match.getHomeSubstitutes()) {
-			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
-		}
-		match.setHomeSubstitutes(players);
-		
-		players = new ArrayList<Player>();
-		if(match.getHomeOtherSquad() != null) {
-			for(Player plyr:match.getHomeOtherSquad()) {
-				players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
-			}
-		}
-		match.setHomeOtherSquad(players);
-		
-		players = new ArrayList<Player>();
-		for(Player plyr:match.getAwaySquad()) {
-			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
-		}
-		match.setAwaySquad(players);
+	    for (Player plyr : match.getHomeSquad()) {
 
-		players = new ArrayList<Player>();
-		for(Player plyr:match.getAwaySubstitutes()) {
-			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
-		}
-		match.setAwaySubstitutes(players);
-		
-		players = new ArrayList<Player>();
-		if(match.getAwayOtherSquad() != null) {
-			for(Player plyr:match.getAwayOtherSquad()) {
-				players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
-			}
-		}
-		match.setAwayOtherSquad(players);
-		
-		if(match.getHomeTeamId() > 0)
+	        Player original = allPlayers.stream()
+	                .filter(p -> p.getPlayerId() == plyr.getPlayerId())
+	                .findFirst()
+	                .orElse(null);
+
+	        if (original != null) {
+	            Player copy = new Player(original);
+
+	            copy.setPlayerPosition(plyr.getPlayerPosition());
+	            copy.setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+
+	            homePlayers.add(copy);
+	        }
+	    }
+	    match.setHomeSquad(homePlayers);
+
+	    List<Player> homeSubPlayers = new ArrayList<>();
+
+	    for (Player plyr : match.getHomeSubstitutes()) {
+
+	        Player original = allPlayers.stream()
+	                .filter(p -> p.getPlayerId() == plyr.getPlayerId())
+	                .findFirst()
+	                .orElse(null);
+
+	        if (original != null) {
+	            Player copy = new Player(original);
+	            copy.setPlayerPosition(plyr.getPlayerPosition());
+	            copy.setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+	            homeSubPlayers.add(copy);
+	        }
+	    }
+	    match.setHomeSubstitutes(homeSubPlayers);
+	    
+	    List<Player> homeOther = new ArrayList<>();
+
+	    for (Player plyr : match.getHomeOtherSquad()) {
+
+	        Player original = allPlayers.stream()
+	                .filter(p -> p.getPlayerId() == plyr.getPlayerId())
+	                .findFirst()
+	                .orElse(null);
+
+	        if (original != null) {
+	            Player copy = new Player(original);
+	            copy.setPlayerPosition(plyr.getPlayerPosition());
+	            copy.setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+	            homeOther.add(copy);
+	        }
+	    }
+	    match.setHomeOtherSquad(homeOther);
+	    
+	    // Away
+	    List<Player> awayPlayers = new ArrayList<>();
+
+	    for (Player plyr : match.getAwaySquad()) {
+
+	        Player original = allPlayers.stream()
+	                .filter(p -> p.getPlayerId() == plyr.getPlayerId())
+	                .findFirst()
+	                .orElse(null);
+
+	        if (original != null) {
+	            Player copy = new Player(original);
+
+	            copy.setPlayerPosition(plyr.getPlayerPosition());
+	            copy.setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+
+	            awayPlayers.add(copy);
+	        }
+	    }
+	    match.setAwaySquad(awayPlayers);
+	    
+	    
+	    List<Player> awaySubPlayers = new ArrayList<>();
+
+	    for (Player plyr : match.getAwaySubstitutes()) {
+
+	        Player original = allPlayers.stream()
+	                .filter(p -> p.getPlayerId() == plyr.getPlayerId())
+	                .findFirst()
+	                .orElse(null);
+
+	        if (original != null) {
+	            Player copy = new Player(original);
+	            copy.setPlayerPosition(plyr.getPlayerPosition());
+	            copy.setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+	            awaySubPlayers.add(copy);
+	        }
+	    }
+	    match.setAwaySubstitutes(awaySubPlayers);
+	    
+	    List<Player> awayOther = new ArrayList<>();
+
+	    for (Player plyr : match.getAwayOtherSquad()) {
+
+	        Player original = allPlayers.stream()
+	                .filter(p -> p.getPlayerId() == plyr.getPlayerId())
+	                .findFirst()
+	                .orElse(null);
+
+	        if (original != null) {
+	            Player copy = new Player(original);
+	            copy.setPlayerPosition(plyr.getPlayerPosition());
+	            copy.setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+	            awayOther.add(copy);
+	        }
+	    }
+	    match.setAwayOtherSquad(awayOther);
+
+	    if(match.getHomeTeamId() > 0)
 			match.setHomeTeam(allTeams.stream().filter(tm -> tm.getTeamId() == match.getHomeTeamId()).findFirst().orElse(null));
 		if(match.getAwayTeamId() > 0)
 			match.setAwayTeam(allTeams.stream().filter(tm -> tm.getTeamId() == match.getAwayTeamId()).findFirst().orElse(null));
@@ -1535,9 +1612,94 @@ public class KabaddiFunctions {
 				ms.setPlayer(allPlayers.stream().filter(pl -> pl.getPlayerId() == ms.getPlayerId()).findFirst().orElse(null));
 			}
 		}
-		
-		return match;
+	    return match;
 	}
+
+//	public static Match populateMatchVariables(Match match, List<Player> allPlayers, List<Team> allTeams, List<Ground> allGrounds) 
+//	{
+//		List<Player> players = new ArrayList<Player>();
+//		int i = -1;
+//		for(Player plyr:match.getHomeSquad()) {
+//			i++;
+//			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
+//			if(players != null) {
+//				players.get(i).setPlayerPosition(plyr.getPlayerPosition()); players.get(i).setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+//			}
+//		}
+//		
+//		match.setHomeSquad(players);
+//		i = -1;
+//		List<Player> Subplayers = new ArrayList<Player>();
+//		for(Player plyr:match.getHomeSubstitutes()) {
+//			i++;
+//			Subplayers.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
+//			
+//			Subplayers.get(i).setPlayerPosition(plyr.getPlayerPosition()); 
+//			Subplayers.get(i).setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+//			System.out.println("HOME SUB = " + Subplayers.get(i).getCaptainGoalKeeper());
+//			
+//		}
+//		match.setHomeSubstitutes(Subplayers);
+//		for(int l=0;l<=match.getHomeSubstitutes().size()-1;l++) {
+//			System.out.println("hello = " + match.getHomeSubstitutes().get(l).getCaptainGoalKeeper());
+//		}
+//		i = -1;
+//		players = new ArrayList<Player>();
+//		if(match.getHomeOtherSquad() != null) {
+//			for(Player plyr:match.getHomeOtherSquad()) {
+//				i++;
+//				players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
+//				players.get(i).setPlayerPosition(plyr.getPlayerPosition()); players.get(i).setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+//			}
+//		}
+//		match.setHomeOtherSquad(players);
+//		i = -1;
+//		players = new ArrayList<Player>();
+//		for(Player plyr:match.getAwaySquad()) {
+//			i++;
+//			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
+//			players.get(i).setPlayerPosition(plyr.getPlayerPosition()); players.get(i).setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+//		}
+//		match.setAwaySquad(players);
+//		i = -1;
+//		players = new ArrayList<Player>();
+//		for(Player plyr:match.getAwaySubstitutes()) {
+//			i++;
+//			players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
+//			players.get(i).setPlayerPosition(plyr.getPlayerPosition()); players.get(i).setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+//		}
+//		match.setAwaySubstitutes(players);
+//		i = -1;
+//		players = new ArrayList<Player>();
+//		if(match.getAwayOtherSquad() != null) {
+//			for(Player plyr:match.getAwayOtherSquad()) {
+//				i++;
+//				players.add(allPlayers.stream().filter(pl -> pl.getPlayerId() == plyr.getPlayerId()).findFirst().orElse(null));
+//				players.get(i).setPlayerPosition(plyr.getPlayerPosition()); players.get(i).setCaptainGoalKeeper(plyr.getCaptainGoalKeeper());
+//			}
+//		}
+//		match.setAwayOtherSquad(players);
+//		
+//		if(match.getHomeTeamId() > 0)
+//			match.setHomeTeam(allTeams.stream().filter(tm -> tm.getTeamId() == match.getHomeTeamId()).findFirst().orElse(null));
+//		if(match.getAwayTeamId() > 0)
+//			match.setAwayTeam(allTeams.stream().filter(tm -> tm.getTeamId() == match.getAwayTeamId()).findFirst().orElse(null));
+//		if(match.getGroundId() > 0) {
+//			match.setGround(allGrounds.stream().filter(grd -> grd.getGroundId() == match.getGroundId()).findFirst().orElse(null));
+//			match.setVenueName(match.getGround().getFullname());
+//		}
+//
+//		if(match.getMatchStats() != null) {
+//			for(MatchStats ms : match.getMatchStats()) {
+//				ms.setPlayer(allPlayers.stream().filter(pl -> pl.getPlayerId() == ms.getPlayerId()).findFirst().orElse(null));
+//			}
+//		}
+//		
+//		return match;
+//	}
+	
+	
+	
 	
 //	public static Match populateMatchVariables(KabaddiService kabaddiService,Match match) 
 //	{

@@ -197,6 +197,7 @@ public class KabaddiFunctions {
 	public static Match SwapMatch(Match match) throws Exception {
 		Match swapMatch = new Match();
 		
+		swapMatch.setMatchIdent(match.getMatchIdent());
 		//clock
 		swapMatch.setClock(match.getClock());
 		

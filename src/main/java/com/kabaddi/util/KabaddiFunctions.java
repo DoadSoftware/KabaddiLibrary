@@ -219,20 +219,66 @@ public class KabaddiFunctions {
 		
 		return swapMatch;
 	}
-	public static Api_Match setMatchStats(Api_Match match, Match session_match) throws Exception 
+	public static Api_Match setFirstMatchStats(Api_Match match, Match session_match) throws Exception 
 	{
-		InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.SOURCE_DIRECTORY +
-				session_match.getMatchId() +"-in-match" + KabaddiUtil.JSON_EXTENSION), InMatchData.class);
-
-		match.setHomeTeam(session_match.getHomeTeam());
-		match.setAwayTeam(session_match.getAwayTeam());
 		
-		match.setHomeTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0)));
-		match.setAwayTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1)));
+		try {
+			InMatchData mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.SOURCE_DIRECTORY +
+					session_match.getMatchId() +"-in-match" + KabaddiUtil.JSON_EXTENSION), InMatchData.class);
 
-		match.setPlayByRaids(setPlayByRaid(match ,mch));
-		
+			match.setHomeTeam(session_match.getHomeTeam());
+			match.setAwayTeam(session_match.getAwayTeam());
+			
+			match.setHomeTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0)));
+			match.setAwayTeamStats(setTeamStats(mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1)));
+
+			match.setPlayByRaids(setPlayByRaid(match ,mch));
+		} catch (Exception e) {
+			System.out.println("Error : " + e);
+		}
 		return match;
+	}
+	
+	public static Api_Match setMatchStats(Api_Match match, Match session_match) {
+	    try {
+	        InMatchData mch = new ObjectMapper().readValue( new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.SOURCE_DIRECTORY  + 
+	        			session_match.getMatchId() + "-in-match" + KabaddiUtil.JSON_EXTENSION), InMatchData.class
+	        );
+
+	        if (mch == null || mch.getInMatch() == null || mch.getInMatch().getTeamPlayersStatistics() == null
+	                || mch.getInMatch().getTeamPlayersStatistics().getTeam() == null
+	                || mch.getInMatch().getTeamPlayersStatistics().getTeam().size() < 2) {
+	            return null;
+	        }
+
+	        TeamPlayerStats homeStats = setTeamStats(
+	                mch.getInMatch().getTeamPlayersStatistics().getTeam().get(0)
+	        );
+	        TeamPlayerStats awayStats = setTeamStats(
+	                mch.getInMatch().getTeamPlayersStatistics().getTeam().get(1)
+	        );
+
+	        if (homeStats == null || awayStats == null) {
+	            return null;
+	        }
+
+	        List<PlayByRaids> playByRaids = setPlayByRaid(match, mch);
+	        if (playByRaids == null) {
+	            return null;
+	        }
+
+	        match.setHomeTeam(session_match.getHomeTeam());
+	        match.setAwayTeam(session_match.getAwayTeam());
+	        match.setHomeTeamStats(homeStats);
+	        match.setAwayTeamStats(awayStats);
+	        match.setPlayByRaids(playByRaids);
+
+	        return match;
+
+	    } catch (Exception e) {
+	        System.out.println("Error while setting match stats: " + e.getMessage());
+	        return null;
+	    }
 	}
 	
 //	public static void setMatch(Api_Match match,Match session_match)throws Exception {

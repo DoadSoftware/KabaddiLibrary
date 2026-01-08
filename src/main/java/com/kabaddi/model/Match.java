@@ -117,6 +117,28 @@ public class Match {
   @JsonIgnore
   private List<Event> events;
 
+  @JsonProperty("setupHomeTeam")
+  private String setupHomeTeam;
+
+  @JsonProperty("setupAwayTeam")
+  private String setupAwayTeam;  
+  
+public String getSetupHomeTeam() {
+	return setupHomeTeam;
+}
+
+public void setSetupHomeTeam(String setupHomeTeam) {
+	this.setupHomeTeam = setupHomeTeam;
+}
+
+public String getSetupAwayTeam() {
+	return setupAwayTeam;
+}
+
+public void setSetupAwayTeam(String setupAwayTeam) {
+	this.setupAwayTeam = setupAwayTeam;
+}
+
 public Clock getClock() {
 	return clock;
 }
@@ -410,8 +432,9 @@ public String toString() {
 			+ ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", Api_Match=" + Api_Match + ", api_PreMatch="
 			+ api_PreMatch + ", homeSquad=" + homeSquad + ", homeSubstitutes=" + homeSubstitutes + ", awaySquad="
 			+ awaySquad + ", awaySubstitutes=" + awaySubstitutes + ", homeOtherSquad=" + homeOtherSquad
-			+ ", awayOtherSquad=" + awayOtherSquad + ", matchStats=" + matchStats + ", clock=" + clock + ", events="
-			+ events + "]";
+			+ ", awayOtherSquad=" + awayOtherSquad + ", matchStats=" + matchStats + ", clock=" + clock
+			+ ", categoryType=" + categoryType + ", events=" + events + ", setupHomeTeam=" + setupHomeTeam
+			+ ", setupAwayTeam=" + setupAwayTeam + "]";
 }
 
 }

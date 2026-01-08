@@ -71,7 +71,6 @@ public class KabaddiUtil {
 	public final static String START_PAUSE_TIME = "START_PAUSE_TIME";
 	
 	public final static String CAPTAIN = "CAPTAIN";
-	public final static String GOAL_KEEPER = "GOAL_KEEPER";
 	public final static String SUBSTITUTE = "SUBSTITUTE";
 
 	public final static String HIT = "HIT";

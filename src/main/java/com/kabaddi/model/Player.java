@@ -58,7 +58,7 @@ public class Player implements Comparable<Player>
   private Integer playerPosition;
 
   @Transient
-  private String captainGoalKeeper;
+  private String captain;
 
   @Transient
   private String player_type;
@@ -91,16 +91,16 @@ public Player(Player original) {
 	this.category = original.category;
 	this.nationality = original.nationality;
 	this.playerPosition = original.playerPosition;
-	this.captainGoalKeeper = original.captainGoalKeeper;
+	this.captain = original.captain;
 	this.player_type = original.player_type;
 }
 
-public String getCaptainGoalKeeper() {
-	return captainGoalKeeper;
+public String getCaptain() {
+	return captain;
 }
 
-public void setCaptainGoalKeeper(String captainGoalKeeper) {
-	this.captainGoalKeeper = captainGoalKeeper;
+public void setCaptain(String captain) {
+	this.captain = captain;
 }
 
 public String getFirstname() {
@@ -236,7 +236,7 @@ public String toString() {
 	return "Player [playerId=" + playerId + ", PlayerAPIId=" + PlayerAPIId + ", jersey_number=" + jersey_number
 			+ ", full_name=" + full_name + ", firstname=" + firstname + ", surname=" + surname + ", ticker_name="
 			+ ticker_name + ", role=" + role + ", teamId=" + teamId + ", photo=" + photo + ", playerPosition="
-			+ playerPosition + ", captainGoalKeeper=" + captainGoalKeeper + ", player_type=" + player_type + "]";
+			+ playerPosition + ", captain=" + captain + ", player_type=" + player_type + "]";
 }
 
 @Override

@@ -19,6 +19,8 @@ public class Api_Match{
   private TeamPlayerStats awayTeamStats;
   
   private List<PlayByRaids> playByRaids;
+  private List<Phase> phase;
+  
 //  private Phase_of_play phase_of_play;
   
   private Clock clock;
@@ -29,6 +31,14 @@ public List<PlayByRaids> getPlayByRaids() {
 
 public void setPlayByRaids(List<PlayByRaids> playByRaids) {
 	this.playByRaids = playByRaids;
+}
+
+public List<Phase> getPhase() {
+	return phase;
+}
+
+public void setPhase(List<Phase> phase) {
+	this.phase = phase;
 }
 
 public String getMatchFileName() {
@@ -86,7 +96,8 @@ public void setClock(Clock clock) {
 public String toString() {
 	return "Api_Match [matchFileName=" + matchFileName + ", homeTeamScore=" + homeTeamScore + ", awayTeamScore="
 			+ awayTeamScore + ", homeTeam=" + homeTeam + ", awayTeam=" + awayTeam + ", homeTeamStats=" + homeTeamStats
-			+ ", awayTeamStats=" + awayTeamStats + ", playByRaids=" + playByRaids + ", clock=" + clock + "]";
+			+ ", awayTeamStats=" + awayTeamStats + ", playByRaids=" + playByRaids + ", phase=" + phase + ", clock="
+			+ clock + "]";
 }
 
 }

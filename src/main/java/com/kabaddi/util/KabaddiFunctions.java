@@ -47,6 +47,8 @@ import com.kabaddi.model.Ground;
 import com.kabaddi.model.LeagueTeam;
 import com.kabaddi.model.Match;
 import com.kabaddi.model.MatchStats;
+import com.kabaddi.model.Phase;
+import com.kabaddi.model.Phase_of_play;
 import com.kabaddi.model.PlayByRaids;
 import com.kabaddi.model.PlayByTeams;
 import com.kabaddi.model.Player;
@@ -266,13 +268,17 @@ public class KabaddiFunctions {
 	        if (playByRaids == null) {
 	            return null;
 	        }
-
+	        List<Phase> phaseOfPlay = setPhaseOfPlay(match ,mch);
+	        if (phaseOfPlay == null) {
+	            return null;
+	        }
 	        match.setHomeTeam(session_match.getHomeTeam());
 	        match.setAwayTeam(session_match.getAwayTeam());
 	        match.setHomeTeamStats(homeStats);
 	        match.setAwayTeamStats(awayStats);
 	        match.setPlayByRaids(playByRaids);
-
+	        match.setPhase(phaseOfPlay);
+	        
 	        return match;
 
 	    } catch (Exception e) {
@@ -304,62 +310,67 @@ public class KabaddiFunctions {
 //		setPhaseOfPlay(match ,mch);
 //	}
 	
-//	private static void setPhaseOfPlay(Api_Match match, InMatchData mch) {
-//		if (match.getPhase_of_play() == null || mch.getInMatch() == null || 
-//		        mch.getInMatch().getPhase_of_play() == null || 
-//		        mch.getInMatch().getPhase_of_play().getPhase() == null) {
-//		        return;
-//		  }
+	private static List<Phase> setPhaseOfPlay(Api_Match match, InMatchData mch) {
+		if (mch.getInMatch() == null || mch.getInMatch().getPhase_of_play() == null || 
+		        mch.getInMatch().getPhase_of_play().getPhase() == null) {
+		        return null;
+		  }
+		
+		if(match.getPhase() == null) {
+			match.setPhase(new ArrayList<Phase>());
+		}
+		
 //		match.getPhase_of_play().setPhase(new ArrayList<Phase>());
-//		
-//		for(com.api.model.kabaddi.InMatchData.Phase phase :mch.getInMatch().getPhase_of_play().getPhase()) {
-//			Phase pse = new Phase();
-//			pse.setPhase_name(phase.getPhaseName());
-//			pse.setTeam(new ArrayList<PlayByTeams>());
-//			
-//			if (phase.getTeam() != null) {
-//				 
-//			 for (com.api.model.kabaddi.InMatchData.Team tm : phase.getTeam()) {
-//				 
-//				 PlayByTeams team = new PlayByTeams();
-//				 	
-//				 team.setTeam_id(Integer.valueOf(tm.getTeamId()));
-//				 	team.setTeam_name(tm.getTeamName());
-//				 	team.setTotal_points(Integer.valueOf(tm.getPoints().getTotalPoints()));
-//				 	 
-//				 	Points point = new Points();
-//				 	 
-//	                if (tm.getPoints() != null) {
-//	                    point.setAll_out_points(tm.getPoints().getAllOutPoints() != null ? Integer.parseInt(tm.getPoints().getAllOutPoints()) : 0);
-//	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
-//	                    point.setExtra_points(tm.getPoints().getExtraPoints() != null ? Integer.parseInt(tm.getPoints().getExtraPoints()) : 0);
-//	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
-//
-//	                    point.setRaid_points(new ArrayList<>());
-//	                    if (tm.getPoints().getRaidPoints() != null) {
-//	                        point.getRaid_points().add(new RaidPoints(
-//	                            tm.getPoints().getRaidPoints().getTotalRaidPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTotalRaidPoints()) : 0,
-//	                            tm.getPoints().getRaidPoints().getTouchPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTouchPoints()) : 0,
-//	                            tm.getPoints().getRaidPoints().getRaidBonusPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getRaidBonusPoints()) : 0
-//	                        ));
-//	                    }
-//
-//	                    point.setTackle_points(new ArrayList<>());
-//	                    if (tm.getPoints().getTacklePoints() != null) {
-//	                        point.getTackle_points().add(new TacklePoints(
-//	                            tm.getPoints().getTacklePoints().getTotalTacklePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTotalTacklePoints()) : 0,
-//	                            tm.getPoints().getTacklePoints().getCapturePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getCapturePoints()) : 0,
-//	                            tm.getPoints().getTacklePoints().getTackleBonusPoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTackleBonusPoints()) : 0
-//	                        ));
-//	                    }
-//	                }
-//		            team.setPoints(point);	
-//		            pse.getTeam().add(team);
-//				} 
-//			 }
-//			match.getPhase_of_play().getPhase().add(pse);
-//		}
-//	}
+		
+		for(com.api.model.kabaddi.InMatchData.Phase phase :mch.getInMatch().getPhase_of_play().getPhase()) {
+			Phase pse = new Phase();
+			pse.setPhase_name(phase.getPhaseName());
+			pse.setTeam(new ArrayList<PlayByTeams>());
+			
+			if (phase.getTeam() != null) {
+				 
+			 for (com.api.model.kabaddi.InMatchData.Team tm : phase.getTeam()) {
+				 
+				 PlayByTeams team = new PlayByTeams();
+				 	
+				 team.setTeam_id(Integer.valueOf(tm.getTeamId()));
+				 	team.setTeam_name(tm.getTeamName());
+				 	team.setTotal_points(Integer.valueOf(tm.getPoints().getTotalPoints()));
+				 	 
+				 	Points point = new Points();
+				 	 
+	                if (tm.getPoints() != null) {
+	                    point.setAll_out_points(tm.getPoints().getAllOutPoints() != null ? Integer.parseInt(tm.getPoints().getAllOutPoints()) : 0);
+	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
+	                    point.setExtra_points(tm.getPoints().getExtraPoints() != null ? Integer.parseInt(tm.getPoints().getExtraPoints()) : 0);
+	                    point.setTotalPoints(tm.getPoints().getTotalPoints() != null ? Integer.parseInt(tm.getPoints().getTotalPoints()) : 0);
+
+	                    point.setRaid_points(new ArrayList<>());
+	                    if (tm.getPoints().getRaidPoints() != null) {
+	                        point.getRaid_points().add(new RaidPoints(
+	                            tm.getPoints().getRaidPoints().getTotalRaidPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTotalRaidPoints()) : 0,
+	                            tm.getPoints().getRaidPoints().getTouchPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getTouchPoints()) : 0,
+	                            tm.getPoints().getRaidPoints().getRaidBonusPoints() != null ? Integer.parseInt(tm.getPoints().getRaidPoints().getRaidBonusPoints()) : 0
+	                        ));
+	                    }
+
+	                    point.setTackle_points(new ArrayList<>());
+	                    if (tm.getPoints().getTacklePoints() != null) {
+	                        point.getTackle_points().add(new TacklePoints(
+	                            tm.getPoints().getTacklePoints().getTotalTacklePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTotalTacklePoints()) : 0,
+	                            tm.getPoints().getTacklePoints().getCapturePoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getCapturePoints()) : 0,
+	                            tm.getPoints().getTacklePoints().getTackleBonusPoints() != null ? Integer.parseInt(tm.getPoints().getTacklePoints().getTackleBonusPoints()) : 0
+	                        ));
+	                    }
+	                }
+		            team.setPoints(point);	
+		            pse.getTeam().add(team);
+				} 
+			 }
+			match.getPhase().add(pse);
+		}
+		return match.getPhase();
+	}
 
 	private static List<PlayByRaids> setPlayByRaid(Api_Match match, InMatchData mch) 
 	{
@@ -1659,6 +1670,7 @@ public class KabaddiFunctions {
 				ms.setPlayer(allPlayers.stream().filter(pl -> pl.getPlayerId() == ms.getPlayerId()).findFirst().orElse(null));
 			}
 		}
+		match.setMatchId(match.getMatchId());
 	    return match;
 	}
 

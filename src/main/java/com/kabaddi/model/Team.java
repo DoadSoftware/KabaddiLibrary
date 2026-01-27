@@ -48,6 +48,9 @@ public class Team implements Comparable<Team> {
 
   @Column(name = "Category")
   private String category;
+  
+  @Column(name = "Captain")
+  private int captain;
 
 public int getTeamId() {
 	return teamId;
@@ -159,12 +162,21 @@ public void setCategory(String category) {
 	this.category = category;
 }
 
+public int getCaptain() {
+	return captain;
+}
+
+public void setCaptain(int captain) {
+	this.captain = captain;
+}
+
 @Override
 public String toString() {
 	return "Team [teamId=" + teamId + ", teamName1=" + teamName1 + ", teamName2=" + teamName2 + ", teamName3="
 			+ teamName3 + ", teamName4=" + teamName4 + ", teamBadge=" + teamBadge + ", teamColor=" + teamColor
 			+ ", teamGroup=" + teamGroup + ", teamCoach=" + teamCoach + ", teamAssistantCoach=" + teamAssistantCoach
-			+ ", coachPhotoName=" + coachPhotoName + ", teamApiId=" + teamApiId + "]";
+			+ ", coachPhotoName=" + coachPhotoName + ", teamApiId=" + teamApiId + ", category=" + category
+			+ ", captain=" + captain + "]";
 }
 
 @Override

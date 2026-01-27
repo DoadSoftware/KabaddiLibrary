@@ -53,6 +53,9 @@ public class Player implements Comparable<Player>
 
   @Column(name = "Nationality")
   private String nationality;
+  
+  @Column(name = "Squad")
+  private Boolean squad;
  
   @Transient
   private Integer playerPosition;
@@ -231,12 +234,22 @@ public void setNationality(String nationality) {
 	this.nationality = nationality;
 }
 
+public Boolean getSquad() {
+	return squad;
+}
+
+public void setSquad(Boolean squad) {
+	this.squad = squad;
+}
+
 @Override
 public String toString() {
 	return "Player [playerId=" + playerId + ", PlayerAPIId=" + PlayerAPIId + ", jersey_number=" + jersey_number
 			+ ", full_name=" + full_name + ", firstname=" + firstname + ", surname=" + surname + ", ticker_name="
-			+ ticker_name + ", role=" + role + ", teamId=" + teamId + ", photo=" + photo + ", playerPosition="
-			+ playerPosition + ", captain=" + captain + ", player_type=" + player_type + "]";
+			+ ticker_name + ", role=" + role + ", teamId=" + teamId + ", photo=" + photo + ", age=" + age
+			+ ", overseasPlayer=" + overseasPlayer + ", category=" + category + ", nationality=" + nationality
+			+ ", squad=" + squad + ", playerPosition=" + playerPosition + ", captain=" + captain + ", player_type="
+			+ player_type + "]";
 }
 
 @Override

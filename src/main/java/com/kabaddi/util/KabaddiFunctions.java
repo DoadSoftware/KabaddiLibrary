@@ -440,7 +440,7 @@ public class KabaddiFunctions {
 	public static void setPreMatch(Api_pre_match match, Match session_match, String broudcaster, String preMatchFileName)throws Exception {
 		PreMatchData mch = null ;
 		switch (broudcaster) {
-		case KabaddiUtil.UPKL:
+		case KabaddiUtil.UPKL: case KabaddiUtil.KCL:
 			mch = new ObjectMapper().readValue(new File(KabaddiUtil.KABADDI_DIRECTORY + KabaddiUtil.SOURCE_DIRECTORY + preMatchFileName 
 					+ KabaddiUtil.JSON_EXTENSION), PreMatchData.class);
 			break;

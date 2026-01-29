@@ -28,7 +28,7 @@ public class TeamPlayerStats {
 		// TODO Auto-generated constructor stub
 	}
 
-	public TeamPlayerStats(String teamName, int teamId, int no_of_players_on_court, List<Points> points,
+	public TeamPlayerStats(String teamName,int teamId, int no_of_players_on_court, List<Points> points,
 			PointsNminutes pointsNminutes, List<Raids> raids, List<Tackles> tackles, List<Do_Or_Die> do_or_die, 
 			List<PlayerStats> playerStats) {
 		super();
@@ -162,6 +162,8 @@ public class TeamPlayerStats {
 	public void setPointsNminutes(PointsNminutes pointsNminutes) {
 		this.pointsNminutes = pointsNminutes;
 	}
+	
+
 
 	@Override
 	public String toString() {

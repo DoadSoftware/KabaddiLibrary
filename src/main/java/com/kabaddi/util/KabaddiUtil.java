@@ -127,4 +127,7 @@ public class KabaddiUtil {
 	public final static String PLURAL = "PLURAL";
 
 	public static final String FF_EXCEL = "C:\\Sports\\Kabaddi\\FF_EXCEL.xlsx";
+	public final static String TRIO_XML = "KABADDI_TRIO.XML";
+
+	public static final String DOAD_TRIO = "DOAD_TRIO";
 }

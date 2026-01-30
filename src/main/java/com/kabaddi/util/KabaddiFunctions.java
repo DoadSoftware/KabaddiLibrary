@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -1880,6 +1881,90 @@ public class KabaddiFunctions {
 		return playerPreMatchData;
 	}
 	
+	public static List<PlayerPreMatchData> getInMatchPlayerData(
+	        Match match,
+	        KabaddiService kabaddiService
+	) {
+
+	    List<PlayerPreMatchData> inMatchData = new ArrayList<>();
+
+	    if (match == null || match.getApi_Match() == null) {
+	        return inMatchData;
+	    }
+
+	    // helper lambda to process a team
+	    BiConsumer<List<PlayerStats>, Integer> processTeam = (playerStatsList, teamId) -> {
+	        if (playerStatsList == null) return;
+
+	        for (PlayerStats ps : playerStatsList) {
+
+	            int superTen = 0;
+	            int highFive = 0;
+
+	            Player player = kabaddiService.getAllPlayer()
+	                    .stream()
+	                    .filter(p -> Integer.parseInt(p.getPlayerAPIId()) == ps.getPlayerId())
+	                    .findFirst()
+	                    .orElse(null);
+
+	            if (player == null) continue;
+
+	            // Super 10 & High 5 (ONLY this match)
+	            if (ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints() >= 10) {
+	                superTen = 1;
+	            }
+	            if (ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints() >= 5) {
+	                highFive = 1;
+	            }
+
+	            inMatchData.add(
+	                new PlayerPreMatchData(
+	                    teamId,
+	                    ps.getPlayerId(),
+	                    player,
+	                    highFive,
+	                    superTen,
+	                    ps.getMatches(),
+
+	                    // points
+	                    ps.getPoints().get(0).getTotalPoints(),
+	                    ps.getPoints().get(0).getRaid_points().get(0).getTotalRaidPoints(),
+	                    ps.getPoints().get(0).getTackle_points().get(0).getTotalTacklePoints(),
+
+	                    // raids
+	                    ps.getRaids().get(0).getTotalRaids(),
+	                    ps.getRaids().get(0).getSuperRaids(),
+	                    ps.getRaids().get(0).getSuccessfulRaids(),
+	                    ps.getRaids().get(0).getUnsuccessfulRaids(),
+
+	                    // tackles
+	                    ps.getTackles().get(0).getTotalTackles(),
+	                    ps.getTackles().get(0).getSuperTackles(),
+	                    ps.getTackles().get(0).getSuccessfulTackles(),
+	                    ps.getTackles().get(0).getUnsuccessfulTackles()
+	                )
+	            );
+	        }
+	    };
+
+	    // Home team
+	    if (match.getApi_Match().getHomeTeamStats() != null) {
+	        processTeam.accept(
+	                match.getApi_Match().getHomeTeamStats().getPlayerStats(),
+	                Integer.parseInt(match.getHomeTeam().getTeamApiId())
+	        );
+	    }
+
+	    // Away team
+	    if (match.getApi_Match().getAwayTeamStats() != null) {
+	        processTeam.accept(
+	                match.getApi_Match().getAwayTeamStats().getPlayerStats(),
+	                Integer.parseInt(match.getAwayTeam().getTeamApiId())
+	        );
+	    }
+
+	    return inMatchData;
+	}
 	public static List<PlayerPreMatchData> getPastAndCurrentMatchData(List<PlayerPreMatchData> preMatchData, Match match, KabaddiService kabaddiService){
 		
 		int playerIndex = -1;

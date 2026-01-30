@@ -653,6 +653,7 @@ public class KabaddiFunctions {
 			 PlayerStats PlayerStats = new PlayerStats();
 			 PlayerStats.setPlayerId(Integer.valueOf(ply.getPlayerId()));
 			 PlayerStats.setPlayer_on_court(ply.getPlayerOnCourt());
+			 PlayerStats.setPlayer_raiding_now(ply.getPlayerRaidingCourt());
 			 PlayerStats.setAvg_raid_time(Integer.valueOf(ply.getAvgRaidTime()));
 			 PlayerStats.setPlayer_on_court((ply.getPlayerOnCourt()==null ? "" : ply.getPlayerOnCourt()));
 			 PlayerStats.setPlayer_revival_order((ply.getPlayerRevivalOrder()==null ?"":ply.getPlayerRevivalOrder()));

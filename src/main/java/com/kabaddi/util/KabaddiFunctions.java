@@ -711,7 +711,7 @@ public class KabaddiFunctions {
 		return team;
 	}
 
-	public static List<LeagueTeam> PointsTableAsStanding(List<LeagueTeam> points_table, Match match) throws IOException {
+	public static List<LeagueTeam> PointsTableAsStanding(List<LeagueTeam> points_table, Match match, String broadcaster) throws IOException {
 		
 		if(match.getHomeTeamScore() > match.getAwayTeamScore()) {
 			for(LeagueTeam table : points_table) {
@@ -729,8 +729,12 @@ public class KabaddiFunctions {
 					table.setGoal_For(table.getGoal_For() + match.getAwayTeamScore());
 					table.setGoal_Against(table.getGoal_Against() + match.getHomeTeamScore());
 					table.setGD(table.getGoal_For() - table.getGoal_Against());
-					if((match.getHomeTeamScore() - match.getAwayTeamScore()) <= 7) {
-						table.setPoints(table.getPoints() + 1);
+					switch (broadcaster) {
+					case KabaddiUtil.UPKL: case KabaddiUtil.GIPKL:
+						if((match.getHomeTeamScore() - match.getAwayTeamScore()) <= 7) {
+							table.setPoints(table.getPoints() + 1);
+						}
+						break;
 					}
 				}
 			}
@@ -750,8 +754,12 @@ public class KabaddiFunctions {
 					table.setGoal_For(table.getGoal_For() + match.getHomeTeamScore());
 					table.setGoal_Against(table.getGoal_Against() + match.getAwayTeamScore());
 					table.setGD(table.getGoal_For() - table.getGoal_Against());
-					if((match.getAwayTeamScore() - match.getHomeTeamScore()) <= 7) {
-						table.setPoints(table.getPoints() + 1);
+					switch (broadcaster) {
+					case KabaddiUtil.UPKL: case KabaddiUtil.GIPKL:
+						if((match.getAwayTeamScore() - match.getHomeTeamScore()) <= 7) {
+							table.setPoints(table.getPoints() + 1);
+						}
+						break;
 					}
 				}
 			}
